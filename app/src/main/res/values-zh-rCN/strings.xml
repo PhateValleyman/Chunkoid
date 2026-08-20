@@ -15,7 +15,7 @@
     <string name="about_credits_chunker">Chunker-Cli为Hive Game的开源项目(MIT)</string>
     <string name="about_credits_nbt">NBT工具使用了Polyana-Fontes的NBT-Manipulator(MIT)</string>
     <string name="about_credits_sdk">存档解密器使用了Dicecan的NetEaseDecryptorSDK(GPL v3)</string>
-    <string name="about_thanks">特别鸣谢：Ryan Steven</string>
+    <string name="about_thanks">特别鸣谢：Dozener（原作者与奠基人）、Ryan Steven、Weiyin 1A</string>
     <string name="about_website">进入官网</string>
     <string name="about_date">2026/7/5</string>
     <string name="check_update">检查更新</string>

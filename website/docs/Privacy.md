@@ -8,7 +8,7 @@ Chunkoid（以下简称"本软件"）是一款由 Dozener 开发的 Android 原�
 
 我们高度重视用户隐私，致力于保护您的个人数据安全。
 
-本软件是完全开源的免费软件，您可以在 [GitHub](https://github.com/DozenesStudio/Chunkoid)上查看完整源代码，验证本隐私政策的真实性。核心转换引擎：Chunker-cli 的源代码可在 [GitHub](https://github.com/HiveGamesOSS/Chunker)上查看。
+本软件是完全开源的免费软件，您可以在 [GitHub](https://github.com/Dicecan/Chunkoid)上查看完整源代码，验证本隐私政策的真实性。核心转换引擎：Chunker-cli 的源代码可在 [GitHub](https://github.com/HiveGamesOSS/Chunker)上查看。
 
 ## 2. 数据收集
 

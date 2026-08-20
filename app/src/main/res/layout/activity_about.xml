@@ -91,14 +91,28 @@
                     android:orientation="horizontal"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="By Dozener"
-                        android:textColor="@color/minecraft_green"
-                        android:textSize="20sp"
-                        android:textStyle="italic"/>
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Original Author: Dozener"
+                            android:textColor="@color/minecraft_green"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Maintained by DICECAN"
+                            android:textColor="@color/minecraft_gray"
+                            android:textSize="11sp"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

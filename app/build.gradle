@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.dozenesstudio.chunkoid'
+    namespace 'com.encore.chunkoid'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.dozenesstudio.chunkoid"
+        applicationId "com.encore.chunkoid"
         minSdk 26
         targetSdk 34
         versionCode 18

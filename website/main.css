@@ -1,39 +1,94 @@
 /* ==================== 自定义字体 ==================== */
 /* 引入自定义像素字体 UranusPixel，用于标题和Logo显示，增强游戏风格 */
 @font-face {
-    font-family: 'UranusPixel';         /* 字体名称，后续可通过 font-family 引用 */
-    src: url('drawable/uranus_pixel_11px.ttf') format('truetype');  /* 字体文件路径及格式 */
+    font-family: 'UranusPixel';
+    src: url('drawable/uranus_pixel_11px.ttf') format('truetype');
+    font-display: swap;
+}
+
+/* ==================== CSS 变量与设计规范 ==================== */
+:root {
+    --primary: #4ade80;
+    --primary-hover: #22c55e;
+    --primary-glow: rgba(74, 222, 128, 0.4);
+    --primary-subtle: rgba(74, 222, 128, 0.15);
+    --bg-dark: #0a0a0a;
+    --text-main: #e0e0e0;
+    --text-muted: #b0b0b0;
+    --text-dim: #8b8b8b;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==================== 全局重置样式 ==================== */
-/* 使用通配符选择器重置所有元素的默认样式，确保跨浏览器一致性 */
 * {
-    margin: 0;                    /* 清除默认外边距 */
-    padding: 0;                   /* 清除默认内边距 */
-    box-sizing: border-box;        /* 采用边框盒模型，padding和border不影响元素总宽度 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* 自定义选中文本背景 */
+::selection {
+    background: rgba(74, 222, 128, 0.3);
+    color: #ffffff;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0d0d0d;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
 }
 
 /* ==================== 页面基础样式 ==================== */
-/* 定义整个页面的基础样式，包括背景、字体、文字颜色 */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  /* 首选Segoe UI字体，兼容各平台 */
-    background: #0a0a0a url('drawable/bg.png') no-repeat center center fixed;  /* 深色背景+背景图，居中固定 */
-    background-size: cover;       /* 背景图覆盖整个容器 */
-    min-height: 100vh;            /* 最小高度为视口高度，确保页面至少占满一屏 */
-    color: #e0e0e0;              /* 默认文字颜色为浅灰色 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-dark) url('drawable/bg.png') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    color: var(--text-main);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* ==================== 开场动画 ==================== */
-/* 核心动画 */
+/* ==================== 开场动画 (GPU加速) ==================== */
 @keyframes fadeUp {
-    0% { opacity: 0; transform: translateY(40px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 30px, 0);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
 }
 
-/* 所有子元素依次出现 */
-.container > * {
+/* 所有子元素依次出现 (排除特殊全局悬浮组件) */
+.container > *:not(.toast-container):not(header.floating-header) {
     opacity: 0;
-    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: fadeUp 0.65s var(--ease-out-expo) forwards;
+    will-change: transform, opacity;
 }
 
 /* 浮动导航栏不受开场动画影响 */
@@ -43,42 +98,51 @@ body {
 }
 
 /* 用 nth-child 控制延迟 */
-.container > *:nth-child(1) { animation-delay: 0.05s; }
-.container > *:nth-child(2) { animation-delay: 0.15s; }
-.container > *:nth-child(3) { animation-delay: 0.25s; }
-.container > *:nth-child(4) { animation-delay: 0.35s; }
-.container > *:nth-child(5) { animation-delay: 0.45s; }
-.container > *:nth-child(6) { animation-delay: 0.55s; }
-.container > *:nth-child(7) { animation-delay: 0.65s; }
-.container > *:nth-child(8) { animation-delay: 0.75s; }
+.container > *:nth-child(1) { animation-delay: 0.04s; }
+.container > *:nth-child(2) { animation-delay: 0.10s; }
+.container > *:nth-child(3) { animation-delay: 0.18s; }
+.container > *:nth-child(4) { animation-delay: 0.26s; }
+.container > *:nth-child(5) { animation-delay: 0.34s; }
+.container > *:nth-child(6) { animation-delay: 0.42s; }
+.container > *:nth-child(7) { animation-delay: 0.50s; }
+.container > *:nth-child(8) { animation-delay: 0.58s; }
 
 /* 关于页面卡片依次从下往上出现 */
 .about-card {
     opacity: 0;
-    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: fadeUp 0.65s var(--ease-out-expo) forwards;
+    will-change: transform, opacity;
 }
 
-.about-card:nth-child(1) { animation-delay: 0.3s; }
-.about-card:nth-child(2) { animation-delay: 0.4s; }
-.about-card:nth-child(3) { animation-delay: 0.5s; }
-.about-card:nth-child(4) { animation-delay: 0.6s; }
-.about-card:nth-child(5) { animation-delay: 0.7s; }
+.about-card:nth-child(1) { animation-delay: 0.15s; }
+.about-card:nth-child(2) { animation-delay: 0.23s; }
+.about-card:nth-child(3) { animation-delay: 0.31s; }
+.about-card:nth-child(4) { animation-delay: 0.39s; }
+.about-card:nth-child(5) { animation-delay: 0.47s; }
+
+/* 减弱动态效果偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+    .container > *,
+    .about-card {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
 
 /* ==================== 容器样式 ==================== */
-/* 页面主容器，控制内容最大宽度和内外边距，使内容居中显示 */
 .container {
-    max-width: 1400px;            /* 内容最大宽度1400px，防止过宽屏幕内容太松散 */
-    margin: 0 auto;               /* 水平居中 */
-    padding: 40px 60px;           /* 上下40px，左右60px内边距 */
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 60px;
 }
 
 /* ==================== 头部浮动岛导航栏 ==================== */
-/* 固定在顶部的浮动导航栏容器，不含毛玻璃效果 */
 header.floating-header {
     position: fixed;
-    top: 30px;
+    top: 24px;
     left: 50px;
-    right: 20px;
+    right: 50px;
     z-index: 1000;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -87,484 +151,597 @@ header.floating-header {
     border-radius: 0;
     padding: 0;
     margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+}
+
+header.floating-header > * {
+    pointer-events: auto;
 }
 
 /* 浮动导航栏激活时，容器顶部留出补偿空间 */
 .floating-nav-active {
-    padding-top: 90px;
+    padding-top: 100px;
 }
 
-/* 浮动导航栏中导航链接单独毛玻璃胶囊 */
+/* 浮动导航栏中导航链接毛玻璃胶囊 */
 header.floating-header .nav-links {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    background: hsla(0, 0%, 100%, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 15px 25px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
-/* ==================== 头部导航 ==================== */
-/* 页面顶部区域，包含Logo和导航链接，采用Flex布局实现两端对齐 */
+header.floating-header .nav-links:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 10px 36px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ==================== 头部基础导航 ==================== */
 header {
-    display: flex;                /* Flex布局 */
-    justify-content: space-between;  /* Logo左对齐，导航右对齐 */
-    align-items: center;          /* 垂直居中 */
-    padding: 20px 0;             /* 上下20px内边距 */
-    margin-bottom: 80px;          /* 底部80px外边距，与下方内容区域分隔 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    margin-bottom: 60px;
 }
 
-/* Logo区域（图标+文字），Flex布局使图标和文字水平排列 */
+/* Logo区域 */
 .logo-area {
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    gap: 15px;                   /* 图标与文字间距15px */
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
 }
 
-/* Logo图标样式 */
 .logo {
-    width: 50px;                  /* 宽度50px */
-    height: 50px;                 /* 高度50px */
-    border-radius: 12px;          /* 12px圆角，使图标呈圆角矩形 */
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Logo文字样式 */
+.logo-area:hover .logo {
+    transform: scale(1.06) rotate(-3deg);
+}
+
 .logo-text {
-    font-size: 24px;              /* 字体大小24px */
-    font-weight: 700;            /* 字体粗细700（粗体） */
-    color: #ffffff;              /* 白色文字 */
-    text-decoration: none;        /* 去掉下划线 */
-    font-family: 'UranusPixel', 'Segoe UI', sans-serif;  /* 使用像素字体，降级为Segoe UI */
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: 'UranusPixel', 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-/* 导航链接容器，Flex布局使链接水平排列 */
-.nav-links {
-    display: flex;                /* Flex布局 */
-    gap: 40px;                   /* 链接之间间距40px */
+.logo-area:hover .logo-text {
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
 /* 导航链接样式 */
-.nav-links a {
-    color: #b0b0b0;              /* 灰色文字 */
-    text-decoration: none;        /* 去掉下划线 */
-    font-size: 16px;              /* 字体大小16px */
-    transition: color 0.3s ease;  /* 颜色变化动画0.3秒 */
+.nav-links a,
+.nav-links span {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.25s ease, transform 0.25s ease;
+    display: inline-flex;
+    align-items: center;
 }
 
-/* 导航链接悬停效果 */
 .nav-links a:hover {
-    color: #ffffff;              /* 悬停时变为白色 */
+    color: #ffffff;
+    transform: translateY(-1px);
 }
 
-/* ==================== 关于页面卡片样式 ==================== */
-/* 卡片容器，Flex布局横向排列 */
-.about-cards-container {
+.nav-links span {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* 语言与Github链接 */
+.lang-link,
+.github-link {
     display: flex;
-    gap: 15px;
+    align-items: center;
+    gap: 6px;
+}
+
+.lang-icon,
+.github-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.25s ease;
+}
+
+.lang-link:hover .lang-icon,
+.github-link:hover .github-icon {
+    transform: scale(1.1);
+}
+
+/* ==================== 占位区域 ==================== */
+.spacer {
+    height: 6vh;
+    min-height: 30px;
+}
+
+/* ==================== 主视觉区域 (Hero) ==================== */
+.hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: calc(100vh - 240px);
+    gap: 50px;
+}
+
+.hero-text {
+    flex: 1.1;
+    max-width: 620px;
+}
+
+.hero-title {
+    font-size: clamp(52px, 6.5vw, 92px);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    font-family: 'UranusPixel', 'Segoe UI', sans-serif;
+    letter-spacing: -0.5px;
+    text-shadow:
+        0 0 20px rgba(74, 222, 128, 0.3),
+        0 0 40px rgba(74, 222, 128, 0.15),
+        0 0 60px rgba(255, 255, 255, 0.25);
+}
+
+.hero-subtitle {
+    font-size: clamp(22px, 2.5vw, 34px);
+    font-weight: 500;
+    color: #a3a3a3;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mc-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hero-desc {
+    font-size: 17px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 38px;
+    max-width: 520px;
+}
+
+/* 按钮组容器 */
+.cta-buttons {
+    display: flex;
+    gap: 18px;
     flex-wrap: wrap;
+}
+
+/* 通用按钮 */
+.btn {
+    padding: 15px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    will-change: transform, box-shadow;
+}
+
+.btn:active {
+    transform: scale(0.97) !important;
+}
+
+/* 主按钮（绿色） */
+.btn-primary {
+    background: var(--primary);
+    color: #06180a;
+    font-weight: 700;
+    box-shadow: 0 4px 20px rgba(74, 222, 128, 0.35);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(74, 222, 128, 0.55);
+}
+
+/* 次要按钮（毛玻璃） */
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* ==================== Hero截图展示区 ==================== */
+.hero-images {
+    flex: 0.9;
+    max-width: 600px;
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+}
+
+/* 截图卡片 */
+.image-card {
+    background: rgba(18, 18, 18, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 6px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 25px rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.image-card:hover {
+    transform: translateY(-8px) scale(1.015);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(74, 222, 128, 0.22);
+    border-color: rgba(74, 222, 128, 0.35);
+}
+
+.image-card img {
+    width: auto;
+    height: 300px;
+    border-radius: 10px;
+    display: block;
+    object-fit: contain;
+    background: #0f0f0f;
+}
+
+.image-card.phone img {
+    height: 410px;
+}
+
+.image-card.tablet img {
+    height: 290px;
+}
+
+/* 图片悬停遮罩 */
+.image-overlay {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.image-card:hover .image-overlay {
+    opacity: 1;
+}
+
+.image-label {
+    color: var(--primary);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    transform: translateY(6px);
+    transition: transform 0.3s ease;
+}
+
+.image-card:hover .image-label {
+    transform: translateY(0);
+}
+
+/* ==================== 关于页面全新独立排版 ==================== */
+.about-hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: 10px auto 50px;
+    box-sizing: border-box;
+}
+
+.about-hero-text {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 36px;
+    text-align: center;
+}
+
+.about-hero-title {
+    font-size: clamp(38px, 5.5vw, 64px);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    font-family: 'UranusPixel', 'Segoe UI', sans-serif;
+    text-shadow:
+        0 0 25px rgba(255, 255, 255, 0.4),
+        0 0 50px rgba(74, 222, 128, 0.2);
+}
+
+.about-hero-desc {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 auto;
+}
+
+/* 卡片网格容器 */
+.about-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 /* 单个卡片基础样式 */
 .about-card {
-    width: 180px;
-    height: 600px;
-    border-radius: 12px;
-    padding: 15px;
+    min-height: 260px;
+    border-radius: 18px;
+    padding: 26px 28px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
     text-align: left;
-    flex-shrink: 0;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
 }
 
-/* 卡片悬停效果 */
+.about-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    opacity: 0.7;
+}
+
 .about-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* 卡片图标区域 */
+/* 卡片顶部图标区域 */
 .about-card .card-icon {
     width: 100%;
-    flex: 0.5;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
 }
 
-/* 卡片图标大小 */
 .about-card .card-icon svg {
     width: 32px;
     height: 32px;
-    color: rgba(255, 255, 255, 0.9);
+    color: #ffffff;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
 
-/* 卡片图标链接 */
-.about-card .card-icon a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* 卡片分割线 */
 .about-card hr {
     width: 100%;
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-    margin: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    margin: 0 0 16px 0;
 }
 
-/* 卡片内容区域 */
+/* 卡片内容 */
 .about-card .card-content {
     width: 100%;
-    flex: 3;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     color: #ffffff;
-    font-size: 12px;
-    overflow: hidden;
-}
-
-/* 卡片标题 */
-.about-card .card-content h3 {
     font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 8px 0;
-    line-height: 1.3;
 }
 
-/* 卡片副标题 */
-.about-card .card-content .card-subtitle {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0 0 8px 0;
+.about-card .card-content h3 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+    color: #ffffff;
+    letter-spacing: 0.2px;
 }
 
-/* 卡片正文 */
 .about-card .card-content p {
-    margin: 5px 0;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.8);
+    margin: 6px 0;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-/* 卡片按钮 */
-.about-card .card-content .read-btn {
-    color: #ffffff;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 12px;
-    margin: 5px 0;
-}
-
-/* QQ群号显示 */
 .about-card .card-content .qq-group-number {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 26px;
+    font-weight: 800;
     color: #ffffff;
-    margin: 10px 0;
+    margin: 12px 0 6px;
+    letter-spacing: 2px;
+    font-family: 'Consolas', 'Segoe UI', monospace;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
-/* 卡片注意事项标题 */
 .about-card .card-content .card-notice {
     font-weight: 600;
-    margin-top: 10px;
-    color: #ffffff;
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12.5px;
 }
 
-/* 卡片列表 */
 .about-card .card-content .card-list {
-    margin: 5px 0 0 15px;
+    margin: 6px 0 12px 18px;
     padding: 0;
     list-style: disc;
 }
 
 .about-card .card-content .card-list li {
-    margin: 3px 0;
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.7);
+    margin: 4px 0;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 /* 卡片按钮组 */
-.about-card .card-content .card-buttons {
+.about-card .card-buttons {
     display: flex;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
-/* 卡片内按钮 */
-.about-card .card-content .card-btn {
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 11px;
+.about-card .card-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
     text-decoration: none;
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.2);
-    transition: background 0.3s ease;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    transition: all 0.25s ease;
+    cursor: pointer;
 }
 
-.about-card .card-content .card-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+.about-card .card-btn:hover {
+    background: rgba(255, 255, 255, 0.32);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
-/* 卡片背景色 */
-.card-qq {
-    background: linear-gradient(135deg, #4d84b5 0%, #16a2a9 100%);
-    text-decoration: none;
+.about-card .card-btn:active {
+    transform: scale(0.97);
+}
+
+/* 各卡片主题渐变背景 (优化色彩层级与深浅过渡) */
+.card-dicecan {
+    background: linear-gradient(145deg, rgba(37, 99, 235, 0.85) 0%, rgba(29, 78, 216, 0.95) 100%);
 }
 
 .card-bilibili {
-    background: linear-gradient(135deg, #8c5aba 0%, #db7aaa 100%);
-    text-decoration: none;
-}
-
-.card-github {
-    background: linear-gradient(135deg, #45b16d 0%, #388554 100%);
-    text-decoration: none;
+    background: linear-gradient(145deg, rgba(219, 39, 119, 0.85) 0%, rgba(190, 24, 93, 0.95) 100%);
 }
 
 .card-donation {
-    background: linear-gradient(135deg, #8771ba 0%, #7153a5 100%);
-    text-decoration: none;
+    background: linear-gradient(145deg, rgba(147, 51, 234, 0.85) 0%, rgba(126, 34, 206, 0.95) 100%);
 }
 
-.card-email {
-    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-    text-decoration: none;
+.card-qq {
+    background: linear-gradient(145deg, rgba(2, 132, 199, 0.85) 0%, rgba(3, 105, 161, 0.95) 100%);
 }
 
-/* ==================== 主视觉区域 (Hero) ==================== */
-/* 语言切换链接 */
-.lang-link {
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    gap: 6px;                    /* 图标与文字间距6px */
+.card-github {
+    background: linear-gradient(145deg, rgba(22, 163, 74, 0.85) 0%, rgba(21, 128, 61, 0.95) 100%);
 }
 
-/* 语言图标 */
-.lang-icon {
-    width: 20px;                  /* 宽度20px */
-    height: 20px;                 /* 高度20px */
+/* ==================== 轻量 Toast 提示组件 ==================== */
+.toast-container {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translate3d(-50%, 30px, 0);
+    background: rgba(20, 20, 20, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(74, 222, 128, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(74, 222, 128, 0.2);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    z-index: 9999;
+    opacity: 0 !important;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: none !important;
 }
 
-/* ==================== GitHub链接样式 ==================== */
-/* 导航栏中的GitHub链接 */
-.github-link {
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    gap: 6px;                    /* 图标与文字间距6px */
+.toast-container.show {
+    opacity: 1 !important;
+    visibility: visible;
+    transform: translate3d(-50%, 0, 0);
+    pointer-events: auto;
 }
 
-/* GitHub图标 */
-.github-icon {
-    width: 20px;                  /* 宽度20px */
-    height: 20px;                 /* 高度20px */
-}
-
-/* ==================== 占位区域 ==================== */
-/* 占位元素 */
-.spacer {
-    height: 10vh;
-}
-
-/* ==================== 主视觉区域 (Hero) ==================== */
-/* 页面首屏核心展示区域，包含标题、描述和应用截图，Flex布局实现左右分栏 */
-.hero-section {
-    display: flex;                /* Flex布局 */
-    justify-content: space-between;  /* 文字和图片左右分布 */
-    align-items: center;          /* 垂直居中对齐 */
-    min-height: calc(100vh - 200px);  /* 最小高度为视口高度减200px（Header+Footer高度） */
-    gap: 60px;                   /* 文字与图片间距60px */
-}
-
-/* 文字内容区域 */
-.hero-text {
-    flex: 1;                     /* 占据剩余空间的1份 */
-    max-width: 600px;            /* 最大宽度600px，防止文字过长 */
-}
-
-/* 主标题样式 */
-.hero-title {
-    font-size: 90px;              /* 超大字体90px，视觉冲击力强 */
-    font-weight: 700;            /* 粗体 */
-    color: #ffffff;              /* 白色 */
-    line-height: 1.1;            /* 行高1.1，紧凑排版 */
-    margin-bottom: 20px;          /* 底部20px间距 */
-    font-family: 'UranusPixel', 'Segoe UI', sans-serif;  /* 像素字体 */
-    text-shadow:                 /* 多层文字阴影，营造发光效果 */
-        0 0 20px rgba(75, 75, 75, 0.8),
-        0 0 40px rgba(188, 188, 188, 0.6),
-        0 0 60px rgba(255, 255, 255, 0.4),
-        0 0 80px rgba(255, 255, 255, 0.3),
-        0 0 120px rgba(255, 255, 255, 0.2);
-}
-
-/* 副标题样式 */
-.hero-subtitle {
-    font-size: 36px;              /* 字体大小36px */
-    font-weight: 400;            /* 正常粗细 */
-    color: #8b8b8b;              /* 浅灰色 */
-    margin-bottom: 30px;          /* 底部30px间距 */
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    gap: 12px;                   /* 图标与文字间距12px */
-}
-
-/* Minecraft图标 */
-.mc-icon {
-    width: 32px;                  /* 宽度32px */
-    height: 32px;                 /* 高度32px */
-    border-radius: 4px;           /* 4px圆角 */
-}
-
-/* 描述文字样式 */
-.hero-desc {
-    font-size: 18px;              /* 字体大小18px */
-    color: #b0b0b0;              /* 灰色 */
-    line-height: 1.8;            /* 行高1.8，提高可读性 */
-    margin-bottom: 40px;          /* 底部40px间距 */
-    max-width: 450px;            /* 最大宽度450px */
-}
-
-/* 按钮组容器，Flex布局使按钮水平排列 */
-.cta-buttons {
-    display: flex;                /* Flex布局 */
-    gap: 20px;                   /* 按钮间距20px */
-    flex-wrap: wrap;              /* 空间不足时换行 */
-}
-
-/* ==================== 按钮基础样式 ==================== */
-/* 通用按钮样式，定义按钮的基础外观 */
-.btn {
-    padding: 16px 32px;           /* 上下16px，左右32px内边距 */
-    border: none;                 /* 无边框 */
-    border-radius: 12px;          /* 12px圆角 */
-    font-size: 16px;              /* 字体大小16px */
-    font-weight: 600;            /* 半粗体 */
-    cursor: pointer;              /* 鼠标指针变为手型 */
-    transition: all 0.3s ease;    /* 所有属性变化动画0.3秒 */
-    text-decoration: none;        /* 去掉下划线（链接按钮） */
-    display: inline-block;        /* 行内块级元素 */
-}
-
-/* 主按钮（绿色），用于主要操作 */
-.btn-primary {
-    background: #4ade80;         /* 绿色背景 */
-    color: #0a0a0a;              /* 深灰色文字 */
-    font-weight: 700;            /* 粗体 */
-}
-
-/* 主按钮悬停效果 */
-.btn-primary:hover {
-    background: #22c55e;         /* 背景变深 */
-    transform: translateY(-2px);  /* 向上移动2px */
-    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.3);  /* 添加绿色阴影 */
-}
-
-/* 次要按钮（半透明），用于次要操作 */
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);  /* 白色10%透明度背景 */
-    backdrop-filter: blur(12px);  /* 背景模糊效果（毛玻璃） */
-    -webkit-backdrop-filter: blur(12px);  /* Safari浏览器兼容 */
-    color: white;                /* 白色文字 */
-    border: 1px solid rgba(255, 255, 255, 0.2);  /* 白色20%透明度边框 */
-}
-
-/* 次要按钮悬停效果 */
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);  /* 透明度增加到15% */
-    transform: translateY(-2px);  /* 向上移动2px */
-}
-
-/* ==================== 占位区域 ==================== */
-/* 占位元素 */
-.spacer {
-    height: 15vh;
-}
-
-/* ==================== Hero截图区域 ==================== */
-/* 应用截图容器，展示手机和平板端效果 */
-.hero-images {
-    flex: 0.7;                   /* 占据剩余空间的0.7份 */
-    max-width: 580px;            /* 最大宽度580px */
-    display: flex;                /* Flex布局 */
-    flex-direction: row;          /* 水平排列 */
-    gap: 15px;                   /* 图片间距15px */
-    align-items: flex-end;        /* 底部对齐，形成错落感 */
-}
-
-/* 图片卡片基础样式 */
-.image-card {
-    background: transparent;      /* 透明背景 */
-    border-radius: 12px;          /* 12px圆角 */
-    padding: 0;                   /* 无内边距 */
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);  /* 深色阴影 */
-    border: none;                 /* 无边框 */
-    overflow: hidden;             /* 隐藏溢出内容 */
-    flex-shrink: 0;               /* 不缩小 */
-}
-
-/* 图片卡片内图片 */
-.image-card img {
-    width: auto;                  /* 宽度自适应 */
-    height: 300px;               /* 高度300px */
-    border-radius: 12px;          /* 12px圆角 */
-    display: block;               /* 块级元素 */
-    object-fit: contain;          /* 保持比例，不拉伸 */
-    background: rgba(10, 10, 10, 0.9);  /* 深灰色背景 */
-}
-
-/* 手机截图高度 */
-.image-card.phone img {
-    height: 400px;               /* 手机截图更高，400px */
-}
-
-/* 平板截图高度 */
-.image-card.tablet img {
-    height: 280px;               /* 平板截图略矮，280px */
-}
-
-/* 图片悬停遮罩，覆盖在图片上方 */
-.image-overlay {
-    position: absolute;           /* 绝对定位 */
-    top: 0;                      /* 顶部对齐 */
-    left: 0;                     /* 左侧对齐 */
-    width: 100%;                 /* 宽度100% */
-    height: 100%;                /* 高度100% */
-    background: rgba(0, 0, 0, 0.7);  /* 黑色70%透明度 */
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    justify-content: center;      /* 水平居中 */
-    opacity: 0;                  /* 默认透明 */
-    transition: opacity 0.3s ease;  /* 透明度变化动画0.3秒 */
-    border-radius: 12px;          /* 12px圆角 */
-}
-
-/* 图片遮罩标签文字 */
-.image-label {
-    color: #4ade80;              /* 绿色文字 */
-    font-size: 18px;              /* 字体大小18px */
-    font-weight: 600;            /* 半粗体 */
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);  /* 文字阴影 */
-}
-
-/* 图片卡片定位（需设为relative才能让overlay绝对定位） */
-.image-card {
-    position: relative;           /* 相对定位 */
-}
-
-/* 图片卡片悬停显示遮罩 */
-.image-card:hover .image-overlay {
-    opacity: 1;                  /* 悬停时显示遮罩 */
+.toast-container .toast-icon {
+    color: var(--primary);
+    display: flex;
+    align-items: center;
 }
 
 /* ==================== 页脚样式 ==================== */
-/* 全屏分界线 */
 .divider-wrapper {
-    margin: 40px 0;
+    margin: 50px 0 0;
     position: relative;
     overflow: visible;
 }
@@ -572,7 +749,7 @@ header {
 .divider-wrapper hr {
     border: none;
     height: 1px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.12);
     margin: 0;
     width: 100vw;
     position: relative;
@@ -580,481 +757,355 @@ header {
     transform: translateX(-50%);
 }
 
-/* 分界线以下全部毛玻璃效果 */
-.footer-container  {
+.footer-container {
     position: relative;
     left: 50%;
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    margin-bottom: -50vw;
     width: 100vw;
     max-width: 100vw;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    padding:0px 50px;
+    background: rgba(15, 15, 15, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 40px 50px 50px;
     box-sizing: border-box;
 }
 
-/* 页脚内容区域 */
 .footer-content {
-    max-width: 1400px;           /* 内容最大宽度1400px */
-    margin: 0 auto;              /* 水平居中 */
-    padding: 0 60px;             /* 左右60px内边距 */
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
 }
 
-/* 页脚布局 - 三列 */
 .footer-row {
-    display: flex;               /* Flex布局 */
-    justify-content: space-between;  /* 三列均匀分布 */
-    align-items: flex-start;     /* 顶部对齐 */
-    gap: 40px;                  /* 列间距40px */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
 }
 
-/* 页脚左侧 - Logo区域 */
 .footer-left {
-    flex: 0.5;                    /* 占据1份空间 */
-    min-width: 200px;           /* 最小宽度200px */
+    flex: 0.6;
+    min-width: 240px;
 }
 
-/* 页脚Logo文字 */
 .footer-logo {
-    font-size: 50px;             /* 字体大小50px */
-    font-weight: 700;           /* 粗体 */
-    font-family: 'UranusPixel', 'Segoe UI', sans-serif;  /* 像素字体 */
-    color: #ffffff;             /* 白色文字 */
-    margin-bottom: 8px;          /* 底部8px间距 */
+    font-size: 44px;
+    font-weight: 700;
+    font-family: 'UranusPixel', 'Segoe UI', sans-serif;
+    color: #ffffff;
+    margin-bottom: 10px;
 }
 
-/* 页脚Logo中的.top */
 .footer-logo .domain {
-    color: #4ade80;             /* 绿色文字 */
+    color: var(--primary);
 }
 
-/* 页脚副标题 */
 .footer-slogan {
-    color: #8b8b8b;             /* 浅灰色文字 */
-    font-size: 14px;             /* 字体大小14px */
+    color: var(--text-dim);
+    font-size: 13.5px;
+    line-height: 1.7;
+    margin-bottom: 4px;
 }
 
-/* 页脚中间 - 导航链接 */
 .footer-center {
-    flex: 1;                    /* 占据1份空间 */
-    display: flex;               /* Flex布局 */
-    justify-content: center;     /* 水平居中 */
-    gap: 60px;                  /* 列间距60px */
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 70px;
 }
 
-/* 页脚导航列 */
 .footer-column {
-    display: flex;               /* Flex布局 */
-    flex-direction: column;      /* 垂直排列 */
-    gap: 12px;                  /* 链接间距12px */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* 页脚导航链接 */
 .footer-column a {
-    color: #b0b0b0;             /* 灰色文字 */
-    text-decoration: none;       /* 去掉下划线 */
-    font-size: 14px;             /* 字体大小14px */
-    transition: color 0.3s ease; /* 颜色变化动画0.3秒 */
-    display: flex;               /* Flex布局 */
-    align-items: center;         /* 垂直居中 */
-    gap: 8px;                   /* 图标与文字间距8px */
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.25s ease, transform 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* 页脚导航链接悬停效果 */
 .footer-column a:hover {
-    color: #ffffff;             /* 悬停时变白色 */
+    color: #ffffff;
+    transform: translateX(2px);
 }
 
-/* 页脚图标 */
-.footer-icon {
-    width: 18px;                 /* 宽度18px */
-    height: 18px;                /* 高度18px */
-}
-
-/* 底端细线 */
 .footer-line {
-    padding-top: 20px;           /* 顶部40px内边距 */
-    margin-top: 20px;            /* 顶部40px外边距 */
-    border-top: 1px solid rgba(255, 255, 255, 0.05);  /* 顶部细边框分隔 */
-}
-
-/* ==================== GitHub链接样式 ==================== */
-/* 导航栏中的GitHub链接 */
-.github-link {
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    gap: 6px;                    /* 图标与文字间距6px */
-}
-
-/* GitHub图标 */
-.github-icon {
-    width: 20px;                  /* 宽度20px */
-    height: 20px;                 /* 高度20px */
-}
-
-/* GitHub链接悬停图标变色 */
-.github-link:hover .github-icon {
-    color: #ffffff;              /* 悬停时图标变白色 */
-}
-
-/* ==================== 语言切换样式 ==================== */
-/* 语言切换链接 */
-.lang-link {
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    gap: 6px;                    /* 图标与文字间距6px */
-}
-
-/* 语言图标 */
-.lang-icon {
-    width: 20px;                  /* 宽度20px */
-    height: 20px;                 /* 高度20px */
+    padding-top: 24px;
+    margin-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* ==================== 固定下载按钮 ==================== */
-/* 页面底部固定显示的毛玻璃下载按钮，方便用户随时点击下载 */
 .fixed-download-btn {
-    position: fixed;              /* 固定定位，不随滚动移动 */
-    bottom: 30px;                /* 距底部30px */
-    right: 30px;                 /* 距右边缘30px */
-    padding: 20px 30px;           /* 上下20px，左右30px内边距 */
-    background: hsla(0, 0%, 100%, 0.1);  /* 白色1%透明度背景 */
-    backdrop-filter: blur(10px);  /* 背景模糊效果（毛玻璃） */
-    -webkit-backdrop-filter: blur(12px);  /* Safari浏览器兼容 */
-    border: 1px solid rgba(74, 222, 128, 0.4);  /* 绿色40%透明度边框 */
-    color: #ffffff;              /* 白色文字 */
-    font-size: 20px;              /* 字体大小20px */
-    font-weight: 700;            /* 粗体 */
-    text-decoration: none;        /* 去掉下划线 */
-    border-radius: 240px;         /* 240px超大圆角，呈胶囊状 */
-    z-index: 1000;               /* 层级1000，确保显示在内容上方 */
-    transition: all 0.3s ease;    /* 所有属性变化动画0.3秒 */
+    position: fixed;
+    bottom: 32px;
+    right: 36px;
+    padding: 16px 28px;
+    background: rgba(20, 20, 20, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(74, 222, 128, 0.45);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(74, 222, 128, 0.15);
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 50px;
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
 }
 
-/* 固定下载按钮悬停效果 */
 .fixed-download-btn:hover {
-    background: rgba(74, 222, 128, 0.35);  /* 背景透明度增加到35% */
-    transform: translateY(-2px);  /* 向上移动2px */
-    box-shadow: 0 6px 25px rgba(74, 222, 128, 0.3);  /* 阴影增强 */
-    border-color: rgba(74, 222, 128, 0.6);  /* 边框透明度增加到60% */
+    background: rgba(74, 222, 128, 0.2);
+    border-color: rgba(74, 222, 128, 0.8);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 30px rgba(74, 222, 128, 0.35);
+}
+
+.fixed-download-btn:active {
+    transform: scale(0.97);
 }
 
 /* ==================== 响应式适配 (平板) ==================== */
-/* 屏幕宽度 <= 1024px 时的样式，针对平板设备 */
 @media (max-width: 1024px) {
-    .hero-section {
-        flex-direction: column;   /* Hero区域改为垂直排列 */
-        text-align: center;       /* 文字居中 */
+    .container {
+        padding: 30px 40px;
     }
 
-    .hero-title {
-        font-size: 60px;          /* 标题字体缩小到60px */
+    header.floating-header {
+        left: 30px;
+        right: 30px;
+    }
+
+    .hero-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+        padding: 20px 0;
+    }
+
+    .hero-text {
+        max-width: 100%;
     }
 
     .hero-subtitle {
-        font-size: 24px;          /* 副标题字体缩小到24px */
+        justify-content: center;
     }
 
     .hero-desc {
-        margin: 0 auto 40px;      /* 描述文字居中，底部40px间距 */
+        margin: 0 auto 30px;
     }
 
     .cta-buttons {
-        justify-content: center;  /* 按钮组居中 */
-    }
-}
-
-/* ==================== 移动端侧边栏 ==================== */
-/* 导航按钮（默认隐藏，移动端显示） */
-.menu-toggle {
-    display: none;                /* 默认隐藏 */
-}
-
-/* 侧边栏遮罩层 */
-.sidebar-overlay {
-    display: none;                /* 默认隐藏 */
-    position: fixed;              /* 固定定位 */
-    top: 0;                       /* 顶部对齐 */
-    left: 0;                      /* 左侧对齐 */
-    width: 100%;                  /* 宽度100% */
-    height: 100%;                 /* 高度100% */
-    background: rgba(0, 0, 0, 0.5);  /* 黑色50%透明度 */
-    z-index: 999;                 /* 层级999 */
-}
-
-/* 侧边栏遮罩层激活状态 */
-.sidebar-overlay.active {
-    display: block;               /* 显示遮罩 */
-}
-
-/* 侧边栏容器 */
-.sidebar {
-    position: fixed;              /* 固定定位 */
-    top: 0;                       /* 顶部对齐 */
-    right: 0;                     /* 右侧对齐 */
-    width: 250px;                 /* 宽度250px */
-    height: 100%;                 /* 高度100% */
-    background: rgba(20, 20, 20, 0);  /* 深灰色90%透明度背景 */
-    backdrop-filter: blur(20px);  /* 毛玻璃模糊效果 */
-    -webkit-backdrop-filter: blur(20px);  /* Safari兼容 */
-    border-left: 1px solid rgba(255, 255, 255, 0.05);  /* 左侧边框 */
-    transform: translateX(100%);  /* 默认向右隐藏 */
-    transition: transform 0.3s ease;  /* 向左划开动画0.3秒 */
-    z-index: 1000;               /* 层级1000 */
-    padding: 80px 30px 30px;     /* 顶部80px，左右30px内边距 */
-    display: flex;                /* Flex布局 */
-    flex-direction: column;       /* 垂直排列 */
-    gap: 20px;                   /* 项间距20px */
-}
-
-/* 侧边栏激活状态 */
-.sidebar.active {
-    transform: translateX(0);     /* 向左划入显示 */
-}
-
-/* 侧边栏链接样式 */
-.sidebar a {
-    color: #b0b0b0;              /* 灰色文字 */
-    text-decoration: none;        /* 去掉下划线 */
-    font-size: 18px;              /* 字体大小18px */
-    padding: 12px 0;             /* 上下12px内边距 */
-    display: flex;                /* Flex布局 */
-    align-items: center;          /* 垂直居中 */
-    gap: 10px;                   /* 图标与文字间距10px */
-    transition: color 0.3s ease;  /* 颜色过渡动画 */
-}
-
-/* 侧边栏链接悬停效果 */
-.sidebar a:hover {
-    color: #ffffff;              /* 悬停时变白色 */
-}
-
-/* 侧边栏图标 */
-.sidebar a img {
-    width: 20px;                 /* 宽度20px */
-    height: 20px;                /* 高度20px */
-}
-
-.sidebar a svg {
-    width: 20px;                 /* 宽度20px */
-    height: 20px;                /* 高度20px */
-}
-
-/* ==================== 响应式适配 (手机) ==================== */
-/* 屏幕宽度 <= 768px 时的样式，针对手机设备 */
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;           /* 容器内边距缩小到20px */
-    }
-
-    header {
-        margin-bottom: 40px;      /* 头部底部间距缩小到40px */
-    }
-
-    /* 隐藏整个导航栏 */
-    .nav-links {
-        display: none;
-    }
-
-    /* 移动端恢复header原始样式，不固定不毛玻璃 */
-    header.floating-header {
-        position: static;
-        top: auto;
-        left: auto;
-        right: auto;
-        z-index: auto;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: none;
-        border: none;
-        border-radius: 0;
-        padding: 20px 0;
-        margin-bottom: 40px;
-    }
-
-    /* 移动端恢复nav-links原始样式，无胶囊 */
-    header.floating-header .nav-links {
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: none;
-        border: none;
-        border-radius: 0;
-        padding: 0;
-        display: none;
-    }
-
-    /* 移动端取消容器顶部补偿 */
-    .floating-nav-active {
-        padding-top: 0;
-    }
-
-    /* 显示导航按钮 */
-    .menu-toggle {
-        display: flex;            /* Flex布局 */
-        position: fixed;          /* 固定定位 */
-        top: 50px;                /* 距顶部50px */
-        right: 50px;              /* 距右边50px */
-        z-index: 1001;            /* 层级最高 */
-        cursor: pointer;          /* 鼠标指针变为手型 */
-    }
-
-    .menu-toggle svg {
-        width: 28px;              /* 图标宽度28px */
-        height: 28px;             /* 图标高度28px */
-        color: #b0b0b0;           /* 灰色图标 */
-        transition: color 0.3s ease;  /* 颜色过渡动画 */
-    }
-
-    .menu-toggle:hover svg {
-        color: #ffffff;           /* 悬停时变白色 */
-    }
-
-    .hero-title {
-        font-size: 50px;          /* 标题字体缩小到50px */
-    }
-
-    .hero-subtitle {
-        display: none;             /* 移动端隐藏副标题 */
-    }
-
-    .section-title {
-        font-size: 32px;          /* 区域标题字体缩小到32px */
-    }
-
-    /* 关于页面卡片移动端适配 */
-    .about-cards-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .about-card {
-        width: 100%;
-        max-width: 300px;
-        height: auto;
-        min-height: 200px;
-        flex-direction: row;
-        align-items: stretch;
-    }
-
-    .about-card .card-icon {
-        flex: 0 0 60px;
-        height: 60px;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 10px;
-    }
-
-    .about-card .card-icon svg {
-        width: 24px;
-        height: 24px;
-    }
-
-    .about-card hr {
-        display: none;
-    }
-
-    .about-card .card-content {
-        flex: 1;
-        padding-left: 15px;
         justify-content: center;
     }
 
-    .about-card .card-content h3 {
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
-
-    .about-card .card-content p {
-        font-size: 11px;
-        margin: 3px 0;
-    }
-
-    .about-card .card-content .card-list {
-        margin: 5px 0 0 10px;
-    }
-
-    .about-card .card-content .card-list li {
-        font-size: 10px;
-    }
-
-    .about-card .card-content .qq-group-number {
-        font-size: 16px;
-    }
-}
-
-/* ==================== 固定下载按钮 (手机) ==================== */
-/* 手机端固定下载按钮适配 */
-@media (max-width: 768px) {
-    .fixed-download-btn {
-        padding: 16px 20px;       /* 内边距缩小 */
-        font-size: 16px;          /* 字体缩小到16px */
-        bottom: 15px;             /* 距底部15px */
-        border-radius: 20px;       /* 圆角缩小到20px */
-        white-space: nowrap;       /* 禁止文本自动换行 */
-    }
-
-/* ==================== 图片卡片布局 (手机) ==================== */
-/* Hero截图区域竖向排列 */
     .hero-images {
-        align-items: center;      /* 水平居中 */
-        gap: 15px;                /* 图片间距15px */
-        max-width: 100%;          /* 宽度适应屏幕 */
-        margin-top: 30px;         /* 与上方文字保持间距 */
-        align-items: flex-end;    /* 底部对齐，形成错落感 */
-    }
-
-/* 图片卡片宽度适应屏幕 */
-    .image-card {
-        width: 100%;              /* 宽度100% */
-        max-width: 300px;         /* 最大宽度300px */
-        flex-shrink: 1;           /* 允许缩小 */
-    }
-
-/* 图片卡片内图片响应式 */
-    .image-card img {
-        width: 100%;              /* 宽度100% */
-        height: auto;             /* 高度自适应 */
-        max-height: 400px;        /* 最大高度400px */
-    }
-
-/* 手机截图高度适配 */
-    .image-card.phone img {
-        height: auto;             /* 高度自适应 */
-        max-height: 450px;        /* 最大高度450px */
-    }
-
-/* 平板截图高度适配 */
-    .image-card.tablet img {
-        height: auto;             /* 高度自适应 */
-        max-height: 350px;        /* 最大高度350px */
-    }
-
-    /* 页脚移动端响应式 */
-    .footer-row {
-        flex-direction: column;   /* 垂直排列 */
-        gap: 20px;               /* 间距缩小 */
+        max-width: 100%;
     }
 
     .footer-center {
-        flex-direction: column;   /* 垂直排列 */
-        gap: 20px;               /* 间距缩小 */
-        align-items: flex-start;  /* 左对齐 */
+        gap: 40px;
+    }
+}
+
+/* ==================== 移动端侧边栏与遮罩 ==================== */
+.menu-toggle {
+    display: none;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 270px;
+    height: 100%;
+    background: rgba(16, 16, 16, 0.88);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7);
+    transform: translate3d(100%, 0, 0);
+    transition: transform 0.35s var(--ease-out-expo);
+    z-index: 1000;
+    padding: 80px 24px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar.active {
+    transform: translate3d(0, 0, 0);
+}
+
+.sidebar a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 17px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.25s ease;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--primary);
+}
+
+.sidebar a svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ==================== 响应式适配 (手机) ==================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 16px;
     }
 
-    .footer-logo {
-        font-size: 32px;          /* Logo字体缩小 */
+    header.floating-header {
+        display: none;
     }
 
-    .footer-content {
-        padding: 0 20px;         /* 内边距缩小 */
+    .floating-nav-active {
+        padding-top: 20px;
+    }
+
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        background: rgba(20, 20, 20, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        z-index: 1001;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    .menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .menu-toggle svg {
+        width: 24px;
+        height: 24px;
+        color: #ffffff;
+    }
+
+    .hero-title {
+        font-size: 46px;
+    }
+
+    .hero-subtitle {
+        display: none;
+    }
+
+    .hero-desc {
+        font-size: 15px;
+    }
+
+    .hero-images {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .image-card {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .image-card img,
+    .image-card.phone img,
+    .image-card.tablet img {
+        width: 100%;
+        height: auto;
+        max-height: 380px;
+    }
+
+    .about-cards-container {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .about-card {
+        min-height: auto;
+        padding: 20px 22px;
+    }
+
+    .fixed-download-btn {
+        padding: 13px 20px;
+        font-size: 15px;
+        bottom: 20px;
+        right: 20px;
     }
 
     .footer-container {
-        padding: 0px 20px;       /* 容器内边距缩小 */
+        padding: 30px 20px 40px;
+    }
+
+    .footer-content {
+        padding: 0;
+    }
+
+    .footer-row {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .footer-center {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .footer-logo {
+        font-size: 32px;
     }
 }

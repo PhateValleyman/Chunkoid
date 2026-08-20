@@ -19,7 +19,7 @@ NBT编辑器等功能正在开发中，请持续关注 Chunkoid
 
 ## 下载
 
-- [GitHub Releases](https://github.com/DozenesStudio/Chunkoid/releases)
+- [GitHub Releases](https://github.com/Dicecan/Chunkoid/releases)
 - [Gitee Releases](https://gitee.com/dozenesstudio/Chunkoid/releases)
 
 ## 技术栈
@@ -31,34 +31,34 @@ NBT编辑器等功能正在开发中，请持续关注 Chunkoid
 
 ## 开源协议
 
-本项目采用 GNU General Public License v3.0 协议开源。详见 [LICENSE](https://github.com/DozenesStudio/Chunkoid/blob/main/LICENSE) 文件。
+本项目采用 GNU General Public License v3.0 协议开源。详见 [LICENSE](https://github.com/Dicecan/Chunkoid/blob/main/LICENSE) 文件。
 
-## 社区/联系方式
+## 开发与维护信息
 
-- **作者**：Dozener
-- **邮箱**：[DozenesStudio@qq.com](mailto:contact@dozenesstudio.com)
+- **原作者**：Dozener (DozenesStudio) (<dozener@outlook.com>)
+- **当前维护团队**：DICECAN (EncoreTeam)
 - **QQ群**：1103983368
 
 ## 赞助/捐赠
 
-- **爱发电项目页面：** [Afdian](https://ifdian.net/a/dozener)
+- **爱发电支持页面：** [Afdian (诺切丝Noches)](https://ifdian.net/a/EASY7)
 
 ## 致谢
 
-Ryan steven
-
-Weiyin 1A
+- Dozener（原作者与奠基人）
+- Ryan steven
+- Weiyin 1A
 
 ### 第三方依赖
 
 本项目使用了以下开源软件/SDK：
 
-- **chunker-cli** - [The Hive](https://www.chunler.app)的 [chunker](https://github.com/HiveGamesOSS/Chunker)&#x20;
+- **chunker-cli** - [The Hive](https://www.chunker.app) 的 [chunker](https://github.com/HiveGamesOSS/Chunker)
   - 许可证：MIT License
-  - 文件位置：`app\src\main\assets\cli.jar`
-- **存档解密SDK** - [Dicecan](https://github.com/Dicecan)的[NetEaseDecryptorSDK](https://github.com/Dicecan/NetEaseDecryptorSDK)
+  - 文件位置：`app/src/main/assets/cli.jar`
+- **存档解密SDK** - [Dicecan](https://github.com/Dicecan) 的 [NetEaseDecryptorSDK](https://github.com/Dicecan/NetEaseDecryptorSDK)
   - 许可证：GPL v3.0
-  - 文件位置：`app\src\main\java\com\dozenesstudio\chunkoid\decryptor`
-- **NBT解析器** - [PowerNukkit](https://github.com/PowerNukkit)的[NBT-Manipulator](https://github.com/PowerNukkit/NBT-Manipulator)
+  - 文件位置：`app/src/main/java/com/encore/chunkoid/decryptor`
+- **NBT解析器** - [PowerNukkit](https://github.com/PowerNukkit) 的 [NBT-Manipulator](https://github.com/PowerNukkit/NBT-Manipulator)
   - 许可证：MIT License
   - 文件位置：`nbt`

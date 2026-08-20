@@ -8,7 +8,7 @@ Chunkoid (hereinafter referred to as "the Software") is an Android native Minecr
 
 We highly value user privacy and are committed to protecting your personal data security.
 
-This Software is completely open-source and free. You can view the complete source code on [GitHub](https://github.com/DozenesStudio/Chunkoid) to verify the authenticity of this privacy policy. The source code for the core conversion engine, Chunker-cli, is available on [GitHub](https://github.com/HiveGamesOSS/Chunker).
+This Software is completely open-source and free. You can view the complete source code on [GitHub](https://github.com/Dicecan/Chunkoid) to verify the authenticity of this privacy policy. The source code for the core conversion engine, Chunker-cli, is available on [GitHub](https://github.com/HiveGamesOSS/Chunker).
 
 ## 2. Data Collection
 

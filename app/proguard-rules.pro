@@ -24,4 +24,4 @@
 -keep @kotlinx.parcelize.Parcelize class *
 
 # Keep ViewBinding generated classes
--keep class com.dozenesstudio.chunkoid.databinding.** { *; }
+-keep class com.encore.chunkoid.databinding.** { *; }

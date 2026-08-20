@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chunkoid Documentation</title>
+    <meta name="description" content="Chunkoid Official Documentation - Overview, User Manual, FAQ, Privacy Policy, and Terms of Service.">
+    <title>Chunkoid Documentation - The First Android MC World Converter</title>
     <link rel="icon" type="image/png" href="../drawable/logo.png">
+    <link rel="preload" href="../drawable/uranus_pixel_11px.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="dns-prefetch" href="https://github.com">
     <link rel="stylesheet" href="docs.css">
 </head>
 <body>
     <div class="container floating-nav-active">
-        <a href="../index.html" class="back-btn">
+        <a href="../en/index-en.html" class="back-btn" aria-label="Back to Home" title="Back to Home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"/>
                 <polyline points="12 19 5 12 12 5"/>
@@ -17,28 +20,28 @@
         </a>
         <header class="floating-header">
             <div class="logo-area">
-                <img src="../drawable/logo.png" alt="Chunkoid Logo" class="logo">
+                <img src="../drawable/logo.png" alt="Chunkoid Logo" class="logo" width="48" height="48" decoding="async">
                 <a href="../en/index-en.html" class="logo-text">Chunkoid</a>
             </div>
             <nav class="nav-links">
                 <a href="../en/index-en.html">Home</a>
                 <a href="../en/download-en.html">Download</a>
-                <span style="color: #ffffff;">Docs</span>
+                <span>Docs</span>
                 <a href="../en/about-en.html">About</a>
-                <hr style="border-color: #ffffff40; margin: -5px -20px;">
-                <a href="index.html" class="lang-link">
-                    <svg alt="Language" class="lang-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                <hr style="border-color: rgba(255, 255, 255, 0.25); height: 14px; border-width: 0 0 0 1px; margin: 0 2px;">
+                <a href="index.html" class="lang-link" title="切换至简体中文">
+                    <svg class="lang-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"/>
                         <ellipse cx="12" cy="12" rx="4" ry="10"/>
                         <ellipse cx="12" cy="12" rx="10" ry="4"/>
                     </svg>
-                    EN
+                    CN
                 </a>
-                <a href="https://github.com/DozenesStudio/Chunkoid" class="github-link">
-                    <svg alt="Github" class="github-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                <a href="https://github.com/Dicecan/Chunkoid" class="github-link" target="_blank" rel="noopener noreferrer" title="View on GitHub">
+                    <svg class="github-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
                     </svg>
-                    Github
+                    GitHub
                 </a>
             </nav>
         </header>
@@ -47,20 +50,40 @@
 
         <div class="doc-layout">
             <aside class="doc-sidebar">
-                <div class="sidebar-title">Table of Contents</div>
+                <div class="sidebar-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    Table of Contents
+                </div>
                 <ul class="toc-list" id="tocList"></ul>
             </aside>
 
-            <main class="doc-content">
+            <main class="doc-content" id="docMainContent">
                 <h1 class="doc-title" id="docTitle">Loading document...</h1>
                 <div id="docContent"></div>
             </main>
         </div>
 
         <div class="pagination" id="pagination">
-            <button id="prevBtn" class="pagination-btn" disabled>Previous</button>
+            <button id="prevBtn" class="pagination-btn" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                Previous
+            </button>
             <span id="pageInfo" class="page-info"></span>
-            <button id="nextBtn" class="pagination-btn" disabled>Next</button>
+            <button id="nextBtn" class="pagination-btn" disabled>
+                Next
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
         </div>
 
         <div class="footer-container">
@@ -72,7 +95,7 @@
                     <div class="footer-left">
                         <div class="footer-logo">Chunkoid<span class="domain">.top</span></div>
                         <div class="footer-slogan">First Android MC World Converter</div>
-                        <div class="footer-slogan">&copy; 2026 DozenesStudio. All rights reserved.</div>
+                        <div class="footer-slogan">&copy; 2026 Chunkoid | Original Creator: Dozener | Maintainer: DICECAN (EncoreTeam)</div>
                         <div class="footer-slogan">Licensed under GNU General Public License v3.0</div>
                     </div>
 
@@ -80,25 +103,24 @@
                         <div class="footer-column">
                             <a href="../en/index-en.html">Home</a>
                             <a href="../en/download-en.html">Download</a>
-                            <a href="../docs/index-en.html">Documentation</a>
+                            <a href="index-en.html">Docs</a>
                             <a href="../en/about-en.html">About</a>
                         </div>
 
                         <div class="footer-column">
-                            <a href="../en/about-en.html">QQ Group</a>
-                            <a href="../en/about-en.html">Bilibili</a>
-                            <a href="../en/about-en.html">Donate</a>
+                            <a href="../en/about-en.html#qq">QQ Group</a>
+                            <a href="../en/about-en.html#bilibili">Bilibili</a>
+                            <a href="../en/about-en.html#donate">Donate</a>
                         </div>
 
                         <div class="footer-column">
-                            <a href="https://chunker.app">Chunker</a>
-                            <a href="https://md3l.top">MD3L</a>
-                            <a href="https://github.com/DozenesStudio/Chunkoid">GitHub</a>
+                            <a href="https://chunker.app" target="_blank" rel="noopener noreferrer">Chunker</a>
+                            <a href="https://md3l.top" target="_blank" rel="noopener noreferrer">MD3L</a>
+                            <a href="https://github.com/Dicecan/Chunkoid" target="_blank" rel="noopener noreferrer">GitHub</a>
                         </div>
                     </div>                      
                 </div>
-                <div class="footer-line">
-                </div>
+                <div class="footer-line"></div>
             </div>
         </div>
     </div>
@@ -106,11 +128,11 @@
     <script src="marked.js"></script>
     <script>
         const docs = [
-            { id: 'chunkoid', title: '1.Overview', file: 'chunkoid-en.md' },
-            { id: 'instructions', title: '1.1.User Manual', file: 'Instructions-en.md' },
-            { id: 'faq', title: '1.2.FAQ', file: 'FAQ-en.md' },
-            { id: 'privacy', title: '2.Privacy Policy', file: 'Privacy-en.md' },
-            { id: 'terms', title: '3.Terms of Service', file: 'Terms-en.md' }
+            { id: 'chunkoid', title: '1. Overview', file: 'chunkoid-en.md' },
+            { id: 'instructions', title: '1.1 User Manual', file: 'Instructions-en.md' },
+            { id: 'faq', title: '1.2 FAQ', file: 'FAQ-en.md' },
+            { id: 'privacy', title: '2. Privacy Policy', file: 'Privacy-en.md' },
+            { id: 'terms', title: '3. Terms of Service', file: 'Terms-en.md' }
         ];
 
         let currentIndex = 0;
@@ -119,7 +141,7 @@
             const tocList = document.getElementById('tocList');
             tocList.innerHTML = docs.map((doc, index) => `
                 <li>
-                    <a href="#" onclick="loadDoc(${index}); return false;" 
+                    <a href="#${doc.id}" onclick="loadDoc(${index}); return false;" 
                        class="${index === currentIndex ? 'active' : ''}">
                         ${doc.title}
                     </a>
@@ -127,21 +149,37 @@
             `).join('');
         }
 
-        async function loadDoc(index) {
+        async function loadDoc(index, updateHistory = true) {
             if (index < 0 || index >= docs.length) return;
             
             currentIndex = index;
             const doc = docs[index];
+            const contentContainer = document.getElementById('docContent');
+            const mainContainer = document.getElementById('docMainContent');
             
+            if (updateHistory) {
+                history.replaceState(null, '', '#' + doc.id);
+            }
+            
+            mainContainer.style.opacity = '0.5';
             document.getElementById('docTitle').textContent = doc.title;
             
             try {
                 const response = await fetch(doc.file);
+                if (!response.ok) throw new Error('Network error');
                 const markdown = await response.text();
                 const html = marked(markdown);
-                document.getElementById('docContent').innerHTML = html;
+                contentContainer.innerHTML = html;
+                
+                const images = contentContainer.querySelectorAll('img');
+                images.forEach(img => {
+                    img.setAttribute('loading', 'lazy');
+                    img.setAttribute('decoding', 'async');
+                });
             } catch (error) {
-                document.getElementById('docContent').innerHTML = '<p class="md-p">Failed to load document. Please ensure you are not using file:// protocol.</p>';
+                contentContainer.innerHTML = '<p class="md-p" style="color: #fbbf24;">Failed to load document. If you are browsing locally by double-clicking the HTML file, please run via a local web server (like VS Code Live Server or python http.server) to allow asynchronous markdown loading.</p>';
+            } finally {
+                mainContainer.style.opacity = '1';
             }
             
             renderToc();
@@ -163,8 +201,26 @@
             nextBtn.onclick = () => loadDoc(currentIndex + 1);
         }
 
+        function initDoc() {
+            const hash = window.location.hash.replace('#', '');
+            const targetIndex = docs.findIndex(d => d.id === hash);
+            if (targetIndex !== -1) {
+                loadDoc(targetIndex, false);
+            } else {
+                loadDoc(0, false);
+            }
+        }
+
         renderToc();
-        loadDoc(0);
+        initDoc();
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.replace('#', '');
+            const targetIndex = docs.findIndex(d => d.id === hash);
+            if (targetIndex !== -1 && targetIndex !== currentIndex) {
+                loadDoc(targetIndex, false);
+            }
+        });
     </script>
 </body>
 </html>

@@ -8,8 +8,8 @@
         android:shortcutLongLabel="@string/decrypt_shortcut_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.dozenesstudio.chunkoid"
-            android:targetClass="com.dozenesstudio.chunkoid.DecryptActivity" />
+            android:targetPackage="com.encore.chunkoid"
+            android:targetClass="com.encore.chunkoid.ui.activity.DecryptActivity" />
     </shortcut>
 
     <shortcut
@@ -20,7 +20,7 @@
         android:shortcutLongLabel="@string/pack_converter_shortcut_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.dozenesstudio.chunkoid"
-            android:targetClass="com.dozenesstudio.chunkoid.PackConverterActivity" />
+            android:targetPackage="com.encore.chunkoid"
+            android:targetClass="com.encore.chunkoid.ui.activity.PackConverterActivity" />
     </shortcut>
 </shortcuts>

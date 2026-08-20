@@ -19,7 +19,7 @@ NBT Editor and other features are under development. Stay tuned for Chunkoid upd
 
 ## Download
 
-- [GitHub Releases](https://github.com/DozenesStudio/Chunkoid/releases)
+- [GitHub Releases](https://github.com/Dicecan/Chunkoid/releases)
 - [Gitee Releases](https://gitee.com/dozenesstudio/Chunkoid/releases)
 
 ## Tech Stack
@@ -31,34 +31,34 @@ NBT Editor and other features are under development. Stay tuned for Chunkoid upd
 
 ## Open Source License
 
-This project is licensed under the GNU General Public License v3.0. See the [LICENSE](https://github.com/DozenesStudio/Chunkoid/blob/main/LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0. See the [LICENSE](https://github.com/Dicecan/Chunkoid/blob/main/LICENSE) file for details.
 
-## Contact
+## Credits & Maintainers
 
-- **Author**: Dozener
-- **Email**: [DozenesStudio@qq.com](mailto:DozenesStudio@qq.com)
+- **Original Author**: Dozener (DozenesStudio)
+- **Current Maintainer**: DICECAN (EncoreTeam)
 - **QQ Group**: 1103983368
 
 ## Donate
 
-- **Afdian**: [Support on Afdian](https://ifdian.net/a/dozener)
+- **Afdian**: [Support on Afdian (Noches)](https://ifdian.net/a/EASY7)
 
 ## Acknowledgments
 
-Ryan steven
-
-Weiyin 1A
+- Dozener (Original Creator & Founder)
+- Ryan steven
+- Weiyin 1A
 
 ### Third-Party Dependencies
 
 This project uses the following open-source software/SDK:
 
-- **chunker-cli** - [Chunker](https://github.com/HiveGamesOSS/Chunker) by [The Hive](https://www.chunler.app)
+- **chunker-cli** - [Chunker](https://github.com/HiveGamesOSS/Chunker) by [The Hive](https://www.chunker.app)
   - License: MIT License
-  - Location: `app\src\main\assets\cli.jar`
+  - Location: `app/src/main/assets/cli.jar`
 - **World Decryption SDK** - [NetEaseDecryptorSDK](https://github.com/Dicecan/NetEaseDecryptorSDK) by [Dicecan](https://github.com/Dicecan)
   - License: GPL v3.0
-  - Location: `app\src\main\java\com\dozenesstudio\chunkoid\decryptor`
+  - Location: `app/src/main/java/com/encore/chunkoid/decryptor`
 - **NBT Parser** - [NBT-Manipulator](https://github.com/PowerNukkit/NBT-Manipulator) by [PowerNukkit](https://github.com/PowerNukkit)
   - License: MIT License
   - Location: `nbt`

@@ -49,7 +49,7 @@ The Software uses the following open-source libraries for data processing. All l
 - The copyright of the core conversion engine Chunker-cli belongs to The Hive Games, licensed under MIT License
 - The intellectual property rights of other third-party libraries used in the Software belong to their respective owners
 
-**Open Source Declaration**: The Software is a fully open-source free software. You can view the complete source code on [GitHub](https://github.com/DozenesStudio/Chunkoid). The source code of the core conversion engine Chunker-cli can be viewed on [GitHub](https://github.com/HiveGamesOSS/Chunker).
+**Open Source Declaration**: The Software is a fully open-source free software. You can view the complete source code on [GitHub](https://github.com/Dicecan/Chunkoid). The source code of the core conversion engine Chunker-cli can be viewed on [GitHub](https://github.com/HiveGamesOSS/Chunker).
 
 **File Naming Convention**: For maintainability across version iterations, the Chunker-cli engine JAR file is uniformly named `cli.jar` in this project, without retaining the version number suffix. This is solely for engineering management purposes and does not involve any modification or recompilation of the Chunker-cli source code. The Chunker-cli version used is owned by its original developer, The Hive Games.
 
