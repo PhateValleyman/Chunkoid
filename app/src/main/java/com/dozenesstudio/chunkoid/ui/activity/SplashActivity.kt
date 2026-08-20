@@ -55,17 +55,13 @@ class SplashActivity : AppCompatActivity() {
 
     private suspend fun initializeFiles(): Boolean {
         return withContext(Dispatchers.IO) {
-            var success = false
-
             // Copy rootfs
-            success = copyRootFS()
-            if (!success) {
+            if (!copyRootFS()) {
                 return@withContext false
             }
 
             // Copy chunker-cli.jar
-            success = copyChunkerJar()
-            if (!success) {
+            if (!copyChunkerJar()) {
                 return@withContext false
             }
 

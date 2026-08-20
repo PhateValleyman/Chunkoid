@@ -194,7 +194,7 @@ class PackConverter(private val context: Context) {
     }
 
     private fun collectFiles(doc: DocumentFile, prefix: String, result: MutableList<Pair<String, DocumentFile>>) {
-        doc.listFiles()?.forEach { child ->
+        doc.listFiles().forEach { child ->
             val childPath = if (prefix.isEmpty()) child.name ?: "" else "$prefix/${child.name}"
             if (child.isDirectory) {
                 collectFiles(child, childPath, result)

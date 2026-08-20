@@ -100,11 +100,7 @@ class ConversionService : Service() {
 
     private fun stopForegroundService() {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                stopForeground(STOP_FOREGROUND_REMOVE)
-            } else {
-                stopForeground(true)
-            }
+            stopForeground(STOP_FOREGROUND_REMOVE)
         } catch (e: Exception) {
             Log.w(TAG, "Failed to stop foreground", e)
         }
@@ -255,7 +251,7 @@ class ConversionService : Service() {
 
     private fun copyDirectory(source: androidx.documentfile.provider.DocumentFile, target: File) {
         target.mkdirs()
-        source.listFiles()?.forEach { file ->
+        source.listFiles().forEach { file ->
             val destFile = File(target, file.name ?: "unknown")
             if (file.isDirectory) {
                 copyDirectory(file, destFile)

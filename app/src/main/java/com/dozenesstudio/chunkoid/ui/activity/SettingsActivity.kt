@@ -10,6 +10,8 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
+import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.dozenesstudio.chunkoid.R
@@ -35,7 +37,6 @@ class SettingsActivity : AppCompatActivity() {
         const val THEME_JUNGLE = "bg2"
         const val THEME_FURRY = "bg4"
         const val THEME_CUSTOM = "custom"
-        const val REQUEST_CODE_PICK_IMAGE = 1001
         const val CUSTOM_BG_FILE_NAME = "custom_bg.jpg"
     }
 
@@ -99,7 +100,7 @@ class SettingsActivity : AppCompatActivity() {
             toggleOutput()
         }
         binding.btnClearOutput.setOnClickListener {
-            clearAllOutput()
+            clearOutput()
         }
 
         binding.itemDeveloperHeader.setOnClickListener {
@@ -109,13 +110,11 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchShowUndeveloped.isChecked = prefs.getBoolean("show_undeveloped", false)
         binding.switchShowUndeveloped.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("show_undeveloped", isChecked).apply()
-            updateNavDrawerVisibility()
         }
 
         binding.switchShowTerminal.isChecked = prefs.getBoolean("show_terminal", true)
         binding.switchShowTerminal.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("show_terminal", isChecked).apply()
-            updateNavDrawerVisibility()
         }
 
         binding.switchEnableLogOutput.isChecked = prefs.getBoolean("enable_conversion_log", false)
@@ -124,21 +123,14 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun pickCustomBackground() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "image/*"
-            addCategory(Intent.CATEGORY_OPENABLE)
-        }
-        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE)
+    private val customBackgroundPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { saveCustomBackground(it) }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK) {
-            data?.data?.let { uri ->
-                saveCustomBackground(uri)
-            }
-        }
+    private fun pickCustomBackground() {
+        customBackgroundPickerLauncher.launch("image/*")
     }
 
     private fun saveCustomBackground(uri: Uri) {
@@ -189,24 +181,25 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun rotateArrow(view: android.view.View, expand: Boolean) {
-        val fromDegrees = if (expand) 0f else 90f
-        val toDegrees = if (expand) 90f else 0f
-        val animation = RotateAnimation(
+    private fun rotateArrow(imageView: ImageView, expanded: Boolean) {
+        val fromDegrees = if (expanded) 0f else 180f
+        val toDegrees = if (expanded) 180f else 0f
+        val rotateAnimation = RotateAnimation(
             fromDegrees, toDegrees,
             Animation.RELATIVE_TO_SELF, 0.5f,
             Animation.RELATIVE_TO_SELF, 0.5f
-        )
-        animation.duration = 200
-        animation.fillAfter = true
-        view.startAnimation(animation)
+        ).apply {
+            duration = 200
+            fillAfter = true
+        }
+        imageView.startAnimation(rotateAnimation)
     }
 
-    private fun clearAllOutput() {
+    private fun clearOutput() {
         val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         val chunkoidOutputDir = File(documentsDir, CHUNKOID_OUTPUT_DIR)
-
-        if (!chunkoidOutputDir.exists() || !chunkoidOutputDir.isDirectory) {
+        
+        if (!chunkoidOutputDir.exists()) {
             ToastUtils.show(this, getString(R.string.output_cleared))
             return
         }
@@ -223,15 +216,10 @@ class SettingsActivity : AppCompatActivity() {
         ToastUtils.show(this, getString(R.string.output_cleared) + " ($count)")
     }
 
-    private fun updateNavDrawerVisibility() {
-        (this as? MainActivity)?.updateNavDrawerVisibility()
-    }
-
     private fun selectTheme(theme: String) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         prefs.edit().putString(KEY_SELECTED_THEME, theme).apply()
         updateThemeChecks(theme)
-        (this as? MainActivity)?.updateBackground()
         ToastUtils.show(this, getString(R.string.theme_changed_immediate))
     }
 

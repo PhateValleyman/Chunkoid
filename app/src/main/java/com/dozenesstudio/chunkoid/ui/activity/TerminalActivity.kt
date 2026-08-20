@@ -63,6 +63,7 @@ class TerminalActivity : AppCompatActivity() {
         })
 
         setupListeners()
+        setupBackPress()
         checkPermissions()
     }
 
@@ -322,17 +323,22 @@ class TerminalActivity : AppCompatActivity() {
         editText.requestFocus()
     }
 
-    override fun onBackPressed() {
-        if (commandHistory.isNotEmpty()) {
-            if (historyIndex == -1) {
-                historyIndex = commandHistory.size - 1
-            } else if (historyIndex > 0) {
-                historyIndex--
+    private fun setupBackPress() {
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (commandHistory.isNotEmpty()) {
+                    if (historyIndex == -1) {
+                        historyIndex = commandHistory.size - 1
+                    } else if (historyIndex > 0) {
+                        historyIndex--
+                    }
+                    binding.etCommandInput.setText(commandHistory[historyIndex])
+                } else {
+                    isEnabled = false
+                    finish()
+                }
             }
-            binding.etCommandInput.setText(commandHistory[historyIndex])
-        } else {
-            super.onBackPressed()
-        }
+        })
     }
 
     private fun applyNoElevationToCards() {

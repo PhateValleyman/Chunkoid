@@ -18,7 +18,7 @@ class WorldDecryptor(private val context: Context) {
             listener.onLog("开始扫描存档目录结构...")
 
             var dbDoc: DocumentFile? = null
-            sourceDoc.listFiles()?.forEach { child ->
+            sourceDoc.listFiles().forEach { child ->
                 if (child.isDirectory && child.name == "db") {
                     dbDoc = child
                 }
@@ -29,7 +29,8 @@ class WorldDecryptor(private val context: Context) {
                 return@withContext null
             }
 
-            val dbFiles = dbDoc!!.listFiles() ?: emptyArray()
+            val validDbDoc = dbDoc!!
+            val dbFiles = validDbDoc.listFiles()
             var currentDoc: DocumentFile? = null
             var manifestDoc: DocumentFile? = null
 
@@ -48,8 +49,8 @@ class WorldDecryptor(private val context: Context) {
 
             listener.onLog("开始读取 CURRENT 指针文件，计算解密密钥...")
             val decryptKey = try {
-                context.contentResolver.openInputStream(currentDoc!!.uri)?.use { inputStream ->
-                    NetEaseDecryptor.deriveKey(inputStream, manifestDoc!!.name!!)
+                context.contentResolver.openInputStream(currentDoc.uri)?.use { inputStream ->
+                    NetEaseDecryptor.deriveKey(inputStream, manifestDoc.name.orEmpty())
                 }
             } catch (e: Exception) {
                 listener.onLog("密钥提取失败或未加密：${e.message}。如果未加密，将视为原样复制。")
@@ -67,7 +68,7 @@ class WorldDecryptor(private val context: Context) {
             }
 
             listener.onLog("正在复制外部基本元数据文件...")
-            sourceDoc.listFiles()?.forEach { child ->
+            sourceDoc.listFiles().forEach { child ->
                 if (child.isFile) {
                     val outFile = File(targetDir, child.name ?: "")
                     context.contentResolver.openInputStream(child.uri)?.use { input ->

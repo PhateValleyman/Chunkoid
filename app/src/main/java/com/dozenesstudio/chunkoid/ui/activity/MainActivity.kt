@@ -12,7 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.drawerlayout.widget.DrawerLayout
 import com.dozenesstudio.chunkoid.R
@@ -242,10 +243,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         drawerLayout = binding.drawerLayout
+        applyNoElevationToCards()
 
-        // Make status bar transparent and allow content to draw under it
+        // Make status bar fully transparent so background extends into status bar
         window.setFlags(
             android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -253,9 +254,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         
         // Set status bar icons to light mode for visibility on dark backgrounds
-        val decorView = window.decorView
-        decorView.systemUiVisibility = decorView.systemUiVisibility or 
-            android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
 
         window.decorView.postDelayed({
             showCustomToast("请选择一个世界")
@@ -276,7 +275,7 @@ class MainActivity : AppCompatActivity() {
         handleIntent(intent)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleIntent(intent)
@@ -735,7 +734,7 @@ class MainActivity : AppCompatActivity() {
 
                 val button = androidx.appcompat.widget.AppCompatButton(this)
                 button.text = version.replace("Bedrock ", "").replace("Java ", "")
-                button.setTextColor(resources.getColor(R.color.white))
+                button.setTextColor(ContextCompat.getColor(this, R.color.white))
                 button.setBackgroundResource(R.drawable.version_button_bg)
                 button.setPadding(12, 8, 12, 8)
                 button.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f)
@@ -953,11 +952,18 @@ class MainActivity : AppCompatActivity() {
     private fun setupDeleteModeListener() {
         binding.cardWorldInfoBar.setOnLongClickListener {
             isDeleteMode = true
-            val vibrator = getSystemService(VIBRATOR_SERVICE) as android.os.Vibrator
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(android.os.VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as? android.os.VibratorManager
+                vibratorManager?.defaultVibrator
             } else {
-                vibrator.vibrate(50)
+                @Suppress("DEPRECATION")
+                getSystemService(VIBRATOR_SERVICE) as? android.os.Vibrator
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator?.vibrate(android.os.VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator?.vibrate(50)
             }
             binding.layoutWorldInfoContent.alpha = 0.3f
             binding.layoutDeleteOverlay.visibility = View.VISIBLE
@@ -1102,11 +1108,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun readWorldNameFromArchive(uri: Uri) {
-        if (uri == null) {
-            inputWorldName = ""
-            return
-        }
-
         try {
             val fileName = getFileNameFromUri(uri) ?: "Unknown Archive"
             inputWorldName = fileName
@@ -1114,37 +1115,40 @@ class MainActivity : AppCompatActivity() {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 val zipInputStream = ZipInputStream(inputStream)
                 var entry = zipInputStream.nextEntry
+                var foundWorld = false
 
                 while (entry != null) {
-                    // Check for levelname.txt in any directory
-                    if (entry.name.lowercase().endsWith("levelname.txt")) {
-                        val content = zipInputStream.bufferedReader().use { it.readText() }
-                        inputWorldName = content.trim()
+                    val entryName = entry.name
+                    if (entryName.endsWith("level.dat")) {
+                        foundWorld = true
                         break
                     }
                     entry = zipInputStream.nextEntry
                 }
-                zipInputStream.close()
+
+                if (!foundWorld) {
+                    inputWorldName = ""
+                }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             inputWorldName = ""
         }
     }
 
     private fun getFileNameFromUri(uri: Uri): String? {
         var fileName: String? = null
-        try {
+
+        if (uri.scheme == "content") {
             val cursor = contentResolver.query(uri, null, null, null, null)
             cursor?.use {
                 if (it.moveToFirst()) {
                     val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
-                    if (nameIndex >= 0) {
+                    if (nameIndex != -1) {
                         fileName = it.getString(nameIndex)
                     }
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
 
         if (fileName == null) {
@@ -1157,11 +1161,12 @@ class MainActivity : AppCompatActivity() {
     private fun updateWorldInfoDisplay() {
         binding.tvWorldName.text = inputWorldName
 
+        val color = ContextCompat.getColor(this, R.color.minecraft_green)
         if (worldPlatform == Platform.JAVA) {
-            binding.cardPlatform.strokeColor = resources.getColor(R.color.minecraft_green)
+            binding.cardPlatform.strokeColor = color
             binding.tvPlatform.text = getString(R.string.java_edition)
         } else {
-            binding.cardPlatform.strokeColor = resources.getColor(R.color.minecraft_green)
+            binding.cardPlatform.strokeColor = color
             binding.tvPlatform.text = getString(R.string.bedrock_edition)
         }
 

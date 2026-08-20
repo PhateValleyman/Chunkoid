@@ -3,6 +3,7 @@ package com.dozenesstudio.chunkoid.ui.activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.IBinder
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +41,10 @@ class ConversionActivity : AppCompatActivity() {
     private val logEntries = mutableListOf<LogEntry>()
     private var rawLogContent = "" // 原始日志内容
 
+    companion object {
+        const val EXTRA_SETTINGS = "settings"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityConversionBinding.inflate(layoutInflater)
@@ -52,12 +58,14 @@ class ConversionActivity : AppCompatActivity() {
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         
         // Set status bar icons to light mode for visibility on dark backgrounds
-        val decorView = window.decorView
-        decorView.systemUiVisibility = decorView.systemUiVisibility or 
-            android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
 
-        settings = intent.getParcelableExtra(EXTRA_SETTINGS)
-            ?: throw IllegalArgumentException("Settings required")
+        settings = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(EXTRA_SETTINGS, ConversionSettings::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra(EXTRA_SETTINGS)
+        }) ?: throw IllegalArgumentException("Settings required")
 
         setupBackground()
         setupToolbar()
@@ -649,12 +657,8 @@ class ConversionActivity : AppCompatActivity() {
         finish()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-    }
-
-    companion object {
-        const val EXTRA_SETTINGS = "extra_settings"
     }
 }

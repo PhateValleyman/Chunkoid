@@ -43,11 +43,11 @@ class OutputManagerFragment : Fragment() {
     }
 
     private val createDocumentLauncher = registerForActivityResult(
-        ActivityResultContracts.CreateDocument("*/*")
+        ActivityResultContracts.CreateDocument("application/octet-stream")
     ) { uri ->
         uri?.let { destinationUri ->
             pendingExportWorld?.let { world ->
-                exportToUri(world, destinationUri, pendingExportIsMcworld)
+                exportToUri(world, destinationUri)
             }
         }
         pendingExportWorld = null
@@ -122,7 +122,7 @@ class OutputManagerFragment : Fragment() {
     }
 
     private fun setupFab() {
-        binding.fabStartGame.setOnClickListener { showGameLauncherMenu(it) }
+        binding.fabStartGame.setOnClickListener { showGameLauncherMenu() }
     }
 
     private fun loadWorlds() {
@@ -217,11 +217,10 @@ class OutputManagerFragment : Fragment() {
         pendingExportWorld = world
         pendingExportIsMcworld = isMcworld
         val extension = if (isMcworld) ".mcworld" else ".zip"
-        val mimeType = if (isMcworld) "application/x-mcworld" else "application/zip"
         createDocumentLauncher.launch(world.name + extension)
     }
 
-    private fun exportToUri(world: WorldInfo, destinationUri: Uri, isMcworld: Boolean) {
+    private fun exportToUri(world: WorldInfo, destinationUri: Uri) {
         val sourceDir = File(world.directoryPath)
 
         try {
@@ -345,22 +344,19 @@ class OutputManagerFragment : Fragment() {
         }
     }
 
-    private fun showGameLauncherMenu(anchor: View) {
-       data class GameInfo(val iconRes: Int, val packageName: String, val displayName: String)
+    private fun showGameLauncherMenu() {
+        data class GameInfo(val iconRes: Int, val packageName: String, val displayName: String)
         
-       val games = listOf(
+        val games = listOf(
             GameInfo(R.drawable.ne, "com.netease.x19", "基岩版：网易"),
             GameInfo(R.drawable.be, "com.mojang.minecraftpe", "基岩版：国际版"),
             GameInfo(R.drawable.pojav, "net.kdt.pojavlaunch", "Java版：Pojav"),
             GameInfo(R.drawable.fcl, "com.tungsten.fcl", "Java版：Fcl"),
             GameInfo(R.drawable.zl2, "com.movtery.zalithlauncher.v2", "Java版：ZL2")
-       )
+        )
 
-       val items = games.map { it.displayName }.toTypedArray()
-       val icons = games.map { it.iconRes }.toIntArray()
-
-       val builder = android.app.AlertDialog.Builder(requireContext(), R.style.DialogTheme)
-      builder.setTitle("选择启动项")
+        val builder = android.app.AlertDialog.Builder(requireContext(), R.style.DialogTheme)
+        builder.setTitle("选择启动项")
         
      // 使用自定义适配器显示图标
       builder.setAdapter(object : android.widget.BaseAdapter() {
