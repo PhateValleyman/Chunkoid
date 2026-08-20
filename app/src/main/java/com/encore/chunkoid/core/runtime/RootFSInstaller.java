@@ -78,73 +78,57 @@ public class RootFSInstaller {
     }
 
     private static void extractZipAsset(Context context, String zipName, File destDir, ProgressCallback callback) throws IOException {
-        Log.d(TAG, "Opening ZIP asset: " + zipName);
+        Log.d(TAG, "Opening ZIP asset for extraction: " + zipName);
 
         try (InputStream is = context.getAssets().open(zipName);
              ZipInputStream zis = new ZipInputStream(is)) {
 
+            byte[] buffer = new byte[65536];
             ZipEntry entry;
-            long totalEntries = 0;
-            long extractedEntries = 0;
+            int extractedEntries = 0;
+            int estimatedTotalEntries = 150;
+            int lastReportedProgress = -1;
 
-            // First pass: count total entries for progress calculation
-            try (InputStream is2 = context.getAssets().open(zipName);
-                 ZipInputStream zis2 = new ZipInputStream(is2)) {
-                while (zis2.getNextEntry() != null) {
-                    totalEntries++;
-                }
-            }
+            while ((entry = zis.getNextEntry()) != null) {
+                File newFile = newFile(destDir, entry);
 
-            Log.d(TAG, "Total ZIP entries: " + totalEntries);
-
-            // Reset and start extraction
-            try (InputStream is2 = context.getAssets().open(zipName);
-                 ZipInputStream zis2 = new ZipInputStream(is2)) {
-
-                byte[] buffer = new byte[8192];
-
-                while ((entry = zis2.getNextEntry()) != null) {
-                    File newFile = newFile(destDir, entry);
-
-                    if (entry.isDirectory()) {
-                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                            throw new IOException("Failed to create directory: " + newFile);
-                        }
-                    } else {
-                        // Create parent directories if needed
-                        File parent = newFile.getParentFile();
-                        if (!parent.isDirectory() && !parent.mkdirs()) {
-                            throw new IOException("Failed to create directory: " + parent);
-                        }
-
-                        // Write file content
-                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
-                            int len;
-                            while ((len = zis2.read(buffer)) > 0) {
-                                fos.write(buffer, 0, len);
-                            }
-                        }
-
-                        // Make executable if needed
-                        String entryName = entry.getName().toLowerCase();
-                        if (entryName.contains("bin/") || entryName.contains("lib/") ||
-                            entryName.endsWith(".so") || entryName.endsWith(".elf")) {
-                            newFile.setExecutable(true, false);
-                            newFile.setReadable(true, false);
-                            newFile.setWritable(true, false);
-                        }
+                if (entry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory: " + newFile);
+                    }
+                } else {
+                    File parent = newFile.getParentFile();
+                    if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory: " + parent);
                     }
 
-                    extractedEntries++;
-
-                    // Update progress
-                    if (callback != null && totalEntries > 0) {
-                        int progress = (int) ((extractedEntries * 100.0) / totalEntries);
-                        callback.onProgress(Math.min(progress, 99));
+                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                        fos.flush();
                     }
 
-                    zis2.closeEntry();
+                    String entryName = entry.getName().toLowerCase();
+                    if (entryName.contains("bin/") || entryName.contains("lib/") ||
+                        entryName.endsWith(".so") || entryName.endsWith(".elf") || entryName.endsWith(".sh")) {
+                        newFile.setExecutable(true, false);
+                        newFile.setReadable(true, false);
+                    }
                 }
+
+                extractedEntries++;
+
+                if (callback != null) {
+                    int progress = Math.min((int) ((extractedEntries * 100.0) / estimatedTotalEntries), 99);
+                    if (progress != lastReportedProgress) {
+                        lastReportedProgress = progress;
+                        callback.onProgress(progress);
+                    }
+                }
+
+                zis.closeEntry();
             }
 
             Log.d(TAG, "Extracted " + extractedEntries + " entries from ZIP");
