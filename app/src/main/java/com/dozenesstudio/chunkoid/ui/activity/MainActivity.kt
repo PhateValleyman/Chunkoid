@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.Manifest
 import android.animation.AnimatorSet
@@ -28,8 +28,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.drawerlayout.widget.DrawerLayout
+import com.dozenesstudio.chunkoid.R
+import com.dozenesstudio.chunkoid.core.world.ArchiveSearcher
+import com.dozenesstudio.chunkoid.core.world.NbtVersionReader
+import com.dozenesstudio.chunkoid.core.world.Platform
 import com.dozenesstudio.chunkoid.databinding.ActivityMainBinding
 import com.dozenesstudio.chunkoid.model.ConversionSettings
+import com.dozenesstudio.chunkoid.ui.fragment.OutputManagerFragment
 import com.dozenesstudio.chunkoid.utils.BackgroundUtils
 import com.dozenesstudio.chunkoid.utils.ToastUtils
 import org.json.JSONObject
@@ -202,10 +207,14 @@ class MainActivity : AppCompatActivity() {
     ) { uri ->
         uri?.let {
             inputUri = it
-            contentResolver.takePersistableUriPermission(
-                it,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
+            try {
+                contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } catch (e: SecurityException) {
+                android.util.Log.w("MainActivity", "Failed to take persistable URI permission", e)
+            }
             isArchiveMode = false
             processSelectedWorld(it)
         }
@@ -216,10 +225,14 @@ class MainActivity : AppCompatActivity() {
     ) { uri ->
         uri?.let {
             inputUri = it
-            contentResolver.takePersistableUriPermission(
-                it,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
+            try {
+                contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } catch (e: SecurityException) {
+                android.util.Log.w("MainActivity", "Failed to take persistable URI permission", e)
+            }
             isArchiveMode = true
             processSelectedWorld(it)
         }

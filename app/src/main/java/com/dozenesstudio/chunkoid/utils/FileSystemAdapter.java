@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid.util;
+package com.dozenesstudio.chunkoid.utils;
 
 import android.content.Context;
 import android.net.Uri;

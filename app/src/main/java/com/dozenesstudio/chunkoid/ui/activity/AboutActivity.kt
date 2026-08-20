@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +10,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.dozenesstudio.chunkoid.R
+import com.dozenesstudio.chunkoid.utils.BackgroundUtils
 import com.dozenesstudio.chunkoid.utils.ToastUtils
 
 class AboutActivity : AppCompatActivity() {

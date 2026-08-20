@@ -1,9 +1,10 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.IBinder
 import android.util.Log
 import android.view.MenuItem
@@ -13,11 +14,12 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.preference.PreferenceManager
+import com.dozenesstudio.chunkoid.R
 import com.dozenesstudio.chunkoid.databinding.ActivityConversionBinding
 import com.dozenesstudio.chunkoid.model.ConversionSettings
 import com.dozenesstudio.chunkoid.model.LogEntry
 import com.dozenesstudio.chunkoid.service.ConversionService
-import com.dozenesstudio.chunkoid.ui.LogAdapter
+import com.dozenesstudio.chunkoid.ui.adapter.LogAdapter
 import com.dozenesstudio.chunkoid.utils.BackgroundUtils
 import com.dozenesstudio.chunkoid.utils.ToastUtils
 import kotlinx.coroutines.launch
@@ -120,7 +122,20 @@ class ConversionActivity : AppCompatActivity() {
             conversionService = binder.getService()
             isBound = true
             setupServiceObservers()
-            startConversion()
+            if (conversionService?.isRunning?.value == true) {
+                hasConversionStarted = true
+                isConversionRunning = true
+                updateUIForConversionStart()
+                conversionService?.progress?.value?.let { updateProgress(it) }
+                conversionService?.status?.value?.let { if (it.isNotEmpty()) binding.tvStatus.text = it }
+            } else if (conversionService?.conversionSuccess?.value != null) {
+                hasConversionStarted = true
+                val success = conversionService?.conversionSuccess?.value == true
+                conversionService?.progress?.value?.let { updateProgress(it) }
+                onConversionComplete(success)
+            } else {
+                startConversion()
+            }
         }
 
         override fun onServiceDisconnected(name: android.content.ComponentName?) {
@@ -135,8 +150,10 @@ class ConversionActivity : AppCompatActivity() {
         }
 
         conversionService?.status?.observe(this) { status ->
-            binding.tvStatus.text = status
-            addLogEntry(LogEntry(status, LogEntry.Level.INFO))
+            if (status.isNotEmpty()) {
+                binding.tvStatus.text = status
+                addLogEntry(LogEntry(status, LogEntry.Level.INFO))
+            }
         }
 
         conversionService?.logMessage?.observe(this) { logEntry ->
@@ -149,10 +166,9 @@ class ConversionActivity : AppCompatActivity() {
             }
         }
 
-        conversionService?.isRunning?.observe(this) { running ->
-            isConversionRunning = running
-            if (!running && hasConversionStarted) {
-                onConversionComplete(true)
+        conversionService?.conversionSuccess?.observe(this) { success ->
+            if (success != null && hasConversionStarted) {
+                onConversionComplete(success)
             }
         }
     }
@@ -506,7 +522,7 @@ class ConversionActivity : AppCompatActivity() {
 
     private fun saveConversionInfo() {
         try {
-            val documentsDir = File("/storage/emulated/0/Documents")
+            val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
             val chunkoidOutputDir = File(documentsDir, "chunkoid output")
             if (!chunkoidOutputDir.exists()) {
                 chunkoidOutputDir.mkdirs()

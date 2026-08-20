@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid.termux;
+package com.dozenesstudio.chunkoid.core.runtime;
 
 import android.content.Context;
 import android.util.Log;

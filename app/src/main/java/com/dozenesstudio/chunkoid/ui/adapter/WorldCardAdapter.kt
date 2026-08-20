@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid.ui
+package com.dozenesstudio.chunkoid.ui.adapter
 
 import android.graphics.BitmapFactory
 import android.text.SpannableString

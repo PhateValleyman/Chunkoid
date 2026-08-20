@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -12,9 +12,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dozenesstudio.chunkoid.R
 import com.dozenesstudio.chunkoid.databinding.FragmentOutputManagerBinding
 import com.dozenesstudio.chunkoid.model.WorldInfo
-import com.dozenesstudio.chunkoid.ui.WorldCardAdapter
+import com.dozenesstudio.chunkoid.ui.activity.SettingsActivity
+import com.dozenesstudio.chunkoid.ui.adapter.WorldCardAdapter
 import com.dozenesstudio.chunkoid.utils.BackgroundUtils
 import com.dozenesstudio.chunkoid.utils.ToastUtils
 import androidx.documentfile.provider.DocumentFile

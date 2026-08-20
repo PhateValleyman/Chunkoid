@@ -51,6 +51,7 @@ captures/
 .idea/misc.xml
 .idea/deploymentTargetDropDown.xml
 .idea/vcs.xml
+.idea/appInsightsSettings.xml
 
 # Keystore files
 *.jks
@@ -107,6 +108,7 @@ Thumbs.db
 # Package Files
 *.jar
 !app/src/main/assets/cli.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.zip
 !app/src/main/assets/rootfs.zip
 *.war

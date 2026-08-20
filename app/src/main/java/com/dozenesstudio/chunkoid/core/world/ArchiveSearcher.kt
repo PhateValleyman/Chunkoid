@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.core.world
 
 import android.content.ContentResolver
 import android.net.Uri

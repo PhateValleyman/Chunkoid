@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,8 @@ import android.os.Looper
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.dozenesstudio.chunkoid.termux.RootFSInstaller
+import com.dozenesstudio.chunkoid.R
+import com.dozenesstudio.chunkoid.core.runtime.RootFSInstaller
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

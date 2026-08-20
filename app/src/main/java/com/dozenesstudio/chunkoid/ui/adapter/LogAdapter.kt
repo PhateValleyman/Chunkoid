@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid.ui
+package com.dozenesstudio.chunkoid.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View

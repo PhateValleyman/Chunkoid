@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -8,11 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dozenesstudio.chunkoid.R
 import com.dozenesstudio.chunkoid.databinding.ActivityPackConverterBinding
 import com.dozenesstudio.chunkoid.model.LogEntry
 import com.dozenesstudio.chunkoid.packconverter.ConversionDirection
 import com.dozenesstudio.chunkoid.packconverter.PackConverter
-import com.dozenesstudio.chunkoid.ui.LogAdapter
+import com.dozenesstudio.chunkoid.ui.adapter.LogAdapter
 import com.dozenesstudio.chunkoid.utils.ToastUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +38,11 @@ class PackConverterActivity : AppCompatActivity() {
     ) { uri ->
         uri?.let { treeUri ->
             val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            try {
+                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            } catch (e: SecurityException) {
+                android.util.Log.w("PackConverterActivity", "Failed to take persistable URI permission", e)
+            }
             val docFile = DocumentFile.fromTreeUri(this, treeUri)
             selectedPackDoc = docFile
             binding.tvSelectPack.text = docFile?.name ?: getString(R.string.select_input_pack_folder)

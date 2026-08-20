@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -19,9 +19,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.dozenesstudio.chunkoid.utils.ToastUtils
+import com.dozenesstudio.chunkoid.R
+import com.dozenesstudio.chunkoid.core.runtime.TermuxExecutor
 import com.dozenesstudio.chunkoid.databinding.ActivityTerminalBinding
-import com.dozenesstudio.chunkoid.termux.TermuxExecutor
+import com.dozenesstudio.chunkoid.utils.ToastUtils
 import java.io.File
 
 class TerminalActivity : AppCompatActivity() {
@@ -36,10 +37,11 @@ class TerminalActivity : AppCompatActivity() {
     private val minScale = 0.5f
     private val maxScale = 3.0f
 
+    private val appFilesDir: String get() = filesDir.absolutePath
+
     companion object {
         private const val PERMISSION_REQUEST_CODE = 101
         private const val CHUNKER_CLI_PATH = "cli.jar"
-        private const val APP_FILES_DIR = "/data/user/0/com.dozenesstudio.chunkoid/files"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -250,7 +252,7 @@ class TerminalActivity : AppCompatActivity() {
     }
 
     private fun executeLs(): String {
-        val files = File(APP_FILES_DIR).listFiles()
+        val files = File(appFilesDir).listFiles()
         return if (files != null) {
             files.joinToString("\n") { it.name } + "\n"
         } else {
@@ -259,11 +261,11 @@ class TerminalActivity : AppCompatActivity() {
     }
 
     private fun executePwd(): String {
-        return APP_FILES_DIR + "\n"
+        return appFilesDir + "\n"
     }
 
     private fun executeJavaCommand(command: String): String {
-        val chunkerCliPath = "$APP_FILES_DIR/$CHUNKER_CLI_PATH"
+        val chunkerCliPath = "$appFilesDir/$CHUNKER_CLI_PATH"
 
         var modifiedCommand = command
         if (command.contains("cli.jar")) {
@@ -287,7 +289,7 @@ class TerminalActivity : AppCompatActivity() {
     }
 
     private fun executeShellCommand(command: String): String {
-        return termuxExecutor.executeCommand(command, APP_FILES_DIR)
+        return termuxExecutor.executeCommand(command, appFilesDir)
     }
 
     private fun appendOutput(text: String) {

@@ -1,13 +1,24 @@
 package com.dozenesstudio.chunkoid.service
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Binder
+import android.os.Build
+import android.os.Environment
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.MutableLiveData
-import com.dozenesstudio.chunkoid.termux.RootFSInstaller
-import com.dozenesstudio.chunkoid.termux.TermuxExecutor
+import com.dozenesstudio.chunkoid.R
+import com.dozenesstudio.chunkoid.core.runtime.RootFSInstaller
+import com.dozenesstudio.chunkoid.core.runtime.TermuxExecutor
+import com.dozenesstudio.chunkoid.ui.activity.ConversionActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,6 +33,7 @@ class ConversionService : Service() {
     val logMessage = MutableLiveData<com.dozenesstudio.chunkoid.model.LogEntry?>()
     val isRunning = MutableLiveData<Boolean>(false)
     val rawLogOutput = MutableLiveData<String>("") // 原始日志输出
+    val conversionSuccess = MutableLiveData<Boolean?>(null) // 转换结果标志
 
     private lateinit var termuxExecutor: TermuxExecutor
     private var conversionProcess: Process? = null
@@ -40,12 +52,72 @@ class ConversionService : Service() {
         return binder
     }
 
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "世界转换服务",
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = "显示 Minecraft 世界存档转换进度与后台保活状态"
+                setShowBadge(false)
+            }
+            val manager = getSystemService(NotificationManager::class.java)
+            manager?.createNotificationChannel(channel)
+        }
+    }
+
+    private fun buildNotification(statusText: String, progressPercent: Int, isIndeterminate: Boolean): Notification {
+        val intent = Intent(this, ConversionActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+        )
+
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Minecraft 世界转换")
+            .setContentText(statusText)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setProgress(100, progressPercent, isIndeterminate)
+            .build()
+    }
+
+    private fun updateNotification(statusText: String, progressPercent: Int, isIndeterminate: Boolean = false) {
+        try {
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+            manager?.notify(NOTIFICATION_ID, buildNotification(statusText, progressPercent, isIndeterminate))
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to update notification", e)
+        }
+    }
+
+    private fun stopForegroundService() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+            } else {
+                stopForeground(true)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to stop foreground", e)
+        }
+    }
+
     fun stopConversion() {
         conversionProcess?.destroy()
         conversionProcess = null
         isRunning.value = false
+        conversionSuccess.value = false
         status.value = "转换已停止"
         progress.value = 0
+        stopForegroundService()
         cleanInputFolder()
         cleanOutputFolder()
     }
@@ -72,22 +144,38 @@ class ConversionService : Service() {
 
     fun startConversionFromUri(inputUri: android.net.Uri, settings: com.dozenesstudio.chunkoid.model.ConversionSettings) {
         isRunning.value = true
+        conversionSuccess.value = null
         progress.value = 0
         rawLogBuilder.clear() // 清空原始日志收集器
+
+        createNotificationChannel()
+        val initialNotification = buildNotification("正在初始化环境...", 0, true)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NOTIFICATION_ID, initialNotification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            } else {
+                startForeground(NOTIFICATION_ID, initialNotification)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to startForeground", e)
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // Step 1: Initialize Termux environment
                 status.postValue("正在初始化环境...")
+                updateNotification("正在初始化环境...", 5, true)
                 initializeEnvironment()
 
                 // Step 2: Copy input world to internal storage
                 status.postValue("准备输入文件...")
                 progress.postValue(10)
+                updateNotification("准备输入文件...", 10, false)
                 val inputDir = copyUriToInternal(inputUri, "input")
 
                 // Step 3: Prepare output directory
                 progress.postValue(15)
+                updateNotification("准备输出目录...", 15, false)
                 val outputDir = File(filesDir, "output")
                 if (outputDir.exists()) {
                     deleteDir(outputDir)
@@ -97,11 +185,13 @@ class ConversionService : Service() {
                 // Step 4: Run Chunker conversion
                 status.postValue("正在转换...")
                 progress.postValue(20)
+                updateNotification("正在转换世界...", 20, false)
                 runChunkerConversion(inputDir, outputDir, settings)
 
                 // Step 5: Move result to documents directory
                 status.postValue("正在整理输出文件...")
                 progress.postValue(90)
+                updateNotification("正在整理输出文件...", 90, false)
                 moveOutputToDocuments(outputDir, settings.inputWorldName)
 
                 // Step 6: Clean up
@@ -259,6 +349,7 @@ class ConversionService : Service() {
                     val calculatedProgress = (25 + chunkProgress * 0.65).toInt()
                     if (calculatedProgress > lastProgress) {
                         progress.postValue(calculatedProgress)
+                        updateNotification("正在转换世界... ($calculatedProgress%)", calculatedProgress, false)
                         lastProgress = calculatedProgress
                     }
                 } else {
@@ -328,7 +419,7 @@ class ConversionService : Service() {
     }
 
     private fun moveOutputToDocuments(sourceDir: File, worldName: String) {
-        val documentsDir = File("/storage/emulated/0/Documents")
+        val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         if (!documentsDir.exists()) {
             documentsDir.mkdirs()
         }
@@ -381,17 +472,21 @@ class ConversionService : Service() {
 
     private fun onConversionComplete() {
         isRunning.value = false
+        conversionSuccess.value = true
         status.value = "转换成功!"
         progress.value = 100
         rawLogOutput.value = rawLogBuilder.toString() // 传递原始日志
+        stopForegroundService()
         cleanInputFolder()
     }
 
     private fun onConversionError(error: Exception) {
         isRunning.value = false
+        conversionSuccess.value = false
         status.value = "转换失败: ${error.message}"
         progress.value = 0
         rawLogOutput.value = rawLogBuilder.toString() // 即使失败也传递原始日志
+        stopForegroundService()
     }
 
     fun getRawLog(): String {
@@ -405,5 +500,7 @@ class ConversionService : Service() {
 
     companion object {
         private const val TAG = "ConversionService"
+        private const val CHANNEL_ID = "chunkoid_conversion_channel"
+        private const val NOTIFICATION_ID = 1001
     }
 }

@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -8,10 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dozenesstudio.chunkoid.R
 import com.dozenesstudio.chunkoid.databinding.ActivityDecrypterBinding
 import com.dozenesstudio.chunkoid.decryptor.WorldDecryptor
 import com.dozenesstudio.chunkoid.model.LogEntry
-import com.dozenesstudio.chunkoid.ui.LogAdapter
+import com.dozenesstudio.chunkoid.ui.adapter.LogAdapter
 import com.dozenesstudio.chunkoid.utils.ToastUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +33,11 @@ class DecryptActivity : AppCompatActivity() {
     ) { uri ->
         uri?.let { treeUri ->
             val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            try {
+                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            } catch (e: SecurityException) {
+                android.util.Log.w("DecryptActivity", "Failed to take persistable URI permission", e)
+            }
             val docFile = DocumentFile.fromTreeUri(this, treeUri)
             selectedWorldDoc = docFile
             
@@ -48,7 +53,11 @@ class DecryptActivity : AppCompatActivity() {
     ) { uri ->
         uri?.let { treeUri ->
             val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            try {
+                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            } catch (e: SecurityException) {
+                android.util.Log.w("DecryptActivity", "Failed to take persistable URI permission", e)
+            }
             decryptedWorldPath?.let { decryptPath ->
                 exportWorldToTree(decryptPath, treeUri)
             }

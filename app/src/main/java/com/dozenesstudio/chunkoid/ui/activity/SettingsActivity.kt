@@ -1,4 +1,4 @@
-package com.dozenesstudio.chunkoid
+package com.dozenesstudio.chunkoid.ui.activity
 
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -12,7 +12,9 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.dozenesstudio.chunkoid.R
 import com.dozenesstudio.chunkoid.databinding.ActivitySettingsBinding
+import com.dozenesstudio.chunkoid.utils.BackgroundUtils
 import com.dozenesstudio.chunkoid.utils.ToastUtils
 import java.io.File
 import java.io.FileOutputStream
