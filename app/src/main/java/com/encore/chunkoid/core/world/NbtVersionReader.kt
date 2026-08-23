@@ -18,8 +18,9 @@ object NbtVersionReader {
         if (!levelDat.exists()) return null
 
         return try {
-            val nbtFile = NbtIO.readNbtFileDetectingSettings(levelDat)
-            parseVersionInfo(nbtFile.tag as? NbtCompound)
+            levelDat.inputStream().use { inputStream ->
+                readLevelDatFromStream(inputStream)
+            }
         } catch (e: Exception) {
             null
         }

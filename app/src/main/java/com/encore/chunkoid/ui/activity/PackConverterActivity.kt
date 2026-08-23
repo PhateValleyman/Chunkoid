@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +15,7 @@ import com.encore.chunkoid.model.LogEntry
 import com.encore.chunkoid.packconverter.ConversionDirection
 import com.encore.chunkoid.packconverter.PackConverter
 import com.encore.chunkoid.ui.adapter.LogAdapter
+import com.encore.chunkoid.utils.BackgroundUtils
 import com.encore.chunkoid.utils.ToastUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,6 +73,12 @@ class PackConverterActivity : AppCompatActivity() {
         applyNoElevationToCards()
     }
 
+    override fun onResume() {
+        super.onResume()
+        BackgroundUtils.applyCustomBackground(this)
+        selectDirection(selectedDirection)
+    }
+
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -84,23 +92,72 @@ class PackConverterActivity : AppCompatActivity() {
         }
     }
 
+    private var selectedDirection: ConversionDirection = ConversionDirection.JAVA_TO_BEDROCK
+
     private fun setupClickListeners() {
+        binding.layoutToggleLogs.setOnClickListener {
+            val isCurrentlyVisible = binding.layoutLogContent.visibility == android.view.View.VISIBLE
+            binding.layoutLogContent.visibility = if (isCurrentlyVisible) android.view.View.GONE else android.view.View.VISIBLE
+            binding.ivToggleLogs.rotation = if (isCurrentlyVisible) 0f else 180f
+        }
+
+        binding.cardSelectPack.setOnClickListener {
+            openDocumentTreeLauncher.launch(null)
+        }
+
         binding.tvSelectPack.setOnClickListener {
             openDocumentTreeLauncher.launch(null)
         }
 
-        binding.btnJavaToBedrock.setOnClickListener {
-            startConversion(ConversionDirection.JAVA_TO_BEDROCK)
+        binding.btnDirJavaToBedrock.setOnClickListener {
+            selectDirection(ConversionDirection.JAVA_TO_BEDROCK)
         }
 
-        binding.btnBedrockToJava.setOnClickListener {
-            startConversion(ConversionDirection.BEDROCK_TO_JAVA)
+        binding.btnDirBedrockToJava.setOnClickListener {
+            selectDirection(ConversionDirection.BEDROCK_TO_JAVA)
+        }
+
+        binding.btnStartConvert.setOnClickListener {
+            startConversion(selectedDirection)
         }
 
         binding.btnExportCompressed.setOnClickListener {
             val packName = convertedPackPath?.let { File(it).name } ?: "pack"
             val extension = if (currentDirection == ConversionDirection.JAVA_TO_BEDROCK) ".mcpack" else ".zip"
             createDocumentLauncher.launch(packName + extension)
+        }
+    }
+
+    private fun selectDirection(direction: ConversionDirection) {
+        selectedDirection = direction
+        val isCustomBg = BackgroundUtils.isCustomBackgroundEnabled(this) && BackgroundUtils.isColorExtractionEnabled(this)
+        val activeColor = if (isCustomBg) {
+            BackgroundUtils.getExtractedPrimaryColor(this) ?: androidx.core.content.ContextCompat.getColor(this, R.color.segmented_active_bg)
+        } else {
+            androidx.core.content.ContextCompat.getColor(this, R.color.segmented_active_bg)
+        }
+        val activeTextColor = if (isCustomBg) {
+            BackgroundUtils.getExtractedOnPrimaryColor(this)
+        } else {
+            androidx.core.content.ContextCompat.getColor(this, R.color.segmented_active_text)
+        }
+
+        val activeCapsule = android.graphics.drawable.GradientDrawable().apply {
+            shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+            cornerRadius = 100f
+            setColor(activeColor)
+        }
+
+        if (direction == ConversionDirection.JAVA_TO_BEDROCK) {
+            binding.btnDirJavaToBedrock.background = activeCapsule
+            binding.tvDirJavaToBedrock.setTextColor(activeTextColor)
+            binding.btnDirBedrockToJava.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            binding.tvDirBedrockToJava.setTextColor(com.google.android.material.color.MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorOnSurfaceVariant))
+        } else {
+            binding.btnDirBedrockToJava.background = activeCapsule
+            binding.tvDirBedrockToJava.setTextColor(activeTextColor)
+            binding.btnDirJavaToBedrock.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            binding.tvDirJavaToBedrock.setTextColor(com.google.android.material.color.MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorOnSurfaceVariant))
         }
     }
 
@@ -157,6 +214,8 @@ class PackConverterActivity : AppCompatActivity() {
                     override fun onError(error: String) {
                         lifecycleScope.launch(Dispatchers.Main) {
                             binding.tvStatus.text = getString(R.string.convert_failed)
+                            binding.layoutLogContent.visibility = android.view.View.VISIBLE
+                            binding.ivToggleLogs.rotation = 180f
                             addLog("转换失败: $error", LogEntry.Level.ERROR)
                             ToastUtils.show(this@PackConverterActivity, "${getString(R.string.convert_failed)}: $error", isError = true)
                             cleanTempFolders()

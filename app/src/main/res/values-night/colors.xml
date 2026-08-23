@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 Dark Theme Colors (Deep Midnight Slate / Periwinkle Accent - Image 1 Style) -->
+    <color name="md_theme_primary">#ABC7FF</color>
+    <color name="md_theme_onPrimary">#002D6C</color>
+    <color name="md_theme_primaryContainer">#284577</color>
+    <color name="md_theme_onPrimaryContainer">#D8E2FF</color>
+
+    <color name="md_theme_secondary">#BEC6DC</color>
+    <color name="md_theme_onSecondary">#283141</color>
+    <color name="md_theme_secondaryContainer">#3D4758</color>
+    <color name="md_theme_onSecondaryContainer">#DAE2F9</color>
+
+    <color name="md_theme_tertiary">#DEBCDF</color>
+    <color name="md_theme_onTertiary">#402843</color>
+    <color name="md_theme_tertiaryContainer">#583E5B</color>
+    <color name="md_theme_onTertiaryContainer">#FBD7FC</color>
+
+    <color name="md_theme_error">#FFB4AB</color>
+    <color name="md_theme_onError">#690005</color>
+    <color name="md_theme_errorContainer">#93000A</color>
+    <color name="md_theme_onErrorContainer">#FFDAD6</color>
+
+    <color name="md_theme_background">#0F1318</color>
+    <color name="md_theme_onBackground">#E2E2E9</color>
+    <color name="md_theme_surface">#0F1318</color>
+    <color name="md_theme_onSurface">#E2E2E9</color>
+    <color name="md_theme_surfaceVariant">#44474F</color>
+    <color name="md_theme_onSurfaceVariant">#94A3B8</color>
+    <color name="md_theme_outline">#8E919A</color>
+    <color name="md_theme_outlineVariant">#262E3B</color>
+
+    <color name="md_theme_surfaceDim">#0F1318</color>
+    <color name="md_theme_surfaceBright">#353940</color>
+    <color name="md_theme_surfaceContainerLowest">#0A0D12</color>
+    <color name="md_theme_surfaceContainerLow">#14181F</color>
+    <color name="md_theme_surfaceContainer">#181E26</color>
+    <color name="md_theme_surfaceContainerHigh">#1C232E</color>
+    <color name="md_theme_surfaceContainerHighest">#262E3B</color>
+
+    <!-- Component Semantic Accents (Image 1 Exact Style) -->
+    <color name="hero_card_background">#181E26</color>
+    <color name="hero_icon_container">#ABC7FF</color>
+    <color name="hero_icon_tint">#002D6C</color>
+    <color name="badge_tag_bg">#262E3B</color>
+    <color name="squircle_icon_bg">#262E3B</color>
+    <color name="input_box_bg">#14181F</color>
+    <color name="input_box_stroke">#262E3B</color>
+    <color name="segmented_container_bg">#181E26</color>
+    <color name="segmented_active_bg">#ABC7FF</color>
+    <color name="segmented_active_text">#002D6C</color>
+    <color name="dock_bar_bg">#14181F</color>
+    <color name="card_subtle_bg">#181E26</color>
+    <color name="card_subtle_stroke">#262E3B</color>
+    <color name="dialog_bg">#181E26</color>
+    <color name="bottom_nav_bg">#10141A</color>
+    <color name="nav_indicator_color">#3D4758</color>
+
+    <!-- Generic & Functional -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="progress_background">#262E3B</color>
+    <color name="progress_tint">#ABC7FF</color>
+
+    <!-- Log Level Colors -->
+    <color name="log_info">#ABC7FF</color>
+    <color name="log_warning">#FFB951</color>
+    <color name="log_error">#FFB4AB</color>
+    <color name="log_debug">#A2CED9</color>
+
+    <!-- Legacy Compatibility Tokens -->
+    <color name="minecraft_green">#ABC7FF</color>
+    <color name="minecraft_green_dark">#002D6C</color>
+    <color name="minecraft_green_light">#D8E2FF</color>
+    <color name="minecraft_bg">@color/md_theme_background</color>
+    <color name="dark_card">@color/md_theme_surfaceContainer</color>
+    <color name="dark_card_secondary">@color/md_theme_surfaceContainerHigh</color>
+    <color name="icon_background">@color/md_theme_secondaryContainer</color>
+    <color name="minecraft_surface_glass">@color/md_theme_surfaceContainer</color>
+    <color name="minecraft_surface_glass_dark">@color/md_theme_surfaceContainerHigh</color>
+    <color name="minecraft_gray">@color/md_theme_outline</color>
+    <color name="minecraft_gray_light">@color/md_theme_surfaceVariant</color>
+    <color name="minecraft_red">@color/md_theme_error</color>
+    <color name="minecraft_blue">@color/md_theme_primary</color>
+    <color name="minecraft_gold">#FFB951</color>
+    <color name="minecraft_brown">#D7A15C</color>
+    <color name="minecraft_brown_dark">#A67438</color>
+</resources>

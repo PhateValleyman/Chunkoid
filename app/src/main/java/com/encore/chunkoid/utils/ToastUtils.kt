@@ -27,9 +27,11 @@ object ToastUtils {
         if (isError) {
             toastView.setBackgroundResource(R.drawable.custom_toast_error_background)
             iconView.setImageResource(android.R.drawable.ic_dialog_alert)
+            iconView.setColorFilter(context.getColor(R.color.md_theme_error))
         } else {
             toastView.setBackgroundResource(R.drawable.custom_toast_background)
-            iconView.setImageResource(R.drawable.info)
+            iconView.setImageResource(R.drawable.ic_info)
+            iconView.setColorFilter(context.getColor(R.color.md_theme_primary))
         }
 
         val popupWindow = PopupWindow(

@@ -14,6 +14,12 @@
             app:seekBarIncrement="256"
             app:showSeekBarValue="true" />
 
+        <SwitchPreferenceCompat
+            android:key="keep_original_nbt"
+            android:title="保留原始 NBT 标签"
+            android:summary="尽可能保留实体与方块的特殊数据"
+            android:defaultValue="false" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

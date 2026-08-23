@@ -1,65 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/minecraft_bg">
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="false">
 
-    <!-- Header -->
+    <!-- Full-Screen Custom Wallpaper Layer -->
+    <ImageView
+        android:id="@+id/iv_custom_wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <!-- Dim Scrim Layer -->
+    <View
+        android:id="@+id/v_custom_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true">
+
+        <!-- Terminal Top Header Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
         android:background="@color/transparent">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/terminal"
-            android:tint="@color/minecraft_green"/>
+        <FrameLayout
+            android:id="@+id/fl_terminal_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_squircle_icon">
 
-        <TextView
+            <ImageView
+                android:id="@+id/iv_terminal_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_terminal"
+                app:tint="?attr/colorPrimary" />
+
+        </FrameLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="终端控制台"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginLeft="12dp"/>
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp">
 
-        <TextView
-            android:id="@+id/tv_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="【退出】"
-            android:textColor="@color/minecraft_green"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="终端控制台"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/img_terminal_status"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/circle_red" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_clear"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="【清空】"
-            android:textColor="@color/minecraft_green"
-            android:textSize="14sp"
+            android:layout_height="34dp"
+            android:gravity="center"
+            android:text="清空"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:paddingHorizontal="14dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_debug_button"
+            android:clickable="true"
+            android:focusable="true" />
 
-        <ImageView
-            android:id="@+id/img_terminal_status"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:background="@drawable/circle_red"/>
+        <TextView
+            android:id="@+id/tv_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:gravity="center"
+            android:text="退出"
+            android:textColor="?attr/colorError"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="14dp"
+            android:background="@drawable/bg_debug_button"
+            android:clickable="true"
+            android:focusable="true" />
 
     </LinearLayout>
 
@@ -79,119 +126,153 @@
                 android:id="@+id/tv_terminal_output"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/minecraft_green"
-                android:textSize="14sp"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="13sp"
                 android:fontFamily="monospace"
-                android:lineSpacingMultiplier="1.2"
                 android:textIsSelectable="true"
-                android:longClickable="true"/>
+                android:longClickable="true" />
 
         </ScrollView>
 
-        <!-- Floating Debug Buttons -->
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <!-- Floating Debug Action Chips -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
-            android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
-            android:orientation="horizontal">
+            android:paddingHorizontal="16dp"
+            android:scrollbars="none">
 
-            <TextView
-                android:id="@+id/tv_debug_jdk"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_debug_button"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="调试JDK"
-                android:textColor="@color/minecraft_gray"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_debug_chunker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/bg_debug_button"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text="调试Chunker-CLI"
-                android:textColor="@color/minecraft_gray"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_debug_jdk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_debug_button"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:text="调试 JDK"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true" />
 
-            <TextView
-                android:id="@+id/tv_symbol_dash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/bg_debug_button"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text=" - "
-                android:textColor="@color/minecraft_gray"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_debug_chunker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_debug_button"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:text="调试 Chunker-CLI"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true" />
 
-            <TextView
-                android:id="@+id/tv_symbol_slash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/bg_debug_button"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:text=" / "
-                android:textColor="@color/minecraft_gray"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_symbol_dash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_debug_button"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:text=" - "
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_symbol_slash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_debug_button"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:text=" / "
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
     </FrameLayout>
 
-    <!-- Input Area -->
-    <LinearLayout
+    <!-- Command Input Bar -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/minecraft_surface_glass"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="12dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="0dp"
+        app:strokeColor="?attr/colorOutlineVariant"
+        app:strokeWidth="1dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:fontFamily="monospace"
-            android:text="$ "
-            android:textColor="@color/minecraft_green"
-            android:textSize="20sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
 
-        <EditText
-            android:id="@+id/et_command_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:fontFamily="monospace"
-            android:hint="输入命令..."
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:textColor="@color/white"
-            android:textColorHint="@color/minecraft_gray"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/tv_terminal_prompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="$ "
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/btn_send_command"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_send"
-            android:tint="@color/minecraft_green" />
+            <EditText
+                android:id="@+id/et_command_input"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="monospace"
+                android:hint="输入命令..."
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
+                android:textSize="15sp" />
+
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_squircle_icon">
+
+                <ImageButton
+                    android:id="@+id/btn_send_command"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_send"
+                    app:tint="?attr/colorPrimary" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

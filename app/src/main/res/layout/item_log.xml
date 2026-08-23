@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="4dp">
+    android:paddingVertical="3dp">
 
     <TextView
         android:id="@+id/tv_log_level"
@@ -12,16 +12,20 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="INFO"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:textStyle="bold"
-        android:fontFamily="monospace" />
+        android:fontFamily="monospace"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="1dp"
+        android:background="@drawable/bg_badge_tag" />
 
     <TextView
         android:id="@+id/tv_log_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="12sp"
-        android:fontFamily="monospace" />
+        android:fontFamily="monospace"
+        android:lineSpacingMultiplier="1.1" />
 
 </LinearLayout>

@@ -1,286 +1,382 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/minecraft_bg">
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="false">
 
-    <ScrollView
+    <!-- Full-Screen Custom Wallpaper Layer -->
+    <ImageView
+        android:id="@+id/iv_custom_wallpaper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/button_container"
-        android:fillViewport="true">
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
 
-        <LinearLayout
+    <!-- Dim Scrim Layer -->
+    <View
+        android:id="@+id/v_custom_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/transparent"
+            app:elevation="0dp">
 
-            <com.google.android.material.appbar.AppBarLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent">
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/about"
+                app:titleTextColor="?attr/colorOnSurface"
+                app:navigationIcon="?attr/homeAsUpIndicator"
+                app:navigationIconTint="?attr/colorOnSurface" />
 
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:title="@string/about"
-                    app:titleTextColor="@color/white"
-                    app:navigationIcon="?attr/homeAsUpIndicator"
-                    app:navigationIconTint="@color/white">
+        </com.google.android.material.appbar.AppBarLayout>
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/info"
-                        android:layout_gravity="end|center_vertical"
-                        android:layout_marginEnd="16dp" />
-
-                </com.google.android.material.appbar.MaterialToolbar>
-
-            </com.google.android.material.appbar.AppBarLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="16dp"
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp"
-                android:gravity="center">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/ic_launcher"
-                    android:contentDescription="App Logo"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name"
-                    android:textColor="@color/white"
-                    android:textSize="30sp"
-                    android:fontFamily="@font/uranus_pixel"
-                    android:textStyle="bold"
-                    android:layout_marginTop="12dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_version"
-                    android:textColor="@color/minecraft_green"
-                    android:textSize="14sp"
-                    android:layout_marginTop="4dp"/>
-
-            </LinearLayout>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/minecraft_surface_glass"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Original Author: Dozener"
-                            android:textColor="@color/minecraft_green"
-                            android:textSize="15sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Maintained by DICECAN"
-                            android:textColor="@color/minecraft_gray"
-                            android:textSize="11sp"
-                            android:layout_marginTop="2dp"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/iv_author"
-                            android:layout_width="25dp"
-                            android:layout_height="32dp"
-                            android:layout_marginEnd="10dp"
-                            android:contentDescription="Author"
-                            android:src="@drawable/author" />
-
-                        <ImageView
-                            android:id="@+id/iv_bilibili"
-                            android:layout_width="34dp"
-                            android:layout_height="32dp"
-                            android:layout_marginEnd="8dp"
-                            android:contentDescription="Bilibili"
-                            android:src="@drawable/bilibili" />
-
-                        <ImageView
-                            android:id="@+id/iv_github"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:contentDescription="Github"
-                            android:src="@drawable/github" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/minecraft_surface_glass"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
+                <!-- Hero Branding Section -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:paddingVertical="20dp"
+                    android:gravity="center">
+
+                    <FrameLayout
+                        android:id="@+id/fl_app_logo"
+                        android:layout_width="84dp"
+                        android:layout_height="84dp"
+                        android:background="@drawable/bg_squircle_icon">
+
+                        <ImageView
+                            android:id="@+id/iv_app_logo"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_app_logo"
+                            android:contentDescription="App Logo"
+                            app:tint="?attr/colorPrimary" />
+
+                    </FrameLayout>
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_intro"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:lineSpacingExtra="4dp"/>
-
-                    <TextView
-                        android:id="@+id/tv_chunker_link"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_credits_chunker"
-                        android:textColor="@color/minecraft_gray"
-                        android:textSize="11sp"
-                        android:layout_marginTop="8dp"
-                        android:lineSpacingExtra="4dp"/>
-
-                    <TextView
-                        android:id="@+id/tv_nbt_link"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_credits_nbt"
-                        android:textColor="@color/minecraft_gray"
-                        android:textSize="11sp" />
-
-
-                    <TextView
-                        android:id="@+id/tv_sdk_link"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_credits_sdk"
-                        android:textColor="@color/minecraft_gray"
-                        android:textSize="11sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_thanks"
-                        android:textColor="@color/minecraft_gray"
-                        android:textSize="11sp" />
-
-                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_website_link"
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:lineSpacingExtra="4dp"
-                            android:text="@string/about_website"
-                            android:textColor="@color/minecraft_green"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/tv_docs_link"
-                            android:layout_width="80dp"
-                            android:layout_height="19dp"
-                            android:layout_marginTop="8dp"
-                            android:lineSpacingExtra="4dp"
-                            android:text="@string/about_docs"
-                            android:textColor="@color/minecraft_green"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
+                        android:text="@string/app_name"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/tv_app_version"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/about_date"
-                        android:textColor="@color/minecraft_gray"
+                        android:text="@string/app_version"
+                        android:textColor="?attr/colorPrimary"
                         android:textSize="12sp"
-                        android:layout_marginTop="12dp"
-                        android:gravity="right"/>
+                        android:textStyle="bold"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="3dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_badge_tag" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                <!-- Author & Maintainer Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:cardBackgroundColor="@color/card_subtle_bg"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/card_subtle_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="18dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_author_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Developer &amp; Maintainer: DICECAN"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Original Author: Dozener"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <!-- Social Buttons -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <FrameLayout
+                                android:id="@+id/fl_social_author"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginEnd="6dp"
+                                android:background="@drawable/bg_squircle_icon"
+                                android:clickable="true"
+                                android:focusable="true">
+
+                                <ImageView
+                                    android:id="@+id/iv_author"
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Author"
+                                    android:src="@drawable/author"
+                                    app:tint="?attr/colorPrimary" />
+
+                            </FrameLayout>
+
+                            <FrameLayout
+                                android:id="@+id/fl_social_bilibili"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginEnd="6dp"
+                                android:background="@drawable/bg_squircle_icon"
+                                android:clickable="true"
+                                android:focusable="true">
+
+                                <ImageView
+                                    android:id="@+id/iv_bilibili"
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Bilibili"
+                                    android:src="@drawable/bilibili"
+                                    app:tint="?attr/colorPrimary" />
+
+                            </FrameLayout>
+
+                            <FrameLayout
+                                android:id="@+id/fl_social_github"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@drawable/bg_squircle_icon"
+                                android:clickable="true"
+                                android:focusable="true">
+
+                                <ImageView
+                                    android:id="@+id/iv_github"
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Github"
+                                    android:src="@drawable/github"
+                                    app:tint="?attr/colorPrimary" />
+
+                            </FrameLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Project Intro & Credits Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/card_subtle_bg"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/card_subtle_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="24dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_intro"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="14sp"
+                            android:lineSpacingExtra="4dp"
+                            android:lineSpacingMultiplier="1.35" />
+
+                        <!-- Divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="16dp"
+                            android:background="@color/card_subtle_stroke" />
+
+                        <TextView
+                            android:id="@+id/tv_chunker_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_credits_chunker"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"
+                            android:lineSpacingExtra="3dp"
+                            android:lineSpacingMultiplier="1.3" />
+
+                        <TextView
+                            android:id="@+id/tv_nbt_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_credits_nbt"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tv_sdk_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_credits_sdk"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tv_thanks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_thanks"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"
+                            android:layout_marginTop="8dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="16dp">
+
+                            <TextView
+                                android:id="@+id/tv_website_link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/about_website"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:paddingEnd="16dp" />
+
+                            <TextView
+                                android:id="@+id/tv_docs_link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/about_docs"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_date"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="12sp"
+                            android:layout_marginTop="14dp"
+                            android:gravity="end" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <!-- Bottom Action Buttons -->
+        <LinearLayout
+            android:id="@+id/button_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="20dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_check_update"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="@string/check_update"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="?attr/colorPrimary"
+                app:cornerRadius="27dp"
+                app:elevation="0dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_donate"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="@string/donate"
+                android:textColor="?attr/colorOnSecondaryContainer"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:cornerRadius="27dp"
+                app:elevation="0dp" />
 
         </LinearLayout>
 
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/button_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_check_update"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="@string/check_update"
-            app:backgroundTint="@color/minecraft_green"
-            app:cornerRadius="8dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_donate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="@string/donate"
-            app:backgroundTint="@color/minecraft_green"
-            app:cornerRadius="8dp"/>
-
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -65,6 +65,8 @@ class TerminalActivity : AppCompatActivity() {
         setupListeners()
         setupBackPress()
         checkPermissions()
+        
+        com.encore.chunkoid.utils.BackgroundUtils.applyCustomBackground(this)
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

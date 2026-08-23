@@ -16,5 +16,6 @@ data class ConversionSettings(
     val pruningSettings: String? = null,
     val converterSettings: String? = null,
     val dimensionMappings: String? = null,
-    val keepOriginalNbt: Boolean = false
+    val keepOriginalNbt: Boolean = false,
+    val lowMemoryMode: Boolean = false
 ) : Parcelable

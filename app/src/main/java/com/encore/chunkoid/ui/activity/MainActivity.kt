@@ -246,28 +246,45 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = binding.drawerLayout
         applyNoElevationToCards()
 
-        // Make status bar fully transparent so background extends into status bar
-        window.setFlags(
-            android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+        // Configure edge-to-edge full screen (全面屏)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
-        
-        // Set status bar icons to light mode for visibility on dark backgrounds
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+        window.navigationBarColor = android.graphics.Color.TRANSPARENT
 
-        window.decorView.postDelayed({
-            showCustomToast("请选择一个世界")
-        }, 500)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.drawerLayout) { _, insets ->
+            val statusBarHeight = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars()).top
+            val navBarHeight = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.navigationBars()).bottom
+
+            binding.scrollWorkbench.setPadding(
+                binding.scrollWorkbench.paddingLeft,
+                statusBarHeight + (16 * resources.displayMetrics.density).toInt(),
+                binding.scrollWorkbench.paddingRight,
+                (160 * resources.displayMetrics.density).toInt()
+            )
+
+            binding.fragmentContainer.setPadding(
+                binding.fragmentContainer.paddingLeft,
+                statusBarHeight,
+                binding.fragmentContainer.paddingRight,
+                0
+            )
+
+            binding.bottomNavigation.setPadding(
+                binding.bottomNavigation.paddingLeft,
+                0,
+                binding.bottomNavigation.paddingRight,
+                navBarHeight
+            )
+
+            insets
+        }
 
         setupDrawer()
         setupClickListeners()
-        setupDeleteModeListener()
         setupBottomNavigation()
         checkPermissions()
-        setupSplashText()
         updateNavDrawerVisibility()
-        updateBackground()
+        updateDockBarState()
         applyNoElevationToCards()
         
         archiveSearcher = ArchiveSearcher(contentResolver, filesDir)
@@ -284,7 +301,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateNavDrawerVisibility()
-        updateBackground()
+        BackgroundUtils.applyCustomBackground(this)
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -297,156 +314,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigation() {
-        val converterIcon = binding.navItemConverter.root.findViewById<ImageView>(R.id.nav_icon)
-        val converterText = binding.navItemConverter.root.findViewById<TextView>(R.id.nav_text)
-        converterIcon.setImageResource(R.drawable.converter)
-        converterText.text = getString(R.string.converter)
-
-        val outputIcon = binding.navItemOutput.root.findViewById<ImageView>(R.id.nav_icon)
-        val outputText = binding.navItemOutput.root.findViewById<TextView>(R.id.nav_text)
-        outputIcon.setImageResource(R.drawable.output)
-        outputText.text = getString(R.string.output_manager)
-
-        binding.navItemConverter.root.setOnClickListener {
-            switchToConverter()
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_item_converter -> {
+                    switchToConverter()
+                    true
+                }
+                R.id.nav_item_output -> {
+                    switchToOutputManager(true)
+                    true
+                }
+                else -> false
+            }
         }
-
-        binding.navItemOutput.root.setOnClickListener {
-            switchToOutputManager(true)
-        }
-
-        updateNavItemStates(false)
+        // Force initial selection state
+        switchToConverter()
     }
 
     private fun switchToConverter() {
-        if (activeItemId == R.id.nav_item_converter) return
         activeItemId = R.id.nav_item_converter
-
-        binding.tvSplash.visibility = View.VISIBLE
-        startSplashAnimation()
+        binding.scrollWorkbench.visibility = View.VISIBLE
+        binding.fragmentContainer.visibility = View.GONE
         supportFragmentManager.popBackStack()
-
-        updateNavItemStates(true)
     }
 
     private fun switchToOutputManager(animate: Boolean) {
-        if (activeItemId == R.id.nav_item_output) return
         activeItemId = R.id.nav_item_output
+        binding.scrollWorkbench.visibility = View.GONE
+        binding.fragmentContainer.visibility = View.VISIBLE
 
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
         if (currentFragment !is OutputManagerFragment) {
-            binding.tvSplash.visibility = View.GONE
             supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                 .replace(R.id.fragment_container, OutputManagerFragment())
                 .addToBackStack(null)
                 .commit()
-        }
-
-        updateNavItemStates(animate)
-    }
-
-    private fun updateNavItemStates(animate: Boolean) {
-        val converterItem = binding.navItemConverter.root
-        val outputItem = binding.navItemOutput.root
-
-        val converterIcon = converterItem.findViewById<ImageView>(R.id.nav_icon)
-        val converterText = converterItem.findViewById<TextView>(R.id.nav_text)
-        val outputIcon = outputItem.findViewById<ImageView>(R.id.nav_icon)
-        val outputText = outputItem.findViewById<TextView>(R.id.nav_text)
-
-        val isConverterActive = activeItemId == R.id.nav_item_converter
-
-        if (animate) {
-            animateNavItem(converterIcon!!, converterText!!, isConverterActive)
-            animateNavItem(outputIcon!!, outputText!!, !isConverterActive)
-        } else {
-            setNavItemState(converterIcon!!, converterText!!, isConverterActive)
-            setNavItemState(outputIcon!!, outputText!!, !isConverterActive)
-        }
-    }
-
-    private fun animateNavItem(icon: ImageView, text: TextView, isActive: Boolean) {
-        val targetScale = if (isActive) 1f else inactiveScale
-        val targetTextAlpha = if (isActive) 1f else inactiveTextAlpha
-        val targetTranslationY = if (isActive) 0f else 8f
-
-        val scaleX = ObjectAnimator.ofFloat(icon, View.SCALE_X, icon.scaleX, targetScale).apply {
-            duration = animDuration
-            interpolator = DecelerateInterpolator()
-        }
-        val scaleY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, icon.scaleY, targetScale).apply {
-            duration = animDuration
-            interpolator = DecelerateInterpolator()
-        }
-        val translationY = ObjectAnimator.ofFloat(icon, View.TRANSLATION_Y, icon.translationY, targetTranslationY).apply {
-            duration = animDuration
-            interpolator = DecelerateInterpolator()
-        }
-        val textAlpha = ObjectAnimator.ofFloat(text, View.ALPHA, text.alpha, targetTextAlpha).apply {
-            duration = animDuration
-            interpolator = DecelerateInterpolator()
-        }
-
-        AnimatorSet().apply {
-            playTogether(scaleX, scaleY, translationY, textAlpha)
-            start()
-        }
-    }
-
-    private fun setNavItemState(icon: ImageView, text: TextView, isActive: Boolean) {
-        icon.scaleX = if (isActive) 1f else inactiveScale
-        icon.scaleY = if (isActive) 1f else inactiveScale
-        icon.translationY = if (isActive) 0f else 8f
-        text.alpha = if (isActive) 1f else inactiveTextAlpha
-    }
-
-    private fun setupSplashText() {
-        val splashTexts = loadSplashesFromAssets()
-        if (splashTexts.isNotEmpty()) {
-            val randomSplash = splashTexts.random()
-            binding.tvSplash.text = randomSplash
-
-            try {
-                val pixelFont = resources.getFont(R.font.uranus_pixel)
-                binding.tvSplash.typeface = pixelFont
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            startSplashAnimation()
-        }
-    }
-
-    private fun startSplashAnimation() {
-        val scaleX = android.animation.PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.25f, 1.0f)
-        val scaleY = android.animation.PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.25f, 1.0f)
-
-        val animator = android.animation.ObjectAnimator.ofPropertyValuesHolder(binding.tvSplash, scaleX, scaleY)
-        animator.duration = 1000
-        animator.repeatCount = android.animation.ObjectAnimator.INFINITE
-        animator.repeatMode = android.animation.ObjectAnimator.RESTART
-        animator.start()
-    }
-
-    private fun loadSplashesFromAssets(): List<String> {
-        return try {
-            val inputStream = assets.open("splashes.json")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val jsonString = reader.readText()
-            reader.close()
-
-            val jsonObject = JSONObject(jsonString)
-            val splashesArray = jsonObject.getJSONArray("splashes")
-            val splashes = mutableListOf<String>()
-
-            for (i in 0 until splashesArray.length()) {
-                splashes.add(splashesArray.getString(i))
-            }
-            splashes
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
         }
     }
 
@@ -523,37 +426,6 @@ class MainActivity : AppCompatActivity() {
         navItemDecrypt.visibility = View.VISIBLE
     }
 
-    fun updateBackground() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val selectedTheme = prefs.getString("selected_theme", "bg")
-        
-        if (selectedTheme == SettingsActivity.THEME_CUSTOM) {
-            loadCustomBackground()
-        } else {
-            val drawableRes = when (selectedTheme) {
-                "bg2" -> R.drawable.bg2
-                "bg4" -> R.drawable.bg4
-                else -> R.drawable.bg
-            }
-            binding.ivBackground.setImageResource(drawableRes)
-        }
-    }
-
-    private fun loadCustomBackground() {
-        val customBgFile = File(filesDir, SettingsActivity.CUSTOM_BG_FILE_NAME)
-        if (customBgFile.exists()) {
-            try {
-                val bitmap = android.graphics.BitmapFactory.decodeFile(customBgFile.path)
-                val darkenedBitmap = BackgroundUtils.applyDarkening(bitmap)
-                binding.ivBackground.setImageBitmap(darkenedBitmap)
-            } catch (e: Exception) {
-                binding.ivBackground.setImageResource(R.drawable.bg)
-            }
-        } else {
-            binding.ivBackground.setImageResource(R.drawable.bg)
-        }
-    }
-
     private fun applyNoElevationToCards() {
         val rootView = findViewById<ViewGroup>(android.R.id.content)
         removeCardElevation(rootView)
@@ -575,16 +447,64 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.openDrawer(binding.navDrawer.root)
         }
 
-        binding.btnArchive.setOnClickListener {
-            archivePickerLauncher.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream"))
+        binding.cardHeroImport.setOnClickListener {
+            if (binding.cardInitialState.visibility == View.VISIBLE) {
+                showImportTypeBottomSheet()
+            }
         }
 
-        binding.btnFolder.setOnClickListener {
-            folderPickerLauncher.launch(null)
+        binding.btnClearWorld.setOnClickListener {
+            clearOutput()
+            switchToInitialState()
         }
 
         binding.btnSelectTarget.setOnClickListener {
             showVersionPickerDialog()
+        }
+
+        binding.btnDockAction.setOnClickListener {
+            if (inputUri == null) {
+                showImportTypeBottomSheet()
+            } else if (selectedFormat.isEmpty()) {
+                showCustomToast("请选择目标格式与版本", isError = true)
+                showVersionPickerDialog()
+            } else {
+                startConversion()
+            }
+        }
+    }
+
+    private fun showImportTypeBottomSheet() {
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_import_type, null)
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        dialog.setContentView(bottomSheetView)
+
+        bottomSheetView.findViewById<View>(R.id.btn_import_archive_option)?.setOnClickListener {
+            isArchiveMode = true
+            dialog.dismiss()
+            archivePickerLauncher.launch(arrayOf("*/*"))
+        }
+
+        bottomSheetView.findViewById<View>(R.id.btn_import_folder_option)?.setOnClickListener {
+            isArchiveMode = false
+            dialog.dismiss()
+            folderPickerLauncher.launch(null)
+        }
+
+        dialog.show()
+    }
+
+    fun switchToConverterTab() {
+        binding.bottomNavigation.selectedItemId = R.id.nav_item_converter
+    }
+
+
+
+    private fun updateDockBarState() {
+        if (inputUri == null) {
+            binding.btnDockAction.text = "导入世界"
+        } else {
+            binding.btnDockAction.text = if (selectedFormatDisplayName.isNotEmpty()) "开始转换" else "选择目标版本"
         }
     }
 
@@ -764,109 +684,58 @@ class MainActivity : AppCompatActivity() {
 
     private fun processSelectedWorld(uri: Uri) {
         if (isArchiveMode) {
-            // 隐藏初始状态卡片，显示世界信息卡片
+            // Show extraction progress, hide empty and loaded cards
             binding.cardInitialState.visibility = View.GONE
-            binding.cardWorldInfo.visibility = View.VISIBLE
-            
-            // 显示解压进度条
             binding.layoutExtractProgress.visibility = View.VISIBLE
-            // 隐藏世界信息卡片（World Info Bar）
-            binding.cardWorldInfoBar.visibility = View.GONE
-            // 隐藏信息卡片和按钮
-            binding.layoutInfoCards.visibility = View.GONE
-            binding.btnSelectTarget.visibility = View.GONE
+            binding.cardWorldInfo.visibility = View.GONE
 
-            if (archiveSearcher.isZipFile(uri)) {
-                archiveSearcher.searchAndExtractArchive(uri, object : ArchiveSearcher.SearchCallback {
-                    override fun onProgress(progress: Int, message: String) {
-                        runOnUiThread {
-                            binding.progressExtract.progress = progress
-                            binding.tvExtractProgress.text = message
-                        }
-                    }
-
-                    override fun onSuccess(worldDir: File) {
-                        runOnUiThread {
-                            binding.layoutExtractProgress.visibility = View.GONE
-                            binding.cardWorldInfoBar.visibility = View.VISIBLE
-                            binding.layoutInfoCards.visibility = View.VISIBLE
-                            binding.btnSelectTarget.visibility = View.VISIBLE
-
-                            if (!validateWorld()) {
-                                clearOutput()
-                                switchToInitialState()
-                                showCustomToast("世界读取失败！", isError = true)
-                                return@runOnUiThread
-                            }
-
-                            readWorldNameFromArchive(uri)
-                            worldPlatform = archiveSearcher.detectPlatformFromDirectory()
-                            val iconBitmap = loadWorldIconFromArchive(uri)
-                            if (iconBitmap != null) {
-                                binding.ivWorldIcon.setImageBitmap(iconBitmap)
-                            }
-
-                            updateWorldInfoDisplay()
-                            switchToWorldInfoState()
-                        }
-                    }
-
-                    override fun onError(errorMessage: String) {
-                        runOnUiThread {
-                            binding.layoutExtractProgress.visibility = View.GONE
-                            binding.cardWorldInfoBar.visibility = View.VISIBLE
-                            binding.layoutInfoCards.visibility = View.VISIBLE
-                            binding.btnSelectTarget.visibility = View.VISIBLE
-                            showCustomToast(errorMessage, isError = true)
-                            switchToInitialState()
-                        }
-                    }
-                })
-            } else {
-                Thread {
-                    val success = archiveSearcher.extractArchiveToInput(uri) { progress, message ->
-                        runOnUiThread {
-                            binding.progressExtract.progress = progress
-                            binding.tvExtractProgress.text = message
-                        }
-                    }
-
-                    if (!success) {
-                        runOnUiThread {
-                            binding.layoutExtractProgress.visibility = View.GONE
-                            binding.cardWorldInfoBar.visibility = View.VISIBLE
-                            binding.layoutInfoCards.visibility = View.VISIBLE
-                            binding.btnSelectTarget.visibility = View.VISIBLE
-                        }
-                        return@Thread
-                    }
-
-                    readWorldNameFromArchive(uri)
-                    worldPlatform = archiveSearcher.detectPlatformFromArchive(uri)
-                    val iconBitmap = loadWorldIconFromArchive(uri)
-
+            archiveSearcher.searchAndExtractArchive(uri, object : ArchiveSearcher.SearchCallback {
+                override fun onProgress(progress: Int, message: String) {
                     runOnUiThread {
-                        if (iconBitmap != null) {
-                            binding.ivWorldIcon.setImageBitmap(iconBitmap)
-                        }
+                        binding.progressExtract.progress = progress
+                        binding.tvExtractProgress.text = message
+                    }
+                }
 
+                override fun onSuccess(worldDir: File) {
+                    runOnUiThread {
                         binding.layoutExtractProgress.visibility = View.GONE
-                        binding.cardWorldInfoBar.visibility = View.VISIBLE
-                        binding.layoutInfoCards.visibility = View.VISIBLE
-                        binding.btnSelectTarget.visibility = View.VISIBLE
 
                         if (!validateWorld()) {
                             clearOutput()
                             switchToInitialState()
-                            showCustomToast("世界读取失败！", isError = true)
+                            showCustomToast("世界读取失败！未找到有效的世界数据", isError = true)
                             return@runOnUiThread
+                        }
+
+                        // Set platform based on .mcworld extension or directory contents
+                        worldPlatform = if (archiveSearcher.isMcWorldFile(uri)) {
+                            Platform.BEDROCK
+                        } else {
+                            archiveSearcher.detectPlatformFromDirectory()
+                        }
+
+                        readWorldNameFromArchive(uri)
+                        val iconBitmap = loadWorldIconFromArchive(uri)
+                        if (iconBitmap != null) {
+                            binding.ivWorldIcon.setImageBitmap(iconBitmap)
+                        } else {
+                            binding.ivWorldIcon.setImageResource(R.drawable.unknown)
                         }
 
                         updateWorldInfoDisplay()
                         switchToWorldInfoState()
                     }
-                }.start()
-            }
+                }
+
+                override fun onError(errorMessage: String) {
+                    runOnUiThread {
+                        binding.layoutExtractProgress.visibility = View.GONE
+                        showCustomToast(errorMessage, isError = true)
+                        switchToInitialState()
+                    }
+                }
+            })
         } else {
             readWorldNameFromDirectory(uri)
             detectPlatformFromDirectory(uri)
@@ -926,61 +795,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun switchToInitialState() {
-        binding.cardInitialState.visibility = View.VISIBLE
-        binding.cardWorldInfo.visibility = View.GONE
-        binding.cardTargetVersion.visibility = View.GONE
-        binding.btnSelectTarget.text = getString(R.string.select_target_format)
-        binding.btnSelectTarget.setOnClickListener {
-            showVersionPickerDialog()
-        }
+        inputUri = null
+        inputWorldName = ""
         selectedFormat = ""
         selectedFormatDisplayName = ""
         isWorldInfoVisible = false
-        isDeleteMode = false
-        binding.layoutDeleteOverlay.visibility = View.GONE
-        binding.layoutWorldInfoContent.alpha = 1f
-    }
-
-    private var isDeleteMode = false
-
-    private fun cancelDeleteMode() {
-        isDeleteMode = false
-        binding.layoutWorldInfoContent.alpha = 1f
-        binding.layoutDeleteOverlay.visibility = View.GONE
-    }
-
-    private fun setupDeleteModeListener() {
-        binding.cardWorldInfoBar.setOnLongClickListener {
-            isDeleteMode = true
-            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as? android.os.VibratorManager
-                vibratorManager?.defaultVibrator
-            } else {
-                @Suppress("DEPRECATION")
-                getSystemService(VIBRATOR_SERVICE) as? android.os.Vibrator
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator?.vibrate(android.os.VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                @Suppress("DEPRECATION")
-                vibrator?.vibrate(50)
-            }
-            binding.layoutWorldInfoContent.alpha = 0.3f
-            binding.layoutDeleteOverlay.visibility = View.VISIBLE
-            true
-        }
-
-        binding.layoutDeleteOverlay.setOnClickListener {
-            isDeleteMode = false
-            clearOutput()
-            switchToInitialState()
-        }
-
-        binding.cardWorldInfo.setOnClickListener {
-            if (isDeleteMode) {
-                cancelDeleteMode()
-            }
-        }
+        binding.cardInitialState.visibility = View.VISIBLE
+        binding.layoutExtractProgress.visibility = View.GONE
+        binding.cardWorldInfo.visibility = View.GONE
+        binding.tvTargetVersion.text = "点击选择目标平台与版本"
+        updateDockBarState()
     }
 
     private fun detectPlatformFromDirectory(uri: Uri) {
@@ -1109,30 +933,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun readWorldNameFromArchive(uri: Uri) {
         try {
-            val fileName = getFileNameFromUri(uri) ?: "Unknown Archive"
-            inputWorldName = fileName
-
-            contentResolver.openInputStream(uri)?.use { inputStream ->
-                val zipInputStream = ZipInputStream(inputStream)
-                var entry = zipInputStream.nextEntry
-                var foundWorld = false
-
-                while (entry != null) {
-                    val entryName = entry.name
-                    if (entryName.endsWith("level.dat")) {
-                        foundWorld = true
-                        break
-                    }
-                    entry = zipInputStream.nextEntry
-                }
-
-                if (!foundWorld) {
-                    inputWorldName = ""
+            // First try reading levelname.txt from extracted input directory
+            val inputDir = File(filesDir, "input")
+            val levelNameFile = File(inputDir, "levelname.txt")
+            if (levelNameFile.exists() && levelNameFile.isFile) {
+                val content = levelNameFile.readText().trim()
+                if (content.isNotEmpty()) {
+                    inputWorldName = content
+                    return
                 }
             }
+
+            val fileName = getFileNameFromUri(uri) ?: "World"
+            inputWorldName = fileName
         } catch (e: Exception) {
             e.printStackTrace()
-            inputWorldName = ""
+            inputWorldName = getFileNameFromUri(uri) ?: "World"
         }
     }
 
@@ -1161,16 +977,14 @@ class MainActivity : AppCompatActivity() {
     private fun updateWorldInfoDisplay() {
         binding.tvWorldName.text = inputWorldName
 
-        val color = ContextCompat.getColor(this, R.color.minecraft_green)
         if (worldPlatform == Platform.JAVA) {
-            binding.cardPlatform.strokeColor = color
             binding.tvPlatform.text = getString(R.string.java_edition)
         } else {
-            binding.cardPlatform.strokeColor = color
             binding.tvPlatform.text = getString(R.string.bedrock_edition)
         }
 
         loadWorldVersion()
+        updateDockBarState()
     }
 
     private fun loadWorldVersion() {
@@ -1194,9 +1008,19 @@ class MainActivity : AppCompatActivity() {
             }
 
             runOnUiThread {
-                versionInfo?.let {
-                    binding.tvVersion.text = NbtVersionReader.getVersionDisplay(it)
+                versionInfo?.let { info ->
+                    binding.tvVersion.text = NbtVersionReader.getVersionDisplay(info)
+                    // If platform was not explicitly fixed by .mcworld extension, sync with NBT platform detection
+                    if (!archiveSearcher.isMcWorldFile(inputUri ?: Uri.EMPTY)) {
+                        worldPlatform = info.platform
+                        binding.tvPlatform.text = if (worldPlatform == Platform.JAVA) {
+                            getString(R.string.java_edition)
+                        } else {
+                            getString(R.string.bedrock_edition)
+                        }
+                    }
                     binding.cardPlatform.visibility = View.VISIBLE
+                    updateDockBarState()
                 }
             }
         }.start()
@@ -1208,16 +1032,12 @@ class MainActivity : AppCompatActivity() {
         val platform = if (versionDisplayName.startsWith("Java")) getString(R.string.java_edition) else getString(R.string.bedrock_edition)
         val versionNum = versionDisplayName.replace("Java ", "").replace("Bedrock ", "")
         binding.tvTargetVersion.text = "转换为 ${platform} ${versionNum}"
-        binding.cardTargetVersion.visibility = View.VISIBLE
-        binding.btnSelectTarget.text = getString(R.string.start_conversion)
-        
-        binding.btnSelectTarget.setOnClickListener {
-            startConversion()
-        }
+        updateDockBarState()
     }
 
     private fun switchToWorldInfoState() {
         binding.cardInitialState.visibility = View.GONE
+        binding.layoutExtractProgress.visibility = View.GONE
         binding.cardWorldInfo.visibility = View.VISIBLE
         isWorldInfoVisible = true
         showCustomToast("世界已成功读取！")
@@ -1229,6 +1049,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
         val maxMemory = prefs.getInt("max_memory", 4096)
         val keepOriginalNbt = prefs.getBoolean("keep_original_nbt", false)
+        val lowMemoryMode = prefs.getBoolean("low_memory_mode", false)
 
         val settings = ConversionSettings(
             inputUri = inputUri!!,
@@ -1236,7 +1057,8 @@ class MainActivity : AppCompatActivity() {
             targetFormat = selectedFormat,
             sourcePlatform = worldPlatform.name,
             maxMemory = maxMemory,
-            keepOriginalNbt = keepOriginalNbt
+            keepOriginalNbt = keepOriginalNbt,
+            lowMemoryMode = lowMemoryMode
         )
 
         val intent = Intent(this, ConversionActivity::class.java).apply {

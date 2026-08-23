@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/minecraft_green"/>
+    <gradient
+        android:angle="135"
+        android:startColor="#1E4429"
+        android:centerColor="#132B1A"
+        android:endColor="#0E1E12"
+        android:type="linear"/>
     <corners
         android:topLeftRadius="0dp"
-        android:topRightRadius="16dp"
+        android:topRightRadius="28dp"
         android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="0dp"/>
+        android:bottomRightRadius="28dp"/>
 </shape>

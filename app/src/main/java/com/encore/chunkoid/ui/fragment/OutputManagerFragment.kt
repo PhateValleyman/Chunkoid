@@ -7,8 +7,12 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,37 +81,19 @@ class OutputManagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupBackground()
         setupRecyclerView()
         setupFab()
-        loadWorlds()
-    }
-
-    private fun setupBackground() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val selectedTheme = prefs.getString("selected_theme", "bg")
-        
-        if (selectedTheme == SettingsActivity.THEME_CUSTOM) {
-            val customBgFile = File(requireContext().filesDir, SettingsActivity.CUSTOM_BG_FILE_NAME)
-            if (customBgFile.exists()) {
-                try {
-                    val bitmap = android.graphics.BitmapFactory.decodeFile(customBgFile.path)
-                    val darkenedBitmap = BackgroundUtils.applyDarkening(bitmap)
-                    binding.ivBackground.setImageBitmap(darkenedBitmap)
-                } catch (e: Exception) {
-                    binding.ivBackground.setImageResource(R.drawable.bg)
-                }
-            } else {
-                binding.ivBackground.setImageResource(R.drawable.bg)
-            }
-        } else {
-            val drawableRes = when (selectedTheme) {
-                "bg2" -> R.drawable.bg2
-                "bg4" -> R.drawable.bg4
-                else -> R.drawable.bg
-            }
-            binding.ivBackground.setImageResource(drawableRes)
+        view.findViewById<View>(R.id.btn_go_to_converter)?.setOnClickListener {
+            (activity as? com.encore.chunkoid.ui.activity.MainActivity)?.switchToConverterTab()
         }
+        if (BackgroundUtils.isCustomBackgroundEnabled(requireContext())) {
+            BackgroundUtils.applyUnifiedMonetTheme(
+                binding.root as ViewGroup,
+                BackgroundUtils.isSystemInDarkTheme(requireContext()),
+                requireContext()
+            )
+        }
+        loadWorlds()
     }
 
     private fun setupRecyclerView() {
@@ -189,11 +175,13 @@ class OutputManagerFragment : Fragment() {
     private fun showEmptyState() {
         binding.rvWorlds.visibility = View.GONE
         binding.tvEmpty.visibility = View.VISIBLE
+        binding.fabStartGame.visibility = View.GONE
     }
 
     private fun showWorldList() {
         binding.rvWorlds.visibility = View.VISIBLE
         binding.tvEmpty.visibility = View.GONE
+        binding.fabStartGame.visibility = View.VISIBLE
         worldAdapter.notifyDataSetChanged()
     }
 
@@ -345,46 +333,51 @@ class OutputManagerFragment : Fragment() {
     }
 
     private fun showGameLauncherMenu() {
-        data class GameInfo(val iconRes: Int, val packageName: String, val displayName: String)
+        data class GameInfo(val iconRes: Int, val packageName: String, val displayName: String, val subtitle: String)
         
         val games = listOf(
-            GameInfo(R.drawable.ne, "com.netease.x19", "基岩版：网易"),
-            GameInfo(R.drawable.be, "com.mojang.minecraftpe", "基岩版：国际版"),
-            GameInfo(R.drawable.pojav, "net.kdt.pojavlaunch", "Java版：Pojav"),
-            GameInfo(R.drawable.fcl, "com.tungsten.fcl", "Java版：Fcl"),
-            GameInfo(R.drawable.zl2, "com.movtery.zalithlauncher.v2", "Java版：ZL2")
+            GameInfo(R.drawable.ne, "com.netease.x19", "基岩版：网易", "网易 Minecraft 客户端"),
+            GameInfo(R.drawable.be, "com.mojang.minecraftpe", "基岩版：国际版", "Mojang Minecraft PE"),
+            GameInfo(R.drawable.pojav, "net.kdt.pojavlaunch", "Java版：Pojav", "PojavLauncher 启动器"),
+            GameInfo(R.drawable.fcl, "com.tungsten.fcl", "Java版：Fcl", "Fold Craft Launcher 启动器"),
+            GameInfo(R.drawable.zl2, "com.movtery.zalithlauncher.v2", "Java版：ZL2", "Zalith Launcher 启动器")
         )
 
-        val builder = android.app.AlertDialog.Builder(requireContext(), R.style.DialogTheme)
-        builder.setTitle("选择启动项")
-        
-     // 使用自定义适配器显示图标
-      builder.setAdapter(object : android.widget.BaseAdapter() {
-          override fun getCount(): Int = games.size
+        val bottomSheetDialog = com.google.android.material.bottomsheet.BottomSheetDialog(requireContext())
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_game_launcher, null)
+        val container = view.findViewById<LinearLayout>(R.id.ll_launcher_items)
+        val pm = requireContext().packageManager
 
-          override fun getItem(position: Int): Any = games[position]
+        for (game in games) {
+            val itemView = LayoutInflater.from(requireContext()).inflate(R.layout.launcher_menu_item, container, false)
+            val ivIcon = itemView.findViewById<ImageView>(R.id.iv_icon)
+            val tvTitle = itemView.findViewById<TextView>(R.id.tv_title)
+            val tvSubtitle = itemView.findViewById<TextView>(R.id.tv_subtitle)
+            val tvStatus = itemView.findViewById<TextView>(R.id.tv_status)
 
-          override fun getItemId(position: Int): Long = position.toLong()
+            ivIcon.setImageResource(game.iconRes)
+            tvTitle.text = game.displayName
+            tvSubtitle.text = game.subtitle
 
-          override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-              val view = convertView ?: LayoutInflater.from(requireContext())
-                  .inflate(R.layout.launcher_menu_item, parent, false)
+            val isInstalled = pm.getLaunchIntentForPackage(game.packageName) != null
+            if (isInstalled) {
+                tvStatus.text = "已安装"
+                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_primary))
+            } else {
+                tvStatus.text = "未安装"
+                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_outline))
+            }
 
-              val icon = view.findViewById<android.widget.ImageView>(R.id.iv_icon)
-              val title = view.findViewById<android.widget.TextView>(R.id.tv_title)
+            itemView.setOnClickListener {
+                bottomSheetDialog.dismiss()
+                launchMinecraft(game.packageName)
+            }
 
-              icon.setImageResource(games[position].iconRes)
-              title.text = games[position].displayName
-
-              return view
+            container.addView(itemView)
         }
-       }) { _, which ->
-           launchMinecraft(games[which].packageName)
-       }
 
-       val dialog = builder.create()
-       dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_rounded_background)
-      dialog.show()
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
     }
 
     private fun launchMinecraft(packageName: String) {

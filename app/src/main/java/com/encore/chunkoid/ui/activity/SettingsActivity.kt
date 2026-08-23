@@ -7,37 +7,43 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.encore.chunkoid.R
 import com.encore.chunkoid.databinding.ActivitySettingsBinding
 import com.encore.chunkoid.utils.BackgroundUtils
 import com.encore.chunkoid.utils.ToastUtils
+import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
 
     private var themeExpanded = false
+    private var customBgExpanded = false
     private var outputExpanded = false
     private var developerExpanded = false
 
+    private val wallpaperPickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            processSelectedWallpaper(uri)
+        }
+    }
+
     companion object {
         const val CHUNKOID_OUTPUT_DIR = "chunkoid output"
-        const val KEY_SELECTED_THEME = "selected_theme"
-        const val THEME_BEDROCK_BLACK = "bg"
-        const val THEME_JUNGLE = "bg2"
-        const val THEME_FURRY = "bg4"
-        const val THEME_CUSTOM = "custom"
-        const val CUSTOM_BG_FILE_NAME = "custom_bg.jpg"
+        const val KEY_NIGHT_MODE = "night_mode"
+        const val MODE_SYSTEM = "system"
+        const val MODE_LIGHT = "light"
+        const val MODE_DARK = "dark"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +54,12 @@ class SettingsActivity : AppCompatActivity() {
 
         setupToolbar()
         setupSettings()
+        setupCustomWallpaperSettings()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        BackgroundUtils.applyCustomBackground(this)
     }
 
     private fun setupToolbar() {
@@ -76,24 +88,34 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit().putBoolean("keep_original_nbt", isChecked).apply()
         }
 
+        binding.switchLowMemory.isChecked = prefs.getBoolean("low_memory_mode", false)
+        binding.switchLowMemory.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("low_memory_mode", isChecked).apply()
+        }
+
         binding.itemThemeHeader.setOnClickListener {
             toggleTheme()
         }
 
-        val currentTheme = prefs.getString(KEY_SELECTED_THEME, THEME_BEDROCK_BLACK)
-        updateThemeChecks(currentTheme)
+        val currentMode = prefs.getString(KEY_NIGHT_MODE, MODE_SYSTEM)
+        updateThemeChecks(currentMode)
 
-        binding.themeOption1.setOnClickListener {
-            selectTheme(THEME_BEDROCK_BLACK)
+        binding.themeOptionSystem.setOnClickListener {
+            selectNightMode(MODE_SYSTEM)
         }
-        binding.themeOption3.setOnClickListener {
-            selectTheme(THEME_JUNGLE)
+        binding.themeOptionLight.setOnClickListener {
+            selectNightMode(MODE_LIGHT)
         }
-        binding.themeOption5.setOnClickListener {
-            selectTheme(THEME_FURRY)
+        binding.themeOptionDark.setOnClickListener {
+            selectNightMode(MODE_DARK)
         }
-        binding.themeOptionCustom.setOnClickListener {
-            pickCustomBackground()
+
+        val isDynamicColorSupported = com.google.android.material.color.DynamicColors.isDynamicColorAvailable()
+        binding.switchDynamicColor.isEnabled = isDynamicColorSupported
+        binding.switchDynamicColor.isChecked = isDynamicColorSupported && prefs.getBoolean("dynamic_color", false)
+        binding.switchDynamicColor.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("dynamic_color", isChecked).apply()
+            ToastUtils.show(this, "动态取色设置已更新，重启应用生效")
         }
 
         binding.itemOutputHeader.setOnClickListener {
@@ -123,49 +145,130 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private val customBackgroundPickerLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { saveCustomBackground(it) }
-    }
+    private fun setupCustomWallpaperSettings() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-    private fun pickCustomBackground() {
-        customBackgroundPickerLauncher.launch("image/*")
-    }
+        binding.itemCustomWallpaperHeader.setOnClickListener {
+            toggleCustomWallpaper()
+        }
 
-    private fun saveCustomBackground(uri: Uri) {
-        try {
-            contentResolver.openInputStream(uri)?.use { inputStream ->
-                val customBgFile = File(filesDir, CUSTOM_BG_FILE_NAME)
-                FileOutputStream(customBgFile).use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-                selectTheme(THEME_CUSTOM)
-                ToastUtils.show(this, getString(R.string.custom_bg_set))
+        val isBgEnabled = prefs.getBoolean(BackgroundUtils.KEY_CUSTOM_BG_ENABLED, false)
+        binding.switchCustomWallpaper.isChecked = isBgEnabled
+
+        binding.switchCustomWallpaper.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked && !BackgroundUtils.getWallpaperFile(this).exists()) {
+                // Prompt user to pick wallpaper
+                wallpaperPickerLauncher.launch("image/*")
+            } else {
+                prefs.edit().putBoolean(BackgroundUtils.KEY_CUSTOM_BG_ENABLED, isChecked).apply()
+                recreate()
             }
-        } catch (e: Exception) {
-            ToastUtils.show(this, getString(R.string.custom_bg_error))
+        }
+
+        binding.btnPickWallpaper.setOnClickListener {
+            wallpaperPickerLauncher.launch("image/*")
+        }
+
+        binding.switchExtractBgColor.isChecked = prefs.getBoolean(BackgroundUtils.KEY_EXTRACT_COLOR, true)
+        binding.switchExtractBgColor.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean(BackgroundUtils.KEY_EXTRACT_COLOR, isChecked).apply()
+            recreate()
+        }
+
+        val dimPercent = prefs.getInt(BackgroundUtils.KEY_BG_DIM, 25)
+        binding.sliderBgDim.value = dimPercent.toFloat()
+        binding.tvDimValue.text = "$dimPercent%"
+
+        binding.sliderBgDim.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                val intVal = value.toInt()
+                binding.tvDimValue.text = "$intVal%"
+                prefs.edit().putInt(BackgroundUtils.KEY_BG_DIM, intVal).apply()
+            }
+        }
+
+        binding.sliderBgDim.addOnSliderTouchListener(object : com.google.android.material.slider.Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: com.google.android.material.slider.Slider) {}
+            override fun onStopTrackingTouch(slider: com.google.android.material.slider.Slider) {
+                if (BackgroundUtils.isCustomBackgroundEnabled(this@SettingsActivity)) {
+                    recreate()
+                }
+            }
+        })
+
+        binding.btnClearWallpaper.setOnClickListener {
+            BackgroundUtils.clearCustomWallpaper(this)
+            updateWallpaperPreview()
+            binding.switchCustomWallpaper.isChecked = false
+            ToastUtils.show(this, getString(R.string.wallpaper_cleared_success))
+            recreate()
+        }
+
+        updateWallpaperPreview()
+    }
+
+    private fun processSelectedWallpaper(uri: Uri) {
+        lifecycleScope.launch {
+            ToastUtils.show(this@SettingsActivity, "正在处理壁纸与提取主题色彩...")
+            val success = BackgroundUtils.saveCustomWallpaper(this@SettingsActivity, uri)
+            if (success) {
+                val prefs = PreferenceManager.getDefaultSharedPreferences(this@SettingsActivity)
+                prefs.edit().putBoolean(BackgroundUtils.KEY_CUSTOM_BG_ENABLED, true).apply()
+                binding.switchCustomWallpaper.isChecked = true
+                updateWallpaperPreview()
+                ToastUtils.show(this@SettingsActivity, getString(R.string.wallpaper_set_success))
+                recreate()
+            } else {
+                ToastUtils.show(this@SettingsActivity, "壁纸处理失败，请重试")
+            }
+        }
+    }
+
+    private fun updateWallpaperPreview() {
+        val wallpaperFile = BackgroundUtils.getWallpaperFile(this)
+        if (wallpaperFile.exists()) {
+            val bitmap = BitmapFactory.decodeFile(wallpaperFile.absolutePath)
+            if (bitmap != null) {
+                binding.ivWallpaperPreview.setImageBitmap(bitmap)
+                binding.tvWallpaperFilename.text = "已应用自定义壁纸 (${bitmap.width}x${bitmap.height})"
+                binding.btnClearWallpaper.visibility = View.VISIBLE
+            }
+        } else {
+            binding.ivWallpaperPreview.setImageResource(R.drawable.ic_texture)
+            binding.tvWallpaperFilename.text = getString(R.string.select_wallpaper_desc)
+            binding.btnClearWallpaper.visibility = View.GONE
         }
     }
 
     private fun toggleTheme() {
         themeExpanded = !themeExpanded
         if (themeExpanded) {
-            binding.layoutThemeContent.visibility = android.view.View.VISIBLE
+            binding.layoutThemeContent.visibility = View.VISIBLE
             rotateArrow(binding.ivThemeArrow, true)
         } else {
-            binding.layoutThemeContent.visibility = android.view.View.GONE
+            binding.layoutThemeContent.visibility = View.GONE
             rotateArrow(binding.ivThemeArrow, false)
+        }
+    }
+
+    private fun toggleCustomWallpaper() {
+        customBgExpanded = !customBgExpanded
+        if (customBgExpanded) {
+            binding.layoutCustomWallpaperContent.visibility = View.VISIBLE
+            rotateArrow(binding.ivCustomWallpaperArrow, true)
+        } else {
+            binding.layoutCustomWallpaperContent.visibility = View.GONE
+            rotateArrow(binding.ivCustomWallpaperArrow, false)
         }
     }
 
     private fun toggleOutput() {
         outputExpanded = !outputExpanded
         if (outputExpanded) {
-            binding.layoutOutputContent.visibility = android.view.View.VISIBLE
+            binding.layoutOutputContent.visibility = View.VISIBLE
             rotateArrow(binding.ivOutputArrow, true)
         } else {
-            binding.layoutOutputContent.visibility = android.view.View.GONE
+            binding.layoutOutputContent.visibility = View.GONE
             rotateArrow(binding.ivOutputArrow, false)
         }
     }
@@ -173,10 +276,10 @@ class SettingsActivity : AppCompatActivity() {
     private fun toggleDeveloper() {
         developerExpanded = !developerExpanded
         if (developerExpanded) {
-            binding.layoutDeveloperContent.visibility = android.view.View.VISIBLE
+            binding.layoutDeveloperContent.visibility = View.VISIBLE
             rotateArrow(binding.ivDeveloperArrow, true)
         } else {
-            binding.layoutDeveloperContent.visibility = android.view.View.GONE
+            binding.layoutDeveloperContent.visibility = View.GONE
             rotateArrow(binding.ivDeveloperArrow, false)
         }
     }
@@ -216,18 +319,25 @@ class SettingsActivity : AppCompatActivity() {
         ToastUtils.show(this, getString(R.string.output_cleared) + " ($count)")
     }
 
-    private fun selectTheme(theme: String) {
+    private fun selectNightMode(mode: String) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        prefs.edit().putString(KEY_SELECTED_THEME, theme).apply()
-        updateThemeChecks(theme)
-        ToastUtils.show(this, getString(R.string.theme_changed_immediate))
+        prefs.edit().putString(KEY_NIGHT_MODE, mode).apply()
+        updateThemeChecks(mode)
+
+        when (mode) {
+            MODE_LIGHT -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
+            MODE_DARK -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
+            else -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
+
+        ToastUtils.show(this, getString(R.string.theme_changed))
     }
 
-    private fun updateThemeChecks(selectedTheme: String?) {
-        binding.themeCheck1.visibility = if (selectedTheme == THEME_BEDROCK_BLACK) android.view.View.VISIBLE else android.view.View.GONE
-        binding.themeCheck3.visibility = if (selectedTheme == THEME_JUNGLE) android.view.View.VISIBLE else android.view.View.GONE
-        binding.themeCheck5.visibility = if (selectedTheme == THEME_FURRY) android.view.View.VISIBLE else android.view.View.GONE
-        binding.themeCheckCustom.visibility = if (selectedTheme == THEME_CUSTOM) android.view.View.VISIBLE else android.view.View.GONE
+    private fun updateThemeChecks(selectedMode: String?) {
+        val mode = selectedMode ?: MODE_SYSTEM
+        binding.themeCheckSystem.visibility = if (mode == MODE_SYSTEM) View.VISIBLE else View.GONE
+        binding.themeCheckLight.visibility = if (mode == MODE_LIGHT) View.VISIBLE else View.GONE
+        binding.themeCheckDark.visibility = if (mode == MODE_DARK) View.VISIBLE else View.GONE
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

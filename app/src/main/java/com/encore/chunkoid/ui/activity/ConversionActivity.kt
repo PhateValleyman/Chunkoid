@@ -9,6 +9,7 @@ import android.os.Environment
 import android.os.IBinder
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -50,14 +51,7 @@ class ConversionActivity : AppCompatActivity() {
         binding = ActivityConversionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Make status bar transparent and allow content to draw under it
-        window.setFlags(
-            android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
-        
-        // Set status bar icons to light mode for visibility on dark backgrounds
+        // Set status bar appearance
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
 
         settings = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -67,7 +61,6 @@ class ConversionActivity : AppCompatActivity() {
             intent.getParcelableExtra(EXTRA_SETTINGS)
         }) ?: throw IllegalArgumentException("Settings required")
 
-        setupBackground()
         setupToolbar()
         setupRecyclerView()
         setupClickListeners()
@@ -76,31 +69,9 @@ class ConversionActivity : AppCompatActivity() {
         applyNoElevationToCards()
     }
 
-    private fun setupBackground() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val selectedTheme = prefs.getString("selected_theme", "bg")
-        
-        if (selectedTheme == SettingsActivity.THEME_CUSTOM) {
-            val customBgFile = File(filesDir, SettingsActivity.CUSTOM_BG_FILE_NAME)
-            if (customBgFile.exists()) {
-                try {
-                    val bitmap = android.graphics.BitmapFactory.decodeFile(customBgFile.path)
-                    val darkenedBitmap = BackgroundUtils.applyDarkening(bitmap)
-                    binding.ivBackground.setImageBitmap(darkenedBitmap)
-                } catch (e: Exception) {
-                    binding.ivBackground.setImageResource(R.drawable.bg)
-                }
-            } else {
-                binding.ivBackground.setImageResource(R.drawable.bg)
-            }
-        } else {
-            val drawableRes = when (selectedTheme) {
-                "bg2" -> R.drawable.bg2
-                "bg4" -> R.drawable.bg4
-                else -> R.drawable.bg
-            }
-            binding.ivBackground.setImageResource(drawableRes)
-        }
+    override fun onResume() {
+        super.onResume()
+        BackgroundUtils.applyCustomBackground(this)
     }
 
     private fun applyNoElevationToCards() {
@@ -183,8 +154,8 @@ class ConversionActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.hide()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.conversion_title)
     }
 
     private fun setupRecyclerView() {
@@ -196,6 +167,12 @@ class ConversionActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
+        binding.layoutToggleLogs.setOnClickListener {
+            val isCurrentlyVisible = binding.layoutLogContent.visibility == View.VISIBLE
+            binding.layoutLogContent.visibility = if (isCurrentlyVisible) View.GONE else View.VISIBLE
+            binding.ivToggleLogs.rotation = if (isCurrentlyVisible) 0f else 180f
+        }
+
         binding.btnCancel.setOnClickListener {
             if (isConversionRunning) {
                 cancelConversion()
@@ -524,6 +501,8 @@ class ConversionActivity : AppCompatActivity() {
         } else {
             binding.tvStatus.text = getString(R.string.conversion_failed)
             binding.tvStatus.setTextColor(getColor(R.color.minecraft_red))
+            binding.layoutLogContent.visibility = View.VISIBLE
+            binding.ivToggleLogs.rotation = 180f
             ToastUtils.show(this, getString(R.string.conversion_failed), isError = true)
         }
     }

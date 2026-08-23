@@ -24,7 +24,6 @@ class AboutActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.navigationIcon?.setTint(ContextCompat.getColor(this, R.color.white))
 
         val btnCheckUpdate = findViewById<Button>(R.id.btn_check_update)
         btnCheckUpdate.setOnClickListener {
@@ -95,6 +94,11 @@ class AboutActivity : AppCompatActivity() {
                 removeCardElevation(child)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        BackgroundUtils.applyCustomBackground(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

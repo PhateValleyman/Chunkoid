@@ -22,6 +22,7 @@
     <string name="donate">捐赠</string>
 
     <!-- Main Activity -->
+    <string name="converter_title">转换工作台</string>
     <string name="start_conversion">开始转换</string>
     <string name="nav_desc">世界转换一站式套件</string>
     <string name="settings">设置</string>
@@ -216,11 +217,16 @@
     <string name="keep_original_nbt">保留原始NBT</string>
     <string name="keep_original_nbt_desc">保留原始存档物品栏数据，在相同平台转换时建议启用</string>
     <string name="general_settings">通用</string>
-    <string name="theme_switch">外观切换</string>
-    <string name="theme_bedrock_black">基岩黑</string>
-    <string name="theme_jungle">MC丛林</string>
-    <string name="theme_furry">Furry</string>
-    <string name="theme_custom">选择背景图</string>
+    <string name="theme_switch">外观与深色模式</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_system_desc">根据系统设置自动切换浅色或深色</string>
+    <string name="theme_light">浅色模式</string>
+    <string name="theme_light_desc">始终使用明亮的浅色主题</string>
+    <string name="theme_dark">深色模式</string>
+    <string name="theme_dark_desc">始终使用沉浸的深色主题</string>
+    <string name="dynamic_color">动态取色 (Material You)</string>
+    <string name="dynamic_color_desc">根据系统壁纸自动提取界面强调色 (需 Android 12+)</string>
+    <string name="theme_changed">主题模式已切换！</string>
     <string name="output_management">输出管理</string>
     <string name="developer_mode">开发者选项</string>
     <string name="clear_all_output">清空所有输出世界</string>
@@ -232,9 +238,6 @@
     <string name="enable_conversion_log_output">启用转换日志输出功能</string>
     <string name="enable_conversion_log_output_desc">（该功能适用于世界转换出现错误）开启之后可在输出世界的导出选栏中找到该选项（注：无法查看之前没有启用转换日志输出的世界日志）你可以把这份日志输出发给社区寻求帮助</string>
     <string name="output_cleared">所有输出世界已清空</string>
-    <string name="theme_changed_immediate">主页面外观已更换！</string>
-    <string name="custom_bg_set">自定义背景设置成功！</string>
-    <string name="custom_bg_error">自定义背景设置失败</string>
 
     <!-- Messages -->
     <string name="error_no_input">请选择一个输入世界</string>
@@ -329,4 +332,19 @@
     <string name="java_to_bedrock">Java &gt; 基岩</string>
     <string name="bedrock_to_java">基岩 &gt; Java</string>
     <string name="export_as_mcpack">导出为.mcpack</string>
+    <string name="export_pack_as_archive">导出材质包压缩文件</string>
+
+    <!-- 自定义背景与毛玻璃 -->
+    <string name="custom_wallpaper_title">自定义背景与毛玻璃</string>
+    <string name="custom_wallpaper_desc">设置个性化背景并开启全站控件磨砂透视与动态取色</string>
+    <string name="enable_custom_wallpaper">启用自定义背景</string>
+    <string name="select_wallpaper">选择背景图片</string>
+    <string name="select_wallpaper_desc">点击从系统相册选取背景图片</string>
+    <string name="extract_wallpaper_color">壁纸动态取色 (Palette)</string>
+    <string name="extract_wallpaper_color_desc">通过 Palette 算法自动提取壁纸核心主色</string>
+    <string name="wallpaper_dim">背景遮罩浓度</string>
+    <string name="wallpaper_dim_desc">调整背景暗化程度，保证文字与卡片对比度</string>
+    <string name="clear_wallpaper">清除背景图片</string>
+    <string name="wallpaper_set_success">自定义背景设置成功！</string>
+    <string name="wallpaper_cleared_success">已清除自定义背景</string>
 </resources>

@@ -278,13 +278,22 @@ class ConversionService : Service() {
 
             val args = mutableListOf(
                 "-Xms256m",
-                "-Xmx${settings.maxMemory}m",
+                "-Xmx${settings.maxMemory}m"
+            )
+            
+            if (settings.lowMemoryMode) {
+                args.add("-XX:+UseSerialGC")
+                args.add("-XX:MinHeapFreeRatio=10")
+                args.add("-XX:MaxHeapFreeRatio=20")
+                args.add("-Djava.util.concurrent.ForkJoinPool.common.parallelism=1")
+            }
+            
+            args.addAll(listOf(
                 "-jar", jarPath,
                 "-i", inputDir.absolutePath,
                 "-o", outputDir.absolutePath,
                 "-f", settings.targetFormat
-            )
-
+            ))
             if (settings.blockMappings != null) {
                 args.add("-bm")
                 args.add(settings.blockMappings)

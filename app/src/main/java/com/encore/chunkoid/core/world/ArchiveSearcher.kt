@@ -29,43 +29,37 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
                 contentResolver.openInputStream(uri)?.use { inputStream ->
                     val zipInputStream = ZipInputStream(inputStream)
                     var entry = zipInputStream.nextEntry
+                    var extractedCount = 0
+                    val buffer = ByteArray(8192)
 
-                    var totalEntries = 0
                     while (entry != null) {
-                        totalEntries++
-                        entry = zipInputStream.nextEntry
-                    }
-
-                    contentResolver.openInputStream(uri)?.use { inputStream2 ->
-                        val zipInputStream2 = ZipInputStream(inputStream2)
-                        entry = zipInputStream2.nextEntry
-                        var currentEntry = 0
-
-                        while (entry != null) {
-                            val entryName = entry.name
-                            val entryFile = File(inputDir, entryName)
-
-                            if (entry.isDirectory) {
-                                entryFile.mkdirs()
-                                entryFile.setReadable(true)
-                                entryFile.setWritable(true)
-                            } else {
-                                entryFile.parentFile?.mkdirs()
-                                entryFile.outputStream().use { outputStream ->
-                                    zipInputStream2.copyTo(outputStream)
-                                }
-                                entryFile.setReadable(true)
-                                entryFile.setWritable(true)
-                            }
-
-                            zipInputStream2.closeEntry()
-                            entry = zipInputStream2.nextEntry
-
-                            currentEntry++
-                            val progress = (currentEntry * 50 / totalEntries).coerceAtMost(49)
-                            callback.onProgress(progress, "正在解压归档...")
+                        val entryName = entry.name
+                        // Avoid Zip Slip vulnerability
+                        val entryFile = File(inputDir, entryName)
+                        if (!entryFile.canonicalPath.startsWith(inputDir.canonicalPath)) {
+                            entry = zipInputStream.nextEntry
+                            continue
                         }
-                        zipInputStream2.close()
+
+                        if (entry.isDirectory) {
+                            entryFile.mkdirs()
+                        } else {
+                            entryFile.parentFile?.mkdirs()
+                            entryFile.outputStream().use { outputStream ->
+                                var bytesRead: Int
+                                while (zipInputStream.read(buffer).also { bytesRead = it } != -1) {
+                                    outputStream.write(buffer, 0, bytesRead)
+                                }
+                            }
+                        }
+
+                        zipInputStream.closeEntry()
+                        entry = zipInputStream.nextEntry
+                        extractedCount++
+                        if (extractedCount % 10 == 0) {
+                            val progress = (extractedCount / 5).coerceIn(5, 50)
+                            callback.onProgress(progress, "正在解压归档 ($extractedCount 个文件)...")
+                        }
                     }
                     zipInputStream.close()
                 }
@@ -157,12 +151,16 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
 
     fun isZipFile(uri: Uri): Boolean {
         val fileName = getFileName(uri)
-        return fileName?.lowercase()?.endsWith(".zip") == true
+        return fileName?.lowercase()?.endsWith(".zip") == true ||
+               uri.path?.lowercase()?.endsWith(".zip") == true ||
+               uri.lastPathSegment?.lowercase()?.endsWith(".zip") == true
     }
 
     fun isMcWorldFile(uri: Uri): Boolean {
         val fileName = getFileName(uri)
-        return fileName?.lowercase()?.endsWith(".mcworld") == true
+        return fileName?.lowercase()?.endsWith(".mcworld") == true ||
+               uri.path?.lowercase()?.endsWith(".mcworld") == true ||
+               uri.lastPathSegment?.lowercase()?.endsWith(".mcworld") == true
     }
 
     private fun getFileName(uri: Uri): String? {
@@ -193,44 +191,36 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 val zipInputStream = ZipInputStream(inputStream)
                 var entry = zipInputStream.nextEntry
+                var extractedCount = 0
+                val buffer = ByteArray(8192)
 
-                var totalEntries = 0
                 while (entry != null) {
-                    totalEntries++
-                    entry = zipInputStream.nextEntry
-                }
-
-                contentResolver.openInputStream(uri)?.use { inputStream2 ->
-                    val zipInputStream2 = ZipInputStream(inputStream2)
-                    entry = zipInputStream2.nextEntry
-                    var currentEntry = 0
-
-                    while (entry != null) {
-                        val entryName = entry.name
-                        val entryFile = File(inputDir, entryName)
-
-                        if (entry.isDirectory) {
-                            entryFile.mkdirs()
-                            entryFile.setReadable(true)
-                            entryFile.setWritable(true)
-                        } else {
-                            entryFile.parentFile?.mkdirs()
-                            entryFile.outputStream().use { outputStream ->
-                                zipInputStream2.copyTo(outputStream)
-                            }
-                            entryFile.setReadable(true)
-                            entryFile.setWritable(true)
-                        }
-
-                        zipInputStream2.closeEntry()
-                        entry = zipInputStream2.nextEntry
-
-                        currentEntry++
-                        val progress = (currentEntry * 100 / totalEntries).coerceAtMost(99)
-                        progressCallback?.invoke(progress, "正在解压归档...")
+                    val entryName = entry.name
+                    val entryFile = File(inputDir, entryName)
+                    if (!entryFile.canonicalPath.startsWith(inputDir.canonicalPath)) {
+                        entry = zipInputStream.nextEntry
+                        continue
                     }
 
-                    zipInputStream2.close()
+                    if (entry.isDirectory) {
+                        entryFile.mkdirs()
+                    } else {
+                        entryFile.parentFile?.mkdirs()
+                        entryFile.outputStream().use { outputStream ->
+                            var bytesRead: Int
+                            while (zipInputStream.read(buffer).also { bytesRead = it } != -1) {
+                                outputStream.write(buffer, 0, bytesRead)
+                            }
+                        }
+                    }
+
+                    zipInputStream.closeEntry()
+                    entry = zipInputStream.nextEntry
+                    extractedCount++
+                    if (extractedCount % 10 == 0) {
+                        val progress = (extractedCount / 5).coerceIn(5, 95)
+                        progressCallback?.invoke(progress, "正在解压归档 ($extractedCount 个文件)...")
+                    }
                 }
 
                 zipInputStream.close()
@@ -246,31 +236,43 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
 
     fun detectPlatformFromDirectory(): Platform {
         val inputDir = File(filesDir, "input")
+        val dbFolder = File(inputDir, "db")
         val regionFolder = File(inputDir, "region")
         val dimensionsFolder = File(inputDir, "dimensions")
-        return if ((regionFolder.exists() && regionFolder.isDirectory) ||
-                   (dimensionsFolder.exists() && dimensionsFolder.isDirectory)) {
-            Platform.JAVA
-        } else {
-            Platform.BEDROCK
+
+        if (dbFolder.exists() && dbFolder.isDirectory) {
+            return Platform.BEDROCK
         }
+        if ((regionFolder.exists() && regionFolder.isDirectory) ||
+            (dimensionsFolder.exists() && dimensionsFolder.isDirectory)) {
+            return Platform.JAVA
+        }
+        return Platform.BEDROCK
     }
 
     fun detectPlatformFromArchive(uri: Uri): Platform {
+        if (isMcWorldFile(uri)) {
+            return Platform.BEDROCK
+        }
+
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 val zipInputStream = ZipInputStream(inputStream)
                 var entry = zipInputStream.nextEntry
+                var hasDbFolder = false
                 var hasRegionFolder = false
                 var hasDimensionsFolder = false
 
                 while (entry != null) {
                     val entryName = entry.name.lowercase()
 
-                    if (entryName.startsWith("region/") || entryName == "region") {
+                    if (entryName.contains("db/") || entryName.endsWith("/db")) {
+                        hasDbFolder = true
+                    }
+                    if (entryName.contains("region/") || entryName.endsWith("/region")) {
                         hasRegionFolder = true
                     }
-                    if (entryName.startsWith("dimensions/") || entryName == "dimensions") {
+                    if (entryName.contains("dimensions/") || entryName.endsWith("/dimensions")) {
                         hasDimensionsFolder = true
                     }
 
@@ -279,7 +281,8 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
 
                 zipInputStream.close()
 
-                return if (hasRegionFolder || hasDimensionsFolder) Platform.JAVA else Platform.BEDROCK
+                if (hasDbFolder && !hasRegionFolder) return Platform.BEDROCK
+                if (hasRegionFolder || hasDimensionsFolder) return Platform.JAVA
             }
         } catch (e: Exception) {
             e.printStackTrace()

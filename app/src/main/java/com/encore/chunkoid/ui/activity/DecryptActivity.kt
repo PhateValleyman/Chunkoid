@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,7 @@ import com.encore.chunkoid.databinding.ActivityDecrypterBinding
 import com.encore.chunkoid.decryptor.WorldDecryptor
 import com.encore.chunkoid.model.LogEntry
 import com.encore.chunkoid.ui.adapter.LogAdapter
+import com.encore.chunkoid.utils.BackgroundUtils
 import com.encore.chunkoid.utils.ToastUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,6 +77,11 @@ class DecryptActivity : AppCompatActivity() {
         applyNoElevationToCards()
     }
 
+    override fun onResume() {
+        super.onResume()
+        BackgroundUtils.applyCustomBackground(this)
+    }
+
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -89,6 +96,16 @@ class DecryptActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
+        binding.layoutToggleLogs.setOnClickListener {
+            val isCurrentlyVisible = binding.layoutLogContent.visibility == android.view.View.VISIBLE
+            binding.layoutLogContent.visibility = if (isCurrentlyVisible) android.view.View.GONE else android.view.View.VISIBLE
+            binding.ivToggleLogs.rotation = if (isCurrentlyVisible) 0f else 180f
+        }
+
+        binding.cardSelectWorld.setOnClickListener {
+            openDocumentTreeLauncher.launch(null)
+        }
+
         binding.tvSelectWorld.setOnClickListener {
             openDocumentTreeLauncher.launch(null)
         }
@@ -137,6 +154,8 @@ class DecryptActivity : AppCompatActivity() {
                     override fun onError(error: String) {
                         lifecycleScope.launch(Dispatchers.Main) {
                             binding.tvStatus.text = getString(R.string.decrypt_failed)
+                            binding.layoutLogContent.visibility = android.view.View.VISIBLE
+                            binding.ivToggleLogs.rotation = 180f
                             addLog("解密失败: $error", LogEntry.Level.ERROR)
                             ToastUtils.show(this@DecryptActivity, "${getString(R.string.decrypt_failed)}: $error", isError = true)
                             cleanTempFolders()

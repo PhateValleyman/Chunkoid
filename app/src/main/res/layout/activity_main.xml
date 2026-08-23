@@ -6,492 +6,392 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
-    tools:context=".MainActivity">
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="false">
 
-    <!-- Background Image -->
-    <ImageView
-        android:id="@+id/iv_background"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bg"
-        android:scaleType="centerCrop"
-        android:fitsSystemWindows="false" />
+        android:fitsSystemWindows="false">
 
-    <!-- Main Content -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        <!-- Full-Screen Custom Wallpaper Layer (Zero flicker, zero black screen) -->
+        <ImageView
+            android:id="@+id/iv_custom_wallpaper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
-        <!-- Fragment Container for Pages -->
+        <!-- Dim Scrim Layer -->
+        <View
+            android:id="@+id/v_custom_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#40000000"
+            android:visibility="gone" />
+
+        <!-- Main Scrollable Workbench Content -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_workbench"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:clipToPadding="false"
+            android:paddingTop="36dp"
+            android:paddingBottom="160dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
+
+                <!-- Top Workbench Headline -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/converter_title"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+
+                    <!-- Menu / Quick Drawer Button (Icon Only) -->
+                    <ImageView
+                        android:id="@+id/btn_menu"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_menu"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="Menu"
+                        app:tint="?attr/colorOnSurface" />
+
+                </LinearLayout>
+
+                <!-- Top Segmented Pill Switcher -->
+                <!-- Hero File Dropzone Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_hero_import"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/hero_card_background"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/card_subtle_stroke"
+                    app:strokeWidth="1dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="24dp">
+
+                        <!-- 1. Initial State: Large 72dp Circle + Text + Tag Chips -->
+                        <LinearLayout
+                            android:id="@+id/card_initial_state"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <!-- Centered 72dp Circular Plus Button -->
+                            <FrameLayout
+                                android:id="@+id/btn_hero_circle"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:background="@drawable/bg_circle_button">
+
+                                <ImageView
+                                    android:id="@+id/iv_hero_plus"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_add"
+                                    app:tint="@color/hero_icon_tint" />
+
+                            </FrameLayout>
+
+                            <!-- Headline & Subtitle -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="导入 Minecraft 世界文件"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center"
+                                android:text="支持 .zip / .mcworld / 文件夹 (Bedrock &amp; Java)"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp" />
+
+
+
+                        </LinearLayout>
+
+                        <!-- 2. Extracting State: Smooth ProgressBar & Status Message -->
+                        <LinearLayout
+                            android:id="@+id/layout_extract_progress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingVertical="16dp"
+                            android:visibility="gone"
+                            tools:visibility="gone">
+
+                            <ProgressBar
+                                android:id="@+id/progress_extract"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="8dp"
+                                android:max="100"
+                                android:progressDrawable="@drawable/progress_drawable" />
+
+                            <TextView
+                                android:id="@+id/tv_extract_progress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:text="正在读取并解析世界文件..."
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <!-- 3. Loaded State: World Info Card -->
+                        <LinearLayout
+                            android:id="@+id/card_world_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:visibility="gone"
+                            tools:visibility="gone">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/iv_world_icon"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginEnd="14dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/unknown"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearance.MD3E.Squircle"
+                                app:strokeColor="@color/card_subtle_stroke"
+                                app:strokeWidth="1dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_world_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="我的世界"
+                                    android:textColor="?attr/colorOnSurface"
+                                    android:textSize="17sp"
+                                    android:textStyle="bold"
+                                    android:maxLines="1"
+                                    android:ellipsize="end" />
+
+                                <LinearLayout
+                                    android:id="@+id/card_platform"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_platform"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/bg_badge_tag"
+                                        android:text="基岩版 (Bedrock)"
+                                        android:textColor="?attr/colorPrimary"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:layout_marginEnd="6dp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_version"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/bg_badge_tag"
+                                        android:text="1.20.80"
+                                        android:textColor="?attr/colorPrimary"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <FrameLayout
+                                android:id="@+id/btn_clear_world"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:background="@drawable/bg_squircle_icon"
+                                android:clickable="true"
+                                android:focusable="true">
+
+                                <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_close"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+
+                            </FrameLayout>
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+
+                <!-- Config Card 1: Target Version & Platform Tile (Single-Layer Interactive Card) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btn_select_target"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/card_subtle_bg"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/card_subtle_stroke"
+                    app:strokeWidth="1dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="18dp">
+
+                        <FrameLayout
+                            android:id="@+id/fl_main_earth"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_squircle_icon">
+
+                            <ImageView
+                                android:id="@+id/iv_main_earth"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_world"
+                                app:tint="?attr/colorPrimary" />
+
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="目标版本与格式"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_target_version"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="点击选择目标平台与版本"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Primary Action Button (Integrated into Main Workflow) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_dock_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="开始转换"
+                    app:icon="@drawable/ic_bolt"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="?attr/colorPrimary"
+                    app:cornerRadius="27dp"
+                    app:elevation="0dp" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- Fragment Container for History & Secondary Pages -->
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" />
 
-            <!-- Converter Page -->
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:id="@+id/converter_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            <com.google.android.material.appbar.AppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/minecraft_green"/>
-
-                <androidx.core.widget.NestedScrollView
-                    android:id="@+id/nestedScrollView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="16dp">
-
-                        <!-- App Text Logo -->
-                        <LinearLayout
-                            android:id="@+id/layout_logo"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="40dp"
-                            android:layout_marginBottom="16dp"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="16dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constrainedWidth="true"
-                            app:layout_constraintWidth_max="400dp">
-
-                            <ImageView
-                                android:id="@+id/app_text"
-                                android:layout_width="270dp"
-                                android:layout_height="170dp"
-                                android:contentDescription="App Text"
-                                android:maxWidth="270dp"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/text" />
-
-                        </LinearLayout>
-
-                        <!-- Prepare World Section -->
-                        <LinearLayout
-                            android:id="@+id/layout_world_section"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/layout_logo"
-                            app:layout_constrainedWidth="true"
-                            app:layout_constraintWidth_max="400dp">
-
-                            <!-- Initial Selection State Card -->
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/card_initial_state"
-                                android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:layout_marginBottom="16dp"
-                                app:cardBackgroundColor="@color/minecraft_surface_glass"
-                                app:cardCornerRadius="15dp"
-                                app:cardElevation="4dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:paddingLeft="3dp"
-                                    android:paddingTop="3dp"
-                                    android:paddingRight="3dp"
-                                    android:paddingBottom="6dp">
-
-                                    <!-- Archive Button -->
-                                    <LinearLayout
-                                        android:id="@+id/btn_archive"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:clickable="true"
-                                        android:focusable="true"
-                                        android:orientation="vertical">
-
-                                        <ImageView
-                                            android:id="@+id/iv_archive"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="0dp"
-                                            android:layout_weight="1"
-                                            android:contentDescription="Archive"
-                                            android:scaleType="fitCenter"
-                                            android:src="@drawable/archive" />
-
-                                        <TextView
-                                            android:id="@+id/tv_archive_label"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:text="@string/archive"
-                                            android:textColor="#B4B4B4"
-                                            android:textSize="20sp" />
-
-                                    </LinearLayout>
-
-                                    <!-- Folder Button -->
-                                    <LinearLayout
-                                        android:id="@+id/btn_folder"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:clickable="true"
-                                        android:focusable="true"
-                                        android:orientation="vertical">
-
-                                        <ImageView
-                                            android:id="@+id/iv_folder"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="0dp"
-                                            android:layout_weight="1"
-                                            android:contentDescription="Folder"
-                                            android:scaleType="fitCenter"
-                                            android:src="@drawable/folder" />
-
-                                        <TextView
-                                            android:id="@+id/tv_folder_label"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:text="@string/folder"
-                                            android:textColor="#B4B4B4"
-                                            android:textSize="20sp" />
-
-                                    </LinearLayout>
-
-                                </LinearLayout>
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <!-- World Info State Card -->
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/card_world_info"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="16dp"
-                                android:visibility="gone"
-                                app:cardBackgroundColor="@color/minecraft_surface_glass"
-                                app:cardCornerRadius="15dp"
-                                app:cardElevation="4dp"
-                                tools:visibility="visible">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:padding="12dp">
-
-                                    <!-- Extract Progress Layout -->
-                                    <LinearLayout
-                                        android:id="@+id/layout_extract_progress"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="100dp"
-                                        android:layout_marginBottom="12dp"
-                                        android:gravity="center"
-                                        android:orientation="vertical"
-                                        android:visibility="gone">
-
-                                        <ProgressBar
-                                            android:id="@+id/progress_extract"
-                                            style="?android:attr/progressBarStyleHorizontal"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="8dp"
-                                            android:layout_marginHorizontal="16dp"
-                                            android:indeterminate="false"
-                                            android:max="100"
-                                            android:progress="0"
-                                            android:progressDrawable="@drawable/progress_drawable" />
-
-                                        <TextView
-                                            android:id="@+id/tv_extract_progress"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="start"
-                                            android:layout_marginStart="16dp"
-                                            android:layout_marginTop="8dp"
-                                            android:text="@string/extracting_world"
-                                            android:textColor="@color/white"
-                                            android:textSize="18sp" />
-
-                                    </LinearLayout>
-
-                                    <!-- World Info Bar -->
-                                    <com.google.android.material.card.MaterialCardView
-                                        android:id="@+id/card_world_info_bar"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="80dp"
-                                        android:layout_marginBottom="12dp"
-                                        app:cardBackgroundColor="@color/minecraft_surface_glass_dark"
-                                        app:cardCornerRadius="8dp"
-                                        app:cardElevation="0dp">
-
-                                        <FrameLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent">
-
-                                            <LinearLayout
-                                                android:id="@+id/layout_world_info_content"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="80dp"
-                                                android:gravity="center_vertical"
-                                                android:orientation="horizontal"
-                                                android:padding="8dp">
-
-                                                <!-- World Icon -->
-                                                <com.google.android.material.imageview.ShapeableImageView
-                                                    android:id="@+id/iv_world_icon"
-                                                    android:layout_width="65dp"
-                                                    android:layout_height="65dp"
-                                                    android:layout_marginEnd="12dp"
-                                                    android:background="@color/minecraft_surface_glass_dark"
-                                                    android:scaleType="centerCrop"
-                                                    android:src="@drawable/unknown"
-                                                    app:shapeAppearanceOverlay="@style/RoundedImageStyle"
-                                                    app:strokeColor="@color/transparent"
-                                                    app:strokeWidth="0dp" />
-
-                                                <!-- World Name -->
-                                                <TextView
-                                                    android:id="@+id/tv_world_name"
-                                                    android:layout_width="0dp"
-                                                    android:layout_height="wrap_content"
-                                                    android:layout_weight="1"
-                                                    android:text="世界名称"
-                                                    android:textColor="@color/white"
-                                                    android:textSize="20sp"
-                                                    android:textStyle="bold" />
-
-                                            </LinearLayout>
-
-                                            <!-- Delete Overlay -->
-                                            <LinearLayout
-                                                android:id="@+id/layout_delete_overlay"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="match_parent"
-                                                android:background="#80000000"
-                                                android:clickable="true"
-                                                android:focusable="true"
-                                                android:gravity="center"
-                                                android:orientation="vertical"
-                                                android:visibility="gone"
-                                                tools:visibility="visible">
-
-                                                <LinearLayout
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:gravity="center">
-
-                                                    <ImageView
-                                                        android:layout_width="24dp"
-                                                        android:layout_height="24dp"
-                                                        android:src="@drawable/delete"/>
-
-                                                    <TextView
-                                                        android:layout_width="wrap_content"
-                                                        android:layout_height="wrap_content"
-                                                        android:layout_marginLeft="10dp"
-                                                        android:text="@string/delete_task"
-                                                        android:textColor="@color/white"
-                                                        android:textSize="20sp"
-                                                        android:textStyle="bold" />
-
-                                                </LinearLayout>
-
-                                            </LinearLayout>
-
-                                        </FrameLayout>
-
-                                    </com.google.android.material.card.MaterialCardView>
-
-                                    <!-- Info Cards Row -->
-                                    <LinearLayout
-                                        android:id="@+id/layout_info_cards"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="16dp"
-                                        android:orientation="horizontal">
-
-                                        <!-- Platform Card -->
-                                        <com.google.android.material.card.MaterialCardView
-                                            android:id="@+id/card_platform"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginEnd="8dp"
-                                            app:cardBackgroundColor="@color/transparent"
-                                            app:cardCornerRadius="6dp"
-                                            app:cardElevation="0dp"
-                                            app:strokeColor="@color/minecraft_green"
-                                            app:strokeWidth="2dp">
-
-                                            <LinearLayout
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:gravity="center"
-                                                android:paddingStart="16dp"
-                                                android:paddingTop="8dp"
-                                                android:paddingEnd="16dp"
-                                                android:paddingBottom="8dp">
-
-                                                <TextView
-                                                    android:id="@+id/tv_platform"
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:text="基岩版"
-                                                    android:textColor="@color/white"
-                                                    android:textSize="16sp"
-                                                    android:textStyle="bold" />
-
-                                                <TextView
-                                                    android:id="@+id/tv_version"
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:layout_marginLeft="5dp"
-                                                    android:text="1.20.1"
-                                                    android:textColor="@color/white"
-                                                    android:textSize="16sp"
-                                                    android:textStyle="bold" />
-
-                                            </LinearLayout>
-
-                                        </com.google.android.material.card.MaterialCardView>
-
-                                        <!-- Target Version Card -->
-                                        <com.google.android.material.card.MaterialCardView
-                                            android:id="@+id/card_target_version"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:visibility="gone"
-                                            app:cardBackgroundColor="@color/transparent"
-                                            app:cardCornerRadius="6dp"
-                                            app:cardElevation="0dp"
-                                            app:strokeColor="@color/minecraft_green"
-                                            app:strokeWidth="2dp">
-
-                                            <LinearLayout
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:gravity="center"
-                                                android:paddingStart="16dp"
-                                                android:paddingTop="8dp"
-                                                android:paddingEnd="16dp"
-                                                android:paddingBottom="8dp">
-
-                                                <TextView
-                                                    android:id="@+id/tv_target_version"
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:text="Java 1.20"
-                                                    android:textColor="@color/white"
-                                                    android:textSize="16sp"
-                                                    android:textStyle="bold" />
-
-                                            </LinearLayout>
-
-                                        </com.google.android.material.card.MaterialCardView>
-
-                                    </LinearLayout>
-
-                                    <!-- Conversion Buttons -->
-                                    <com.google.android.material.button.MaterialButton
-                                        android:id="@+id/btn_select_target"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="60dp"
-                                        android:text="@string/select_target_format"
-                                        android:textSize="20sp"
-                                        android:textStyle="bold"
-                                        app:backgroundTint="@color/minecraft_green"
-                                        app:cornerRadius="8dp" />
-
-                                </LinearLayout>
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </LinearLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.core.widget.NestedScrollView>
-
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </FrameLayout> <!-- End fragment_container -->
-
-        <!-- Menu Button -->
-        <ImageButton
-            android:id="@+id/btn_menu"
-            android:layout_width="48dp"
-            android:layout_height="88dp"
-            android:layout_gravity="start|top"
-            android:layout_margin="12dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Menu"
-            android:elevation="8dp"
-            android:src="@drawable/ic_menu"
-            app:tint="@color/white"/>
-
-        <!-- Splash Text - positioned at top right, above all content -->
-        <TextView
-            android:id="@+id/tv_splash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:layout_marginTop="200dp"
-            android:layout_marginEnd="36dp"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:fontFamily="@font/uranus_pixel"
-            android:elevation="50dp"
-            android:maxWidth="150dp"
-            android:gravity="end"
-            android:rotation="-15" />
-
-        <!-- Custom Bottom Navigation -->
-        <LinearLayout
+        <!-- Clean Material 3 Bottom Navigation Bar -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="80dp"
             android:layout_gravity="bottom"
-            android:background="@android:color/transparent"
-            android:elevation="24dp"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:background="?attr/colorSurfaceContainer"
+            app:menu="@menu/bottom_nav_menu"
+            app:labelVisibilityMode="labeled"
+            app:elevation="8dp" />
 
-            <include
-                android:id="@+id/nav_item_converter"
-                layout="@layout/layout_nav_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <include
-                android:id="@+id/nav_item_output"
-                layout="@layout/layout_nav_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <!-- Navigation Drawer -->
+    <!-- Side Navigation Drawer -->
     <include
         android:id="@+id/nav_drawer"
-        layout="@layout/nav_drawer"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"/>
+        layout="@layout/nav_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

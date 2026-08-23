@@ -49,6 +49,12 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogViewHolder>() {
                 LogEntry.Level.ERROR -> R.color.log_error
             }
             tvLevel.setTextColor(itemView.context.getColor(colorRes))
+            
+            val viewGroup = itemView as? ViewGroup
+            if (viewGroup != null) {
+                val isDark = com.encore.chunkoid.utils.BackgroundUtils.isSystemInDarkTheme(viewGroup.context)
+                com.encore.chunkoid.utils.BackgroundUtils.applyUnifiedMonetTheme(viewGroup, isDark, viewGroup.context)
+            }
         }
     }
 }
