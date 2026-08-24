@@ -4,7 +4,7 @@
   <br><br>
   <a href="#中文">中文</a> | <a href="#english">English</a> | <a href="https://chunkoid.top">Website</a>
   <br><br>
-  <img alt="Version" src="https://img.shields.io/badge/version-R1.2.0-2ea043">
+  <img alt="Version" src="https://img.shields.io/badge/version-2.0.0-2ea043">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-GPLv3-E6B800"></a>
   <a href="https://github.com/Dicecan/Chunkoid/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/badge/stars-%E2%98%85-9C27B0"></a>
   <br>
@@ -41,6 +41,7 @@ Chunkoid 是首个专为安卓设备打造的 **Minecraft 世界转换器**。�
 - **版本升降**：支持 1.8.8 至 1.21 及 26.x 等多版本升降级
 - **材质转换**：JE-BE 材质包双向转换
 - **存档解密**：网易版加密存档解密
+- **性能与优化**：支持后台唤醒锁 (WakeLock)、低运存防闪退模式及无效维度裁剪
 - **转换日志**：执行过程透明，每一步清晰可见
 - **输出管理**：所有转换结果统一管理，方便导出
 
@@ -114,6 +115,7 @@ Chunkoid is the first **Minecraft world converter** designed exclusively for And
 - **Version Upgrade/Downgrade**: Supports versions from 1.8.8 to 1.21+ and 26.x
 - **Resource Pack Conversion**: JE-BE resource pack bidirectional conversion
 - **World Decryption**: NetEase encrypted world decryption
+- **Performance & Optimization**: Supports background WakeLock, Low-Memory anti-crash mode, and dimension pruning
 - **Conversion Logs**: Transparent execution, every step visible
 - **Output Management**: All converted worlds organized in one place
 
