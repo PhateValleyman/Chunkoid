@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -51,6 +52,11 @@
             android:name=".ui.activity.SettingsActivity"
             android:label="@string/settings_title"
             android:parentActivityName=".ui.activity.MainActivity" />
+
+        <activity
+            android:name=".ui.activity.DimensionSettingsActivity"
+            android:label="维度裁剪与映射"
+            android:parentActivityName=".ui.activity.SettingsActivity" />
 
         <activity
             android:name=".ui.activity.ConversionActivity"

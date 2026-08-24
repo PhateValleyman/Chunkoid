@@ -115,7 +115,7 @@
         <item name="backgroundTint">@color/dialog_bg</item>
     </style>
 
-    <style name="Theme.Chunkoid.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Chunkoid.Splash" parent="Theme.Chunkoid">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentStatus">true</item>

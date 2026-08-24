@@ -246,7 +246,6 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = binding.drawerLayout
         applyNoElevationToCards()
 
-        // Configure edge-to-edge full screen (全面屏)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         window.navigationBarColor = android.graphics.Color.TRANSPARENT
@@ -327,7 +326,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        // Force initial selection state
         switchToConverter()
     }
 
@@ -518,7 +516,6 @@ class MainActivity : AppCompatActivity() {
 
         var selectedVersion: String? = null
 
-        // 基岩版版本组数据
         val bedrockVersionGroups = listOf(
             VersionGroup("1.12", getString(R.string.bedrock_subtitle_1_12), listOf(getString(R.string.bedrock_1_12))),
             VersionGroup("1.13", getString(R.string.bedrock_subtitle_1_13), listOf(getString(R.string.bedrock_1_13))),
@@ -532,7 +529,6 @@ class MainActivity : AppCompatActivity() {
             VersionGroup("1.26", getString(R.string.bedrock_subtitle_1_26), listOf(getString(R.string.bedrock_1_26), getString(R.string.bedrock_1_26_10), getString(R.string.bedrock_1_26_20), getString(R.string.bedrock_1_26_30)))
         )
 
-        // Java版版本组数据
         val javaVersionGroups = listOf(
             VersionGroup("1.8.8", getString(R.string.java_subtitle_1_8), listOf(getString(R.string.java_1_8_8))),
             VersionGroup("1.9", getString(R.string.java_subtitle_1_9), listOf(getString(R.string.java_1_9), getString(R.string.java_1_9_1), getString(R.string.java_1_9_2), getString(R.string.java_1_9_3))),
@@ -551,7 +547,6 @@ class MainActivity : AppCompatActivity() {
             VersionGroup("26.x", getString(R.string.java_subtitle_26), listOf(getString(R.string.java_26_1), getString(R.string.java_26_2)))
         )
 
-        // 基岩版卡片展开/收起
         val bedrockCard = dialogView.findViewById<com.google.android.material.card.MaterialCardView>(R.id.card_bedrock)
         val bedrockArrow = dialogView.findViewById<ImageView>(R.id.iv_bedrock_arrow)
         val bedrockVersionsLayout = dialogView.findViewById<LinearLayout>(R.id.ll_bedrock_versions)
@@ -563,7 +558,6 @@ class MainActivity : AppCompatActivity() {
             bedrockArrow.rotation = if (bedrockExpanded) 180f else 0f
         }
 
-        // Java版卡片展开/收起
         val javaCard = dialogView.findViewById<com.google.android.material.card.MaterialCardView>(R.id.card_java)
         val javaArrow = dialogView.findViewById<ImageView>(R.id.iv_java_arrow)
         val javaVersionsLayout = dialogView.findViewById<LinearLayout>(R.id.ll_java_versions)
@@ -584,7 +578,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 更新确定按钮文本
         fun updateConfirmButton() {
             val btnConfirm = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_confirm)
             if (selectedVersion.isNullOrEmpty()) {
@@ -596,13 +589,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 动态填充基岩版版本组
         populateVersionGroups(bedrockVersionsLayout, bedrockVersionGroups) { version ->
             selectedVersion = "Bedrock $version"
             updateConfirmButton()
         }
 
-        // 动态填充Java版版本组
         populateVersionGroups(javaVersionsLayout, javaVersionGroups) { version ->
             selectedVersion = "Java $version"
             updateConfirmButton()
@@ -635,7 +626,6 @@ class MainActivity : AppCompatActivity() {
                 groupArrow.rotation = if (groupExpanded) 180f else 0f
             }
 
-            // 添加版本按钮，使用动态布局实现换行
             var currentRow: LinearLayout? = null
             var buttonsInRow = 0
             val maxButtonsPerRow = 3
@@ -684,7 +674,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun processSelectedWorld(uri: Uri) {
         if (isArchiveMode) {
-            // Show extraction progress, hide empty and loaded cards
             binding.cardInitialState.visibility = View.GONE
             binding.layoutExtractProgress.visibility = View.VISIBLE
             binding.cardWorldInfo.visibility = View.GONE
@@ -708,7 +697,6 @@ class MainActivity : AppCompatActivity() {
                             return@runOnUiThread
                         }
 
-                        // Set platform based on .mcworld extension or directory contents
                         worldPlatform = if (archiveSearcher.isMcWorldFile(uri)) {
                             Platform.BEDROCK
                         } else {
@@ -811,9 +799,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val documentFile = DocumentFile.fromTreeUri(this, uri)
             documentFile?.let { dir ->
-                // Check for /region folder (Java edition has region folder, Bedrock does not)
                 val regionFolder = dir.findFile("region")
-                // Check for /dimensions folder (Java edition 26.x uses dimensions instead of region)
                 val dimensionsFolder = dir.findFile("dimensions")
                 if ((regionFolder != null && regionFolder.isDirectory) ||
                     (dimensionsFolder != null && dimensionsFolder.isDirectory)) {
@@ -821,7 +807,6 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                // Default to Bedrock if no region or dimensions folder found
                 worldPlatform = Platform.BEDROCK
             }
         } catch (e: Exception) {
@@ -833,28 +818,23 @@ class MainActivity : AppCompatActivity() {
         try {
             val documentFile = DocumentFile.fromTreeUri(this, uri)
             documentFile?.let { dir ->
-                // Try icon.png first
                 var iconFile = dir.findFile("icon.png")
                 if (iconFile != null && iconFile.isFile) {
                     loadIconFromUri(iconFile.uri)
                     return
                 }
 
-                // Try world_icon.jpeg
                 iconFile = dir.findFile("world_icon.jpeg")
                 if (iconFile != null && iconFile.isFile) {
                     loadIconFromUri(iconFile.uri)
                     return
                 }
 
-                // Try world_icon.jpg
                 iconFile = dir.findFile("world_icon.jpg")
                 if (iconFile != null && iconFile.isFile) {
                     loadIconFromUri(iconFile.uri)
                     return
                 }
-
-                // No icon found - keep default
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -870,7 +850,6 @@ class MainActivity : AppCompatActivity() {
                 while (entry != null) {
                     val entryName = entry.name.lowercase()
 
-                    // Check for icon files
                     if (entryName.contains("icon.png") ||
                         entryName.contains("world_icon.jpeg") ||
                         entryName.contains("world_icon.jpg")) {
@@ -933,7 +912,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun readWorldNameFromArchive(uri: Uri) {
         try {
-            // First try reading levelname.txt from extracted input directory
             val inputDir = File(filesDir, "input")
             val levelNameFile = File(inputDir, "levelname.txt")
             if (levelNameFile.exists() && levelNameFile.isFile) {
@@ -1047,9 +1025,42 @@ class MainActivity : AppCompatActivity() {
         if (!validateInputs()) return
 
         val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        if (!prefs.getBoolean("hide_entity_warning", false)) {
+            val view = layoutInflater.inflate(R.layout.dialog_entity_warning, null)
+            val checkBox = view.findViewById<android.widget.CheckBox>(R.id.cb_dont_show_again)
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("⚠️ 实体与结构丢失预警")
+                .setView(view)
+                .setPositiveButton("继续转换") { _, _ ->
+                    if (checkBox.isChecked) {
+                        prefs.edit().putBoolean("hide_entity_warning", true).apply()
+                    }
+                    proceedWithConversion()
+                }
+                .setNegativeButton("取消", null)
+                .show()
+        } else {
+            proceedWithConversion()
+        }
+    }
+
+    private fun proceedWithConversion() {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
         val maxMemory = prefs.getInt("max_memory", 4096)
         val keepOriginalNbt = prefs.getBoolean("keep_original_nbt", false)
         val lowMemoryMode = prefs.getBoolean("low_memory_mode", false)
+        
+        val keepNether = prefs.getBoolean("keep_nether", true)
+        val keepEnd = prefs.getBoolean("keep_end", true)
+
+        val pruningJson = if (!keepNether || !keepEnd) {
+            val netherStr = if (!keepNether) "\"NETHER\": {\"include\": false}" else ""
+            val endStr = if (!keepEnd) "\"THE_END\": {\"include\": false}" else ""
+            val parts = listOf(netherStr, endStr).filter { it.isNotEmpty() }
+            "{${parts.joinToString(", ")}}"
+        } else {
+            null
+        }
 
         val settings = ConversionSettings(
             inputUri = inputUri!!,
@@ -1058,7 +1069,8 @@ class MainActivity : AppCompatActivity() {
             sourcePlatform = worldPlatform.name,
             maxMemory = maxMemory,
             keepOriginalNbt = keepOriginalNbt,
-            lowMemoryMode = lowMemoryMode
+            lowMemoryMode = lowMemoryMode,
+            pruningSettings = pruningJson
         )
 
         val intent = Intent(this, ConversionActivity::class.java).apply {

@@ -32,12 +32,13 @@ class ConversionService : Service() {
     val status = MutableLiveData<String>("")
     val logMessage = MutableLiveData<com.encore.chunkoid.model.LogEntry?>()
     val isRunning = MutableLiveData<Boolean>(false)
-    val rawLogOutput = MutableLiveData<String>("") // 原始日志输出
-    val conversionSuccess = MutableLiveData<Boolean?>(null) // 转换结果标志
+    val rawLogOutput = MutableLiveData<String>("")
+    val conversionSuccess = MutableLiveData<Boolean?>(null)
 
     private lateinit var termuxExecutor: TermuxExecutor
     private var conversionProcess: Process? = null
-    private val rawLogBuilder = StringBuilder() // 收集原始日志
+    private val rawLogBuilder = StringBuilder()
+    private var wakeLock: android.os.PowerManager.WakeLock? = null
 
     inner class LocalBinder : Binder() {
         fun getService(): ConversionService = this@ConversionService
@@ -110,6 +111,7 @@ class ConversionService : Service() {
         conversionProcess?.destroy()
         conversionProcess = null
         isRunning.value = false
+        releaseWakeLock()
         conversionSuccess.value = false
         status.value = "转换已停止"
         progress.value = 0
@@ -140,9 +142,10 @@ class ConversionService : Service() {
 
     fun startConversionFromUri(inputUri: android.net.Uri, settings: com.encore.chunkoid.model.ConversionSettings) {
         isRunning.value = true
+        acquireWakeLock()
         conversionSuccess.value = null
         progress.value = 0
-        rawLogBuilder.clear() // 清空原始日志收集器
+        rawLogBuilder.clear()
 
         createNotificationChannel()
         val initialNotification = buildNotification("正在初始化环境...", 0, true)
@@ -158,18 +161,15 @@ class ConversionService : Service() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Step 1: Initialize Termux environment
                 status.postValue("正在初始化环境...")
                 updateNotification("正在初始化环境...", 5, true)
                 initializeEnvironment()
 
-                // Step 2: Copy input world to internal storage
                 status.postValue("准备输入文件...")
                 progress.postValue(10)
                 updateNotification("准备输入文件...", 10, false)
                 val inputDir = copyUriToInternal(inputUri, "input")
 
-                // Step 3: Prepare output directory
                 progress.postValue(15)
                 updateNotification("准备输出目录...", 15, false)
                 val outputDir = File(filesDir, "output")
@@ -178,19 +178,16 @@ class ConversionService : Service() {
                 }
                 outputDir.mkdirs()
 
-                // Step 4: Run Chunker conversion
                 status.postValue("正在转换...")
                 progress.postValue(20)
                 updateNotification("正在转换世界...", 20, false)
                 runChunkerConversion(inputDir, outputDir, settings)
 
-                // Step 5: Move result to documents directory
                 status.postValue("正在整理输出文件...")
                 progress.postValue(90)
                 updateNotification("正在整理输出文件...", 90, false)
                 moveOutputToDocuments(outputDir, settings.inputWorldName)
 
-                // Step 6: Clean up
                 withContext(Dispatchers.Main) {
                     onConversionComplete()
                 }
@@ -211,8 +208,6 @@ class ConversionService : Service() {
         return withContext(Dispatchers.IO) {
             val targetDir = File(filesDir, folder)
 
-            // Check if the target directory already has valid world data
-            // (extracted by MainActivity for archive files)
             val hasValidWorld = targetDir.exists() && (
                 File(targetDir, "db").exists() || File(targetDir, "region").exists()
             )
@@ -222,26 +217,20 @@ class ConversionService : Service() {
                 return@withContext targetDir
             }
 
-            // Target directory doesn't have valid data, need to prepare it
             if (targetDir.exists()) {
                 deleteDir(targetDir)
             }
             targetDir.mkdirs()
 
             try {
-                // Try to open as directory first
                 val documentFile = androidx.documentfile.provider.DocumentFile.fromTreeUri(this@ConversionService, uri)
                 if (documentFile != null && documentFile.isDirectory) {
                     copyDirectory(documentFile, targetDir)
                     Log.d(TAG, "Copied directory to: ${targetDir.absolutePath}")
                 } else {
-                    // URI is not a tree URI or not a directory
-                    // This shouldn't happen for valid inputs, but handle it gracefully
                     Log.e(TAG, "URI is not a valid directory: $uri")
                 }
             } catch (e: IllegalArgumentException) {
-                // URI is not a tree URI (e.g., archive file URI)
-                // This is expected for archive files that were already extracted by MainActivity
                 Log.d(TAG, "URI is not a tree URI: ${e.message}")
             }
 
@@ -326,7 +315,6 @@ class ConversionService : Service() {
             status.postValue("正在执行转换...")
             progress.postValue(25)
 
-            // Use TermuxExecutor to execute Java command
             val process = termuxExecutor.executeJava(*args.toTypedArray())
             conversionProcess = process
 
@@ -336,20 +324,17 @@ class ConversionService : Service() {
             var lastProgress = 25
 
             fun processLine(lineStr: String) {
-                // 原始日志：保存所有行，不做任何过滤
                 rawLogBuilder.appendLine(lineStr)
 
-                // 过滤 Android linker 警告（仅用于 UI 显示）
+                // 过滤 Android linker 警告
                 if (lineStr.contains("WARNING: linker:") || lineStr.contains("has unsupported flags")) {
                     return
                 }
 
                 Log.d(TAG, "Chunker: $lineStr")
 
-                // Parse simple percentage format like "3.21%" or "22.24%"
                 val progressMatch = Regex("(\\d+\\.\\d+)%").find(lineStr)
                 if (progressMatch != null) {
-                    // Only update progress bar, don't show percentage lines in log
                     val chunkProgress = progressMatch.groupValues[1].toDouble()
                     val calculatedProgress = (25 + chunkProgress * 0.65).toInt()
                     if (calculatedProgress > lastProgress) {
@@ -358,17 +343,14 @@ class ConversionService : Service() {
                         lastProgress = calculatedProgress
                     }
                 } else {
-                    // Show all non-progress messages in log
                     logMessage.postValue(com.encore.chunkoid.model.LogEntry(lineStr, com.encore.chunkoid.model.LogEntry.Level.INFO))
                 }
             }
 
-            // Read both stdout and stderr
             var stdoutActive = true
             var stderrActive = true
 
             while (stdoutActive || stderrActive) {
-                // Read stdout
                 if (stdoutActive) {
                     line = reader.readLine()
                     if (line != null) {
@@ -378,7 +360,6 @@ class ConversionService : Service() {
                     }
                 }
 
-                // Read stderr
                 if (stderrActive) {
                     line = errorReader.readLine()
                     if (line != null) {
@@ -388,10 +369,8 @@ class ConversionService : Service() {
                     }
                 }
 
-                // If both streams are still active but process is dead, wait a bit for buffered data
                 if (!process.isAlive && stdoutActive && stderrActive) {
                     Thread.sleep(100)
-                    // After process dies, try to drain both streams
                     while (true) {
                         var drained = false
                         line = reader.readLine()
@@ -477,20 +456,22 @@ class ConversionService : Service() {
 
     private fun onConversionComplete() {
         isRunning.value = false
+        releaseWakeLock()
         conversionSuccess.value = true
         status.value = "转换成功!"
         progress.value = 100
-        rawLogOutput.value = rawLogBuilder.toString() // 传递原始日志
+        rawLogOutput.value = rawLogBuilder.toString()
         stopForegroundService()
         cleanInputFolder()
     }
 
     private fun onConversionError(error: Exception) {
         isRunning.value = false
+        releaseWakeLock()
         conversionSuccess.value = false
         status.value = "转换失败: ${error.message}"
         progress.value = 0
-        rawLogOutput.value = rawLogBuilder.toString() // 即使失败也传递原始日志
+        rawLogOutput.value = rawLogBuilder.toString()
         stopForegroundService()
     }
 
@@ -498,9 +479,34 @@ class ConversionService : Service() {
         return rawLogBuilder.toString()
     }
 
+    private fun acquireWakeLock() {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        if (!prefs.getBoolean("enable_wake_lock", true)) {
+            return
+        }
+        if (wakeLock == null) {
+            val pm = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+            wakeLock = pm.newWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, "Chunkoid::ConversionWakeLock")
+        }
+        wakeLock?.let {
+            if (!it.isHeld) {
+                it.acquire(4 * 60 * 60 * 1000L)
+            }
+        }
+    }
+
+    private fun releaseWakeLock() {
+        wakeLock?.let {
+            if (it.isHeld) {
+                it.release()
+            }
+        }
+    }
+
     override fun onDestroy() {
         stopConversion()
         super.onDestroy()
+        releaseWakeLock()
     }
 
     companion object {

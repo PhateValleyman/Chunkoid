@@ -3,21 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="@string/conversion_settings">
+        android:title="@string/performance_settings">
 
         <SeekBarPreference
             android:key="max_memory"
             android:title="@string/jvm_max_memory"
             android:defaultValue="4096"
-            android:max="8192"
+            android:max="16384"
             app:min="512"
             app:seekBarIncrement="256"
             app:showSeekBarValue="true" />
 
         <SwitchPreferenceCompat
+            android:key="enable_wake_lock"
+            android:title="@string/wake_lock"
+            android:summary="@string/wake_lock_desc"
+            android:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            android:key="low_memory_mode"
+            android:title="@string/low_memory_mode"
+            android:summary="@string/low_memory_mode_desc"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/conversion_settings">
+
+        <SwitchPreferenceCompat
             android:key="keep_original_nbt"
-            android:title="保留原始 NBT 标签"
-            android:summary="尽可能保留实体与方块的特殊数据"
+            android:title="@string/keep_original_nbt"
+            android:summary="@string/keep_original_nbt_desc"
             android:defaultValue="false" />
 
     </PreferenceCategory>

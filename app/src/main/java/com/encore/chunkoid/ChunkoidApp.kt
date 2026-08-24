@@ -11,12 +11,10 @@ class ChunkoidApp : Application() {
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-        // Apply Material Design 3 Dynamic Colors (Material You) if enabled by user
         if (prefs.getBoolean("dynamic_color", false)) {
             DynamicColors.applyToActivitiesIfAvailable(this)
         }
 
-        // Apply saved dark/light theme mode
         when (prefs.getString("night_mode", "system")) {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)

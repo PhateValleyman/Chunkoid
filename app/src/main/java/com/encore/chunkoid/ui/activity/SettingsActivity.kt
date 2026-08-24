@@ -83,14 +83,24 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        binding.switchKeepNbt.isChecked = prefs.getBoolean("keep_original_nbt", false)
-        binding.switchKeepNbt.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean("keep_original_nbt", isChecked).apply()
+        binding.itemDimensionPruning.setOnClickListener {
+            val intent = android.content.Intent(this, DimensionSettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.switchWakeLock.isChecked = prefs.getBoolean("enable_wake_lock", true)
+        binding.switchWakeLock.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("enable_wake_lock", isChecked).apply()
         }
 
         binding.switchLowMemory.isChecked = prefs.getBoolean("low_memory_mode", false)
         binding.switchLowMemory.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("low_memory_mode", isChecked).apply()
+        }
+
+        binding.switchKeepNbt.isChecked = prefs.getBoolean("keep_original_nbt", false)
+        binding.switchKeepNbt.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("keep_original_nbt", isChecked).apply()
         }
 
         binding.itemThemeHeader.setOnClickListener {
@@ -157,7 +167,6 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.switchCustomWallpaper.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked && !BackgroundUtils.getWallpaperFile(this).exists()) {
-                // Prompt user to pick wallpaper
                 wallpaperPickerLauncher.launch("image/*")
             } else {
                 prefs.edit().putBoolean(BackgroundUtils.KEY_CUSTOM_BG_ENABLED, isChecked).apply()

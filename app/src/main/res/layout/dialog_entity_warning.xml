@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="受限于底层逻辑，Chunker 核心目前暂不支持大部分实体（除画和物品展示框外）与结构数据的跨平台转换。\n\n这意味着转换后的世界中，包括宠物、村民、怪物以及掉落物在内的实体都将会消失。\n如果它们对你很重要，请在原存档中提前做好物资储备。"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="14sp"
+        android:lineSpacingExtra="4dp" />
+
+    <CheckBox
+        android:id="@+id/cb_dont_show_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="我知道了，不再提示"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="14sp" />
+</LinearLayout>

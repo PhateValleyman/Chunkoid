@@ -48,6 +48,24 @@
 
 <br />
 
+### Q: Why does conversion stop or the app exit when switching to background or turning off the screen?
+
+### A: Some Android manufacturers (MIUI/HyperOS, ColorOS, OriginOS, EMUI, etc.) have aggressive power saving rules. Please enable **Background Wake Lock** in Chunkoid Settings, set app battery optimization to **"Unrestricted"** in system settings, and lock the app in the recent task switcher.
+
+<br />
+
+### Q: Phone has limited RAM (4GB~6GB) and crashes during large world conversion?
+
+### A: Please enable **Low RAM Anti-Crash Mode** in Settings. This mode deeply tunes garbage collection and memory usage to significantly prevent OOM crashes.
+
+<br />
+
+### Q: An "Entity Loss Warning" popped up before conversion. Will my world be corrupted?
+
+### A: It will not corrupt your world. Minecraft Java Edition and Bedrock Edition have inherent differences in entity NBT data (such as custom villager trades and mob properties) that cannot always be 1:1 mapped. Terrain, buildings, redstone, and chest items are completely unaffected. You can safely confirm and proceed.
+
+<br />
+
 ### Q: Logs are spamming messages during conversion
 
 <img src="q5.jpg" width="256">
@@ -101,5 +119,17 @@
 <img src="s4.jpg" width="256">
 
 ### A: Terminal Console provides a simple terminal session environment, no complex environment configuration needed, directly restore various Termux-level operations.
+
+<br />
+
+### Q: The save is too large, conversion takes too long and phone storage is low?
+
+### A: In the conversion options, configure the **Dimension Pruning** feature to uncheck the Nether and The End, converting only the Overworld. This reduces conversion data and storage consumption by more than 50%.
+
+<br />
+
+### Q: Want a more modern visual look and custom colors?
+
+### A: Chunkoid v2.0.0 introduces a global dynamic theming engine (Material You), automatically adapting color tones to your system wallpaper and theme, or custom selections in Settings.
 
 <br />

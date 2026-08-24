@@ -7,34 +7,27 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
     android:fitsSystemWindows="false">
-
-    <!-- Full-Screen Custom Wallpaper Layer -->
     <ImageView
         android:id="@+id/iv_custom_wallpaper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:visibility="gone" />
-
-    <!-- Dim Scrim Layer -->
     <View
         android:id="@+id/v_custom_scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#40000000"
         android:visibility="gone" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:fitsSystemWindows="true">
-
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent">
-
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -43,22 +36,17 @@
                 app:titleTextColor="?attr/colorOnSurface"
                 app:navigationIcon="?attr/homeAsUpIndicator"
                 app:navigationIconTint="?attr/colorOnSurface" />
-
         </com.google.android.material.appbar.AppBarLayout>
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingHorizontal="20dp"
             android:paddingBottom="24dp"
             android:clipToPadding="false">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <!-- Conversion & JVM Performance Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,30 +56,25 @@
                     app:cardElevation="0dp"
                     app:strokeColor="?attr/colorOutlineVariant"
                     app:strokeWidth="1dp">
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="20dp">
-
                         <TextView
-                            android:id="@+id/tv_settings_header_conversion"
+                            android:id="@+id/tv_settings_header_performance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/conversion_settings"
+                            android:text="@string/performance_settings"
                             android:textColor="?attr/colorPrimary"
                             android:textSize="17sp"
                             android:textStyle="bold" />
-
-                        <!-- Memory Setting Header -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
-
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -100,7 +83,6 @@
                                 android:textColor="?attr/colorOnSurface"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
-
                             <TextView
                                 android:id="@+id/tv_memory_value"
                                 android:layout_width="wrap_content"
@@ -109,10 +91,7 @@
                                 android:textColor="?attr/colorPrimary"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
-
-                        <!-- Slider -->
                         <com.google.android.material.slider.Slider
                             android:id="@+id/slider_max_memory"
                             android:layout_width="match_parent"
@@ -125,14 +104,11 @@
                             app:thumbColor="?attr/colorPrimary"
                             app:trackColorActive="?attr/colorPrimary"
                             app:trackColorInactive="?attr/colorSurfaceContainerHighest" />
-
-                        <!-- Quick Memory Preset Labels -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:layout_marginBottom="12dp">
-
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -141,7 +117,6 @@
                                 android:text="512M"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="11sp" />
-
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -150,7 +125,6 @@
                                 android:text="4GB"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="11sp" />
-
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -159,7 +133,6 @@
                                 android:text="8GB"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="11sp" />
-
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -168,36 +141,163 @@
                                 android:text="16GB"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="11sp" />
-
                         </LinearLayout>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/memory_hint"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="12sp" />
-
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="16dp"
                             android:background="?attr/colorOutlineVariant" />
-
-                        <!-- Keep NBT Setting -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
-
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
-
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/wake_lock"
+                                    android:textColor="?attr/colorOnSurface"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="@string/wake_lock_desc"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                            <com.google.android.material.materialswitch.MaterialSwitch
+                                android:id="@+id/switch_wake_lock"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:thumbTint="?attr/colorPrimary"
+                                app:trackTint="?attr/colorSurfaceContainerHighest" />
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="12dp"
+                            android:background="?attr/colorOutlineVariant" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/low_memory_mode"
+                                    android:textColor="?attr/colorOnSurface"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="@string/low_memory_mode_desc"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                            <com.google.android.material.materialswitch.MaterialSwitch
+                                android:id="@+id/switch_low_memory"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:thumbTint="?attr/colorPrimary"
+                                app:trackTint="?attr/colorSurfaceContainerHighest" />
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="12dp"
+                            android:background="?attr/colorOutlineVariant" />
+                        <LinearLayout
+                            android:id="@+id/item_dimension_pruning"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingVertical="12dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dimension_pruning"
+                                    android:textColor="?attr/colorOnSurface"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="@string/dimension_pruning_desc"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_arrow_right"
+                                app:tint="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/card_subtle_bg"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+                        <TextView
+                            android:id="@+id/tv_settings_header_conversion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/conversion_settings"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -205,7 +305,6 @@
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
-
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -213,64 +312,16 @@
                                     android:text="@string/keep_original_nbt_desc"
                                     android:textColor="?attr/colorOnSurfaceVariant"
                                     android:textSize="12sp" />
-
                             </LinearLayout>
-
                             <com.google.android.material.materialswitch.MaterialSwitch
                                 android:id="@+id/switch_keep_nbt"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:thumbTint="?attr/colorPrimary"
                                 app:trackTint="?attr/colorSurfaceContainerHighest" />
-
                         </LinearLayout>
-
-                        <!-- Low Memory Mode Switch -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="低运存防闪退 (实验性)"
-                                    android:textColor="?attr/colorOnSurface"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="2dp"
-                                    android:text="限制多线程并发并激进回收内存。有效防止OOM，但会显著降低转换速度。"
-                                    android:textColor="?attr/colorOnSurfaceVariant"
-                                    android:textSize="12sp" />
-
-                            </LinearLayout>
-
-                            <com.google.android.material.materialswitch.MaterialSwitch
-                                android:id="@+id/switch_low_memory"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:thumbTint="?attr/colorPrimary"
-                                app:trackTint="?attr/colorSurfaceContainerHighest" />
-
-                        </LinearLayout>
-
                     </LinearLayout>
-
                 </com.google.android.material.card.MaterialCardView>
-
-                <!-- General & Appearance Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -280,13 +331,11 @@
                     app:cardElevation="0dp"
                     app:strokeColor="?attr/colorOutlineVariant"
                     app:strokeWidth="1dp">
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="20dp">
-
                         <TextView
                             android:id="@+id/tv_settings_header_general"
                             android:layout_width="wrap_content"
@@ -295,15 +344,12 @@
                             android:textColor="?attr/colorPrimary"
                             android:textSize="17sp"
                             android:textStyle="bold" />
-
-                        <!-- Theme Switch Group -->
                         <LinearLayout
                             android:id="@+id/item_theme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="12dp">
-
                             <LinearLayout
                                 android:id="@+id/item_theme_header"
                                 android:layout_width="match_parent"
@@ -314,7 +360,6 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:background="?attr/selectableItemBackground">
-
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -323,16 +368,13 @@
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
-
                                 <ImageView
                                     android:id="@+id/iv_theme_arrow"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:src="@drawable/ic_arrow_right"
                                     app:tint="?attr/colorOnSurfaceVariant" />
-
                             </LinearLayout>
-
                             <LinearLayout
                                 android:id="@+id/layout_theme_content"
                                 android:layout_width="match_parent"
@@ -342,8 +384,6 @@
                                 android:paddingTop="6dp"
                                 android:visibility="gone"
                                 tools:visibility="visible">
-
-                                <!-- Option 1: Follow System -->
                                 <LinearLayout
                                     android:id="@+id/theme_option_system"
                                     android:layout_width="match_parent"
@@ -354,13 +394,11 @@
                                     android:layout_marginBottom="6dp"
                                     android:paddingHorizontal="16dp"
                                     android:paddingVertical="10dp">
-
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:orientation="vertical">
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -368,7 +406,6 @@
                                             android:textColor="?attr/colorOnSurface"
                                             android:textSize="14sp"
                                             android:textStyle="bold" />
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -376,9 +413,7 @@
                                             android:text="@string/theme_system_desc"
                                             android:textColor="?attr/colorOnSurfaceVariant"
                                             android:textSize="11sp" />
-
                                     </LinearLayout>
-
                                     <ImageView
                                         android:id="@+id/theme_check_system"
                                         android:layout_width="20dp"
@@ -386,10 +421,7 @@
                                         android:src="@drawable/ic_check"
                                         app:tint="?attr/colorPrimary"
                                         android:visibility="gone" />
-
                                 </LinearLayout>
-
-                                <!-- Option 2: Light Mode -->
                                 <LinearLayout
                                     android:id="@+id/theme_option_light"
                                     android:layout_width="match_parent"
@@ -400,13 +432,11 @@
                                     android:layout_marginBottom="6dp"
                                     android:paddingHorizontal="16dp"
                                     android:paddingVertical="10dp">
-
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:orientation="vertical">
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -414,7 +444,6 @@
                                             android:textColor="?attr/colorOnSurface"
                                             android:textSize="14sp"
                                             android:textStyle="bold" />
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -422,9 +451,7 @@
                                             android:text="@string/theme_light_desc"
                                             android:textColor="?attr/colorOnSurfaceVariant"
                                             android:textSize="11sp" />
-
                                     </LinearLayout>
-
                                     <ImageView
                                         android:id="@+id/theme_check_light"
                                         android:layout_width="20dp"
@@ -432,10 +459,7 @@
                                         android:src="@drawable/ic_check"
                                         app:tint="?attr/colorPrimary"
                                         android:visibility="gone" />
-
                                 </LinearLayout>
-
-                                <!-- Option 3: Dark Mode -->
                                 <LinearLayout
                                     android:id="@+id/theme_option_dark"
                                     android:layout_width="match_parent"
@@ -446,13 +470,11 @@
                                     android:layout_marginBottom="6dp"
                                     android:paddingHorizontal="16dp"
                                     android:paddingVertical="10dp">
-
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:orientation="vertical">
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -460,7 +482,6 @@
                                             android:textColor="?attr/colorOnSurface"
                                             android:textSize="14sp"
                                             android:textStyle="bold" />
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -468,9 +489,7 @@
                                             android:text="@string/theme_dark_desc"
                                             android:textColor="?attr/colorOnSurfaceVariant"
                                             android:textSize="11sp" />
-
                                     </LinearLayout>
-
                                     <ImageView
                                         android:id="@+id/theme_check_dark"
                                         android:layout_width="20dp"
@@ -478,14 +497,9 @@
                                         android:src="@drawable/ic_check"
                                         app:tint="?attr/colorPrimary"
                                         android:visibility="gone" />
-
                                 </LinearLayout>
-
                             </LinearLayout>
-
                         </LinearLayout>
-
-                        <!-- Dynamic Color (Material You) Switch -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -493,13 +507,11 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:layout_marginTop="6dp">
-
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
-
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -507,7 +519,6 @@
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
-
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -515,31 +526,22 @@
                                     android:text="@string/dynamic_color_desc"
                                     android:textColor="?attr/colorOnSurfaceVariant"
                                     android:textSize="12sp" />
-
                             </LinearLayout>
-
                             <com.google.android.material.materialswitch.MaterialSwitch
                                 android:id="@+id/switch_dynamic_color"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
-
                         </LinearLayout>
-
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="12dp"
                             android:background="?attr/colorOutlineVariant" />
-
-                        <!-- Custom Wallpaper & Frosted Glass Group -->
                         <LinearLayout
                             android:id="@+id/item_custom_wallpaper"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-
-                            <!-- Header -->
                             <LinearLayout
                                 android:id="@+id/item_custom_wallpaper_header"
                                 android:layout_width="match_parent"
@@ -550,13 +552,11 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:background="?attr/selectableItemBackground">
-
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:orientation="vertical">
-
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
@@ -564,7 +564,6 @@
                                         android:textColor="?attr/colorOnSurface"
                                         android:textSize="15sp"
                                         android:textStyle="bold" />
-
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
@@ -572,19 +571,14 @@
                                         android:text="@string/custom_wallpaper_desc"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="12sp" />
-
                                 </LinearLayout>
-
                                 <ImageView
                                     android:id="@+id/iv_custom_wallpaper_arrow"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:src="@drawable/ic_arrow_right"
                                     app:tint="?attr/colorOnSurfaceVariant" />
-
                             </LinearLayout>
-
-                            <!-- Content -->
                             <LinearLayout
                                 android:id="@+id/layout_custom_wallpaper_content"
                                 android:layout_width="match_parent"
@@ -593,15 +587,12 @@
                                 android:paddingTop="6dp"
                                 android:visibility="gone"
                                 tools:visibility="visible">
-
-                                <!-- Switch: Enable Custom Background -->
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal"
                                     android:paddingVertical="8dp">
-
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
@@ -610,15 +601,11 @@
                                         android:textColor="?attr/colorOnSurface"
                                         android:textSize="14sp"
                                         android:textStyle="bold" />
-
                                     <com.google.android.material.materialswitch.MaterialSwitch
                                         android:id="@+id/switch_custom_wallpaper"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content" />
-
                                 </LinearLayout>
-
-                                <!-- Choose Wallpaper Tile -->
                                 <com.google.android.material.card.MaterialCardView
                                     android:id="@+id/btn_pick_wallpaper"
                                     android:layout_width="match_parent"
@@ -631,7 +618,6 @@
                                     app:strokeWidth="1dp"
                                     android:clickable="true"
                                     android:focusable="true">
-
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -639,7 +625,6 @@
                                         android:orientation="horizontal"
                                         android:paddingHorizontal="14dp"
                                         android:paddingVertical="12dp">
-
                                         <com.google.android.material.imageview.ShapeableImageView
                                             android:id="@+id/iv_wallpaper_preview"
                                             android:layout_width="44dp"
@@ -649,14 +634,12 @@
                                             app:shapeAppearanceOverlay="@style/ShapeAppearance.MD3E.Squircle"
                                             app:strokeColor="@color/card_subtle_stroke"
                                             app:strokeWidth="1dp" />
-
                                         <LinearLayout
                                             android:layout_width="0dp"
                                             android:layout_height="wrap_content"
                                             android:layout_weight="1"
                                             android:orientation="vertical"
                                             android:layout_marginStart="12dp">
-
                                             <TextView
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
@@ -664,7 +647,6 @@
                                                 android:textColor="?attr/colorOnSurface"
                                                 android:textSize="14sp"
                                                 android:textStyle="bold" />
-
                                             <TextView
                                                 android:id="@+id/tv_wallpaper_filename"
                                                 android:layout_width="wrap_content"
@@ -673,33 +655,25 @@
                                                 android:text="@string/select_wallpaper_desc"
                                                 android:textColor="?attr/colorOnSurfaceVariant"
                                                 android:textSize="11sp" />
-
                                         </LinearLayout>
-
                                         <ImageView
                                             android:layout_width="18dp"
                                             android:layout_height="18dp"
                                             android:src="@drawable/ic_arrow_right"
                                             app:tint="?attr/colorOnSurfaceVariant" />
-
                                     </LinearLayout>
-
                                 </com.google.android.material.card.MaterialCardView>
-
-                                <!-- Switch: Palette Dynamic Color Extraction -->
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal"
                                     android:paddingVertical="8dp">
-
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:orientation="vertical">
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -707,7 +681,6 @@
                                             android:textColor="?attr/colorOnSurface"
                                             android:textSize="14sp"
                                             android:textStyle="bold" />
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -715,29 +688,22 @@
                                             android:text="@string/extract_wallpaper_color_desc"
                                             android:textColor="?attr/colorOnSurfaceVariant"
                                             android:textSize="11sp" />
-
                                     </LinearLayout>
-
                                     <com.google.android.material.materialswitch.MaterialSwitch
                                         android:id="@+id/switch_extract_bg_color"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content" />
-
                                 </LinearLayout>
-
-                                <!-- Dim Slider -->
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="vertical"
                                     android:paddingVertical="8dp">
-
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:gravity="center_vertical"
                                         android:orientation="horizontal">
-
                                         <TextView
                                             android:layout_width="0dp"
                                             android:layout_height="wrap_content"
@@ -746,7 +712,6 @@
                                             android:textColor="?attr/colorOnSurface"
                                             android:textSize="14sp"
                                             android:textStyle="bold" />
-
                                         <TextView
                                             android:id="@+id/tv_dim_value"
                                             android:layout_width="wrap_content"
@@ -755,9 +720,7 @@
                                             android:textColor="?attr/colorPrimary"
                                             android:textSize="13sp"
                                             android:textStyle="bold" />
-
                                     </LinearLayout>
-
                                     <com.google.android.material.slider.Slider
                                         android:id="@+id/slider_bg_dim"
                                         android:layout_width="match_parent"
@@ -766,10 +729,7 @@
                                         android:valueTo="75"
                                         android:stepSize="5"
                                         android:value="25" />
-
                                 </LinearLayout>
-
-                                <!-- Clear Wallpaper Button -->
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btn_clear_wallpaper"
                                     android:layout_width="match_parent"
@@ -786,25 +746,18 @@
                                     android:textSize="13sp"
                                     android:textStyle="bold"
                                     app:cornerRadius="23dp" />
-
                             </LinearLayout>
-
                         </LinearLayout>
-
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="12dp"
                             android:background="?attr/colorOutlineVariant" />
-
-                        <!-- Output Management Group -->
                         <LinearLayout
                             android:id="@+id/item_output"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-
                             <LinearLayout
                                 android:id="@+id/item_output_header"
                                 android:layout_width="match_parent"
@@ -815,7 +768,6 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:background="?attr/selectableItemBackground">
-
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -824,16 +776,13 @@
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
-
                                 <ImageView
                                     android:id="@+id/iv_output_arrow"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:src="@drawable/ic_arrow_right"
                                     app:tint="?attr/colorOnSurfaceVariant" />
-
                             </LinearLayout>
-
                             <LinearLayout
                                 android:id="@+id/layout_output_content"
                                 android:layout_width="match_parent"
@@ -843,7 +792,6 @@
                                 android:paddingTop="6dp"
                                 android:visibility="gone"
                                 tools:visibility="visible">
-
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btn_clear_output"
                                     android:layout_width="wrap_content"
@@ -853,7 +801,6 @@
                                     style="@style/Widget.Material3.Button.OutlinedButton"
                                     app:strokeColor="?attr/colorError"
                                     app:cornerRadius="22dp" />
-
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -861,25 +808,18 @@
                                     android:text="@string/output_management_desc"
                                     android:textColor="?attr/colorOnSurfaceVariant"
                                     android:textSize="12sp" />
-
                             </LinearLayout>
-
                         </LinearLayout>
-
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="12dp"
                             android:background="?attr/colorOutlineVariant" />
-
-                        <!-- Developer Mode Group -->
                         <LinearLayout
                             android:id="@+id/item_developer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-
                             <LinearLayout
                                 android:id="@+id/item_developer_header"
                                 android:layout_width="match_parent"
@@ -890,7 +830,6 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:background="?attr/selectableItemBackground">
-
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -899,16 +838,13 @@
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
-
                                 <ImageView
                                     android:id="@+id/iv_developer_arrow"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:src="@drawable/ic_arrow_right"
                                     app:tint="?attr/colorOnSurfaceVariant" />
-
                             </LinearLayout>
-
                             <LinearLayout
                                 android:id="@+id/layout_developer_content"
                                 android:layout_width="match_parent"
@@ -918,8 +854,6 @@
                                 android:paddingTop="6dp"
                                 android:visibility="gone"
                                 tools:visibility="visible">
-
-                                <!-- Switch 1: Undeveloped -->
                                 <LinearLayout
                                     android:id="@+id/item_show_undeveloped"
                                     android:layout_width="match_parent"
@@ -927,7 +861,6 @@
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal"
                                     android:paddingVertical="6dp">
-
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
@@ -935,16 +868,13 @@
                                         android:text="@string/show_undeveloped_features"
                                         android:textColor="?attr/colorOnSurface"
                                         android:textSize="14sp" />
-
                                     <com.google.android.material.materialswitch.MaterialSwitch
                                         android:id="@+id/switch_show_undeveloped"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         app:thumbTint="?attr/colorPrimary"
                                         app:trackTint="?attr/colorSurfaceContainerHighest" />
-
                                 </LinearLayout>
-
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -952,8 +882,6 @@
                                     android:text="@string/show_undeveloped_desc"
                                     android:textColor="?attr/colorOnSurfaceVariant"
                                     android:textSize="12sp" />
-
-                                <!-- Switch 2: Terminal -->
                                 <LinearLayout
                                     android:id="@+id/item_show_terminal"
                                     android:layout_width="match_parent"
@@ -961,7 +889,6 @@
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal"
                                     android:paddingVertical="6dp">
-
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
@@ -969,16 +896,13 @@
                                         android:text="@string/show_terminal"
                                         android:textColor="?attr/colorOnSurface"
                                         android:textSize="14sp" />
-
                                     <com.google.android.material.materialswitch.MaterialSwitch
                                         android:id="@+id/switch_show_terminal"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         app:thumbTint="?attr/colorPrimary"
                                         app:trackTint="?attr/colorSurfaceContainerHighest" />
-
                                 </LinearLayout>
-
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -986,8 +910,6 @@
                                     android:text="@string/show_terminal_desc"
                                     android:textColor="?attr/colorOnSurfaceVariant"
                                     android:textSize="12sp" />
-
-                                <!-- Switch 3: Log Output -->
                                 <LinearLayout
                                     android:id="@+id/item_enable_log_output"
                                     android:layout_width="match_parent"
@@ -995,7 +917,6 @@
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal"
                                     android:paddingVertical="6dp">
-
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
@@ -1003,35 +924,25 @@
                                         android:text="@string/enable_conversion_log_output"
                                         android:textColor="?attr/colorOnSurface"
                                         android:textSize="14sp" />
-
                                     <com.google.android.material.materialswitch.MaterialSwitch
                                         android:id="@+id/switch_enable_log_output"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         app:thumbTint="?attr/colorPrimary"
                                         app:trackTint="?attr/colorSurfaceContainerHighest" />
-
                                 </LinearLayout>
-
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/enable_conversion_log_output_desc"
                                     android:textColor="?attr/colorOnSurfaceVariant"
                                     android:textSize="12sp" />
-
                             </LinearLayout>
-
                         </LinearLayout>
-
                     </LinearLayout>
-
                 </com.google.android.material.card.MaterialCardView>
-
             </LinearLayout>
-
         </ScrollView>
-
     </LinearLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

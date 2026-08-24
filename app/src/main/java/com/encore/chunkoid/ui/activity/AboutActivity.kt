@@ -27,7 +27,7 @@ class AboutActivity : AppCompatActivity() {
 
         val btnCheckUpdate = findViewById<Button>(R.id.btn_check_update)
         btnCheckUpdate.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Dicecan/Chunkoid/releases"))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://dl.chunkoid.top"))
             startActivity(intent)
         }
 

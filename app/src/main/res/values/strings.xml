@@ -10,7 +10,7 @@
 
     <!-- About Page -->
     <string name="about">About</string>
-    <string name="app_version">1.2.2-beta.1</string>
+    <string name="app_version">2.0.0</string>
     <string name="about_intro">A Minecraft Java-Bedrock world converter for Android devices. This unique application supports version downgrade and upgrade functionality, offering a convenient conversion environment for mobile users.</string>
     <string name="about_credits_chunker">Chunker-Cli is an open-source project (MIT) for Hive Game</string>
     <string name="about_credits_nbt">The NBT tool uses Polyana-Fontes NBT-Manipulator (MIT)</string>
@@ -211,7 +211,14 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
-    <string name="conversion_settings">Converter Settings</string>
+    <string name="performance_settings">Performance &amp; Optimization</string>
+    <string name="wake_lock">Background WakeLock</string>
+    <string name="wake_lock_desc">Keep CPU active during conversion to prevent sleep, throttling, or app killing when screen is off</string>
+    <string name="low_memory_mode">Low-Memory Mode (Experimental)</string>
+    <string name="low_memory_mode_desc">Limit multi-threading and aggressively reclaim memory to prevent OOM crashes, at the cost of conversion speed</string>
+    <string name="dimension_pruning">Dimension Pruning &amp; Mapping</string>
+    <string name="dimension_pruning_desc">Configure preservation for Nether and End to reduce world size and conversion time</string>
+    <string name="conversion_settings">Conversion Settings</string>
     <string name="jvm_max_memory">JVM Maximum Memory (MB)</string>
     <string name="memory_hint">For large worlds (over 1GB), increase memory for better performance. Too little memory may cause errors.</string>
     <string name="keep_original_nbt">Keep Original NBT</string>

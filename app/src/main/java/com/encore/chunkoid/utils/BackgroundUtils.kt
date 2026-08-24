@@ -61,6 +61,7 @@ object BackgroundUtils {
     }
 
     fun isColorExtractionEnabled(context: Context): Boolean {
+        if (!isCustomBackgroundEnabled(context)) return false
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getBoolean(KEY_EXTRACT_COLOR, true)
     }
@@ -118,7 +119,6 @@ object BackgroundUtils {
                 scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
             }
 
-            // Material 3 Monet Palette Generation
             val palette = Palette.from(scaledBitmap).generate()
             val isDark = isSystemInDarkTheme(context)
 
@@ -140,18 +140,15 @@ object BackgroundUtils {
             val onContainerColor: Int
 
             if (isDark) {
-                // Dark theme: Pastel luminous primary, crisp dark navy text
                 hsl[2] = 0.78f
                 primaryColor = ColorUtils.HSLToColor(hsl)
                 onPrimaryColor = Color.parseColor("#0A1424")
 
-                // Translucent / soft container
                 hsl[2] = 0.26f
                 hsl[1] = (hsl[1] * 0.75f).coerceIn(0.20f, 0.50f)
                 containerColor = ColorUtils.HSLToColor(hsl)
                 onContainerColor = primaryColor
             } else {
-                // Light theme: Rich deep primary, pure white text
                 hsl[2] = 0.38f
                 primaryColor = ColorUtils.HSLToColor(hsl)
                 onPrimaryColor = Color.WHITE
@@ -247,7 +244,6 @@ object BackgroundUtils {
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
         val dimPercent = prefs.getInt(KEY_BG_DIM, 25).coerceIn(0, 80)
 
-        // 1. Activate Dedicated Wallpaper Layer
         if (ivWallpaper != null && vScrim != null) {
             ivWallpaper.setImageBitmap(bitmap)
             ivWallpaper.visibility = View.VISIBLE
@@ -258,7 +254,6 @@ object BackgroundUtils {
             vScrim.visibility = View.VISIBLE
         }
 
-        // 2. Transform child cards, drawer, buttons, pills, progress bars, and icons
         val contentRoot = activity.findViewById<ViewGroup>(android.R.id.content) ?: return
         if (contentRoot.childCount == 0) return
         val activityRoot = contentRoot.getChildAt(0) as? ViewGroup ?: return
@@ -268,12 +263,16 @@ object BackgroundUtils {
 
     fun applyUnifiedMonetTheme(viewGroup: ViewGroup, isDark: Boolean, context: Context) {
         val isColorExtraction = isColorExtractionEnabled(context)
-        val primary = if (isColorExtraction) getExtractedPrimaryColor(context) else null
+        var primary = if (isColorExtraction) getExtractedPrimaryColor(context) else null
+        if (primary == null) {
+            val typedValue = android.util.TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+            primary = typedValue.data
+        }
         val onPrimary = getExtractedOnPrimaryColor(context)
         val container = if (isColorExtraction) getExtractedContainerColor(context) else null
         val onContainer = if (isColorExtraction) (getExtractedOnContainerColor(context) ?: primary) else null
 
-        // Glass background colors
         val glassBg = if (isDark) {
             if (primary != null) {
                 ColorUtils.blendARGB(Color.argb(95, 20, 28, 42), primary, 0.05f)
@@ -291,7 +290,6 @@ object BackgroundUtils {
         }
 
         val drawerBg = glassBg
-
         val bottomNavBg = glassBg
 
         val navItemIds = listOf(
@@ -302,31 +300,25 @@ object BackgroundUtils {
         for (i in 0 until viewGroup.childCount) {
             val child = viewGroup.getChildAt(i)
 
-            // Side Drawer custom glass styling
             if (child.id == R.id.nav_drawer) {
                 child.setBackgroundColor(drawerBg)
-                // Also tint the header if it exists
                 val header = (child as? ViewGroup)?.getChildAt(0)
                 if (header is ViewGroup) {
                     header.setBackgroundColor(Color.TRANSPARENT)
                 }
             }
 
-            // Tint Drawer Items
             if (child.id in navItemIds && child is ViewGroup) {
                 if (primary != null) {
                     for (j in 0 until child.childCount) {
                         val grandChild = child.getChildAt(j)
                         if (grandChild is ImageView) {
                             grandChild.setColorFilter(primary)
-                        } else if (grandChild is TextView) {
-                            // Leave text alone or tint it? Monet usually keeps it onSurface, but icons get tinted
                         }
                     }
                 }
             }
 
-            // Bottom Navigation glass and dynamic active indicator tint
             if (child is BottomNavigationView) {
                 child.setBackgroundColor(bottomNavBg)
                 child.elevation = 0f
@@ -399,7 +391,6 @@ object BackgroundUtils {
                 }
             }
 
-            // Harmonize Hero "+" circle button
             if (child.id == R.id.btn_hero_circle && container != null && primary != null) {
                 val circleDrawable = GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
@@ -423,14 +414,14 @@ object BackgroundUtils {
                     R.id.iv_bilibili,
                     R.id.iv_github,
                     R.id.iv_app_logo,
-                    R.id.iv_nav_logo
+                    R.id.iv_nav_logo,
+                    R.id.iv_splash_logo
                 )
                 if (child.id in primaryIconIds && primary != null) {
                     child.setColorFilter(primary)
                 }
             }
 
-            // Tint hardcoded layout backgrounds (like bg_debug_button) with glass background
             val glassTintIds = listOf(
                 R.id.theme_option_system,
                 R.id.theme_option_light,
@@ -453,7 +444,8 @@ object BackgroundUtils {
                 R.id.tv_log_level,
                 R.id.tv_app_version,
                 R.id.fl_app_logo,
-                R.id.fl_nav_logo
+                R.id.fl_nav_logo,
+                R.id.fl_splash_logo
             )
             if (child.id in glassTintIds) {
                 child.backgroundTintList = ColorStateList.valueOf(glassBg)

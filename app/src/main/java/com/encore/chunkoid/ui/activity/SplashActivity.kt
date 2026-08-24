@@ -33,24 +33,41 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         progressText = findViewById(R.id.progress_text)
+        
+        val splashLogo = findViewById<android.widget.FrameLayout>(R.id.fl_splash_logo)
+        if (splashLogo != null) {
+            splashLogo.alpha = 0f
+            splashLogo.translationY = 60f
+            splashLogo.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(1000)
+                .setInterpolator(android.view.animation.DecelerateInterpolator(1.5f))
+                .start()
+        }
 
-        // Check if RootFS and cli.jar are both ready
         if (isEnvironmentReady(this)) {
             proceedToMainActivity()
             return
         }
 
-        // First launch or missing environment - show progress & initialize
         progressText?.visibility = TextView.VISIBLE
         progressText?.text = getString(R.string.initializing)
 
         performInitialization()
     }
 
+    override fun onResume() {
+        super.onResume()
+        com.encore.chunkoid.utils.BackgroundUtils.applyCustomBackground(this)
+        val isDark = com.encore.chunkoid.utils.BackgroundUtils.isSystemInDarkTheme(this)
+        com.encore.chunkoid.utils.BackgroundUtils.applyUnifiedMonetTheme(window.decorView.rootView as android.view.ViewGroup, isDark, this)
+    }
+
     private fun isEnvironmentReady(context: Context): Boolean {
         val rootfsReady = RootFSInstaller.isRootFSReady(context)
         val cliJar = File(context.filesDir, "cli.jar")
-        val cliJarReady = cliJar.exists() && cliJar.length() > 1024 * 1024 // > 1MB
+        val cliJarReady = cliJar.exists() && cliJar.length() > 1024 * 1024
         return rootfsReady && cliJarReady
     }
 
@@ -72,7 +89,6 @@ class SplashActivity : AppCompatActivity() {
     private suspend fun initializeFiles(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                // 1. Extract rootfs if not ready
                 if (!RootFSInstaller.isRootFSReady(this@SplashActivity)) {
                     val rootfsOk = RootFSInstaller.extractRootFS(this@SplashActivity, object : RootFSInstaller.ProgressCallback {
                         override fun onProgress(progress: Int) {
@@ -88,7 +104,6 @@ class SplashActivity : AppCompatActivity() {
                     }
                 }
 
-                // 2. Copy chunker cli.jar if not ready
                 if (!copyChunkerJar()) {
                     Log.e(TAG, "Failed to copy cli.jar")
                     return@withContext false

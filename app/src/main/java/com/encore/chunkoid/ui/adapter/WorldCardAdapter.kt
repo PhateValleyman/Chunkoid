@@ -30,6 +30,33 @@ class WorldCardAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorldViewHolder {
         val binding = ItemWorldCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val context = parent.context
+        if (com.encore.chunkoid.utils.BackgroundUtils.isCustomBackgroundEnabled(context)) {
+            val isDark = com.encore.chunkoid.utils.BackgroundUtils.isSystemInDarkTheme(context)
+            val isColorExtraction = com.encore.chunkoid.utils.BackgroundUtils.isColorExtractionEnabled(context)
+            var primary = if (isColorExtraction) com.encore.chunkoid.utils.BackgroundUtils.getExtractedPrimaryColor(context) else null
+            if (primary == null) {
+                val typedValue = android.util.TypedValue()
+                context.theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+                primary = typedValue.data
+            }
+            val glassBg = if (isDark) {
+                androidx.core.graphics.ColorUtils.blendARGB(android.graphics.Color.argb(95, 20, 28, 42), primary, 0.05f)
+            } else {
+                android.graphics.Color.argb(215, 255, 255, 255)
+            }
+            val glassStroke = if (isDark) {
+                android.graphics.Color.argb(55, 255, 255, 255)
+            } else {
+                android.graphics.Color.argb(90, 255, 255, 255)
+            }
+            binding.root.setCardBackgroundColor(glassBg)
+            binding.root.strokeColor = glassStroke
+            binding.root.strokeWidth = 1
+            binding.root.cardElevation = 0f
+            
+            com.encore.chunkoid.utils.BackgroundUtils.applyUnifiedMonetTheme(binding.root, isDark, context)
+        }
         return WorldViewHolder(binding)
     }
 
@@ -47,7 +74,37 @@ class WorldCardAdapter(
         }
         binding.tvPlatformVersion.text = platformVersionText
 
-        binding.cardPlatform.strokeColor = context.getColor(R.color.minecraft_green)
+        var isCustomBg = false
+        var primaryColor = context.getColor(R.color.minecraft_green)
+
+        if (com.encore.chunkoid.utils.BackgroundUtils.isCustomBackgroundEnabled(context)) {
+            val isColorExtraction = com.encore.chunkoid.utils.BackgroundUtils.isColorExtractionEnabled(context)
+            if (isColorExtraction) {
+                val extracted = com.encore.chunkoid.utils.BackgroundUtils.getExtractedPrimaryColor(context)
+                if (extracted != null) {
+                    primaryColor = extracted
+                    isCustomBg = true
+                }
+            }
+        }
+
+        binding.cardPlatform.strokeColor = primaryColor
+        binding.tvPlatformVersion.setTextColor(primaryColor)
+
+        if (isCustomBg) {
+            val bgDrawable = binding.btnExport.parent as? ViewGroup
+            val isDark = com.encore.chunkoid.utils.BackgroundUtils.isSystemInDarkTheme(context)
+            if (bgDrawable != null) {
+                val glassBg = if (isDark) {
+                    androidx.core.graphics.ColorUtils.blendARGB(android.graphics.Color.argb(95, 20, 28, 42), primaryColor, 0.05f)
+                } else {
+                    android.graphics.Color.argb(215, 255, 255, 255)
+                }
+                bgDrawable.background = bgDrawable.background?.mutate()
+                bgDrawable.background?.setTint(glassBg)
+            }
+            binding.btnExport.imageTintList = android.content.res.ColorStateList.valueOf(primaryColor)
+        }
 
         loadWorldIcon(world, binding)
 
@@ -89,7 +146,6 @@ class WorldCardAdapter(
             redTitle.setSpan(ForegroundColorSpan(context.getColor(R.color.minecraft_red)), 0, redTitle.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             deleteItem.title = redTitle
             
-            // Show menu above the anchor to avoid overflow
             popup.gravity = android.view.Gravity.TOP or android.view.Gravity.END
             popup.show()
         }

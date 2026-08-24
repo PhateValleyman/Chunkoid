@@ -40,7 +40,7 @@ class ConversionActivity : AppCompatActivity() {
     private var isBound = false
     private var worldIconBitmap: android.graphics.Bitmap? = null
     private val logEntries = mutableListOf<LogEntry>()
-    private var rawLogContent = "" // 原始日志内容
+    private var rawLogContent = ""
 
     companion object {
         const val EXTRA_SETTINGS = "settings"
@@ -51,7 +51,6 @@ class ConversionActivity : AppCompatActivity() {
         binding = ActivityConversionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set status bar appearance
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
 
         settings = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -286,7 +285,6 @@ class ConversionActivity : AppCompatActivity() {
     
     private fun formatTargetFormat(format: String): String {
         val result = when (format) {
-            // Java版
             "JAVA_1_8_8" -> getString(R.string.java_1_8_8)
             "JAVA_1_9" -> getString(R.string.java_1_9)
             "JAVA_1_9_1" -> getString(R.string.java_1_9_1)
@@ -349,7 +347,6 @@ class ConversionActivity : AppCompatActivity() {
             "JAVA_1_21_11" -> getString(R.string.java_1_21_11)
             "JAVA_26_1" -> getString(R.string.java_26_1)
             "JAVA_26_2" -> getString(R.string.java_26_2)
-            // 基岩版
             "BEDROCK_R12" -> getString(R.string.bedrock_1_12)
             "BEDROCK_R13" -> getString(R.string.bedrock_1_13)
             "BEDROCK_R14" -> getString(R.string.bedrock_1_14)
@@ -490,7 +487,6 @@ class ConversionActivity : AppCompatActivity() {
         isConversionRunning = false
         updateUIForConversionComplete(success)
 
-        // 直接从 Service 获取原始日志
         rawLogContent = conversionService?.getRawLog() ?: ""
 
         if (success) {

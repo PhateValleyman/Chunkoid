@@ -98,8 +98,8 @@ public class JavaCommandExecutor {
 
     public Process runJar(File jarFile, String... arguments) throws IOException {
         String[] args = new String[arguments.length + 4];
-        args[0] = "-Xms256m";                    // 初始堆大小
-        args[1] = "-Xmx" + maxMemoryMB + "m";   // 最大堆大小（从设置读取）
+        args[0] = "-Xms256m";
+        args[1] = "-Xmx" + maxMemoryMB + "m";
         args[2] = "-jar";
         args[3] = jarFile.getAbsolutePath();
         System.arraycopy(arguments, 0, args, 4, arguments.length);
@@ -143,8 +143,6 @@ public class JavaCommandExecutor {
             Log.d(TAG, "Java output length: " + outputStr.length());
             Log.d(TAG, "Java output:\n" + outputStr);
             
-            // 直接使用 exitCode 判断（Java -version 成功时返回 0）
-            // 同时检查输出不为空作为额外验证
             boolean result = exitCode == 0 && outputStr.length() > 0;
             Log.d(TAG, "CheckJava result: " + result);
             return result;
@@ -155,49 +153,41 @@ public class JavaCommandExecutor {
     }
 
     private File findJavaBinary() {
-        // 优先尝试当前目录结构（rootfs/bin/java）
         File javaBin = new File(rootfsDir, "bin/java");
         if (javaBin.exists() && javaBin.length() > 0) {
             return javaBin;
         }
         
-        // 备选路径（原始 Termux 结构）
         javaBin = new File(rootfsDir, "usr/lib/jvm/java-17-openjdk/bin/java");
         if (javaBin.exists() && javaBin.length() > 0) {
             return javaBin;
         }
         
-        // 备选路径
         javaBin = new File(rootfsDir, "usr/lib/jvm/openjdk-17/bin/java");
         if (javaBin.exists() && javaBin.length() > 0) {
             return javaBin;
         }
         
-        // 最后尝试标准路径
         javaBin = new File(rootfsDir, "usr/bin/java");
         return javaBin;
     }
 
     private String getJavaHome() {
-        // 当前目录结构 - 查找 lib/jvm 目录
         File javaHome = new File(rootfsDir, "lib/jvm/java-17-openjdk");
         if (javaHome.exists()) {
             return javaHome.getAbsolutePath();
         }
         
-        // 备选路径（原始 Termux 结构）
         javaHome = new File(rootfsDir, "usr/lib/jvm/java-17-openjdk");
         if (javaHome.exists()) {
             return javaHome.getAbsolutePath();
         }
         
-        // 备选路径
         javaHome = new File(rootfsDir, "usr/lib/jvm/openjdk-17");
         if (javaHome.exists()) {
             return javaHome.getAbsolutePath();
         }
         
-        // 返回空或默认路径
         return rootfsDir.getAbsolutePath();
     }
 

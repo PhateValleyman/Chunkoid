@@ -33,13 +33,11 @@ public class TermuxExecutor {
 
         Log.d(TAG, "Initializing Termux environment...");
 
-        // 1. 解压RootFS
         if (!RootFSInstaller.extractRootFS(context, callback)) {
             Log.e(TAG, "Failed to extract RootFS");
             return false;
         }
 
-        // 2. 验证Java环境
         if (!javaExecutor.checkJava()) {
             Log.e(TAG, "Java environment validation failed");
             return false;
