@@ -7,14 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:importantForAutofill="noExcludeDescendants">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false">
 
-        <!-- Full-Screen Custom Wallpaper Layer (Zero flicker, zero black screen) -->
         <ImageView
             android:id="@+id/iv_custom_wallpaper"
             android:layout_width="match_parent"
@@ -22,7 +22,6 @@
             android:scaleType="centerCrop"
             android:visibility="gone" />
 
-        <!-- Dim Scrim Layer -->
         <View
             android:id="@+id/v_custom_scrim"
             android:layout_width="match_parent"
@@ -30,7 +29,6 @@
             android:background="#40000000"
             android:visibility="gone" />
 
-        <!-- Main Scrollable Workbench Content -->
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_workbench"
             android:layout_width="match_parent"
@@ -46,7 +44,6 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="20dp">
 
-                <!-- Top Workbench Headline -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -64,7 +61,6 @@
                         android:textSize="26sp"
                         android:textStyle="bold" />
 
-                    <!-- Menu / Quick Drawer Button (Icon Only) -->
                     <ImageView
                         android:id="@+id/btn_menu"
                         android:layout_width="40dp"
@@ -79,8 +75,6 @@
 
                 </LinearLayout>
 
-                <!-- Top Segmented Pill Switcher -->
-                <!-- Hero File Dropzone Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_hero_import"
                     android:layout_width="match_parent"
@@ -100,7 +94,6 @@
                         android:layout_height="wrap_content"
                         android:padding="24dp">
 
-                        <!-- 1. Initial State: Large 72dp Circle + Text + Tag Chips -->
                         <LinearLayout
                             android:id="@+id/card_initial_state"
                             android:layout_width="match_parent"
@@ -108,7 +101,6 @@
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <!-- Centered 72dp Circular Plus Button -->
                             <FrameLayout
                                 android:id="@+id/btn_hero_circle"
                                 android:layout_width="72dp"
@@ -125,7 +117,6 @@
 
                             </FrameLayout>
 
-                            <!-- Headline & Subtitle -->
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -144,11 +135,8 @@
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="12sp" />
 
-
-
                         </LinearLayout>
 
-                        <!-- 2. Extracting State: Smooth ProgressBar & Status Message -->
                         <LinearLayout
                             android:id="@+id/layout_extract_progress"
                             android:layout_width="match_parent"
@@ -179,7 +167,6 @@
 
                         </LinearLayout>
 
-                        <!-- 3. Loaded State: World Info Card -->
                         <LinearLayout
                             android:id="@+id/card_world_info"
                             android:layout_width="match_parent"
@@ -272,9 +259,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-
-
-                <!-- Config Card 1: Target Version & Platform Tile (Single-Layer Interactive Card) -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btn_select_target"
                     android:layout_width="match_parent"
@@ -348,7 +332,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Primary Action Button (Integrated into Main Workflow) -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_dock_action"
                     android:layout_width="match_parent"
@@ -370,13 +353,11 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <!-- Fragment Container for History & Secondary Pages -->
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!-- Clean Material 3 Bottom Navigation Bar -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
@@ -389,7 +370,6 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <!-- Side Navigation Drawer -->
     <include
         android:id="@+id/nav_drawer"
         layout="@layout/nav_drawer" />

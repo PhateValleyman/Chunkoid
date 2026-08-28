@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:importantForAutofill="noExcludeDescendants">
 
-    <!-- Full-Screen Custom Wallpaper Layer -->
     <ImageView
         android:id="@+id/iv_custom_wallpaper"
         android:layout_width="match_parent"
@@ -16,7 +16,6 @@
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <!-- Dim Scrim Layer -->
     <View
         android:id="@+id/v_custom_scrim"
         android:layout_width="match_parent"
@@ -60,7 +59,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- 1. Folder Picker Tile (Single-Layer Interactive Card) -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_select_pack"
                     android:layout_width="match_parent"
@@ -134,7 +132,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- 2. Conversion Direction & Action Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -151,7 +148,6 @@
                         android:orientation="vertical"
                         android:padding="20dp">
 
-                        <!-- Direction Selector (Segmented Switcher) -->
                         <LinearLayout
                             android:id="@+id/layout_direction_switcher"
                             android:layout_width="match_parent"
@@ -160,7 +156,6 @@
                             android:orientation="horizontal"
                             android:padding="4dp">
 
-                            <!-- Direction 1: Java -> Bedrock -->
                             <LinearLayout
                                 android:id="@+id/btn_dir_java_to_bedrock"
                                 android:layout_width="0dp"
@@ -183,7 +178,6 @@
 
                             </LinearLayout>
 
-                            <!-- Direction 2: Bedrock -> Java -->
                             <LinearLayout
                                 android:id="@+id/btn_dir_bedrock_to_java"
                                 android:layout_width="0dp"
@@ -208,7 +202,6 @@
 
                         </LinearLayout>
 
-                        <!-- Primary Conversion Action Button -->
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_start_convert"
                             android:layout_width="match_parent"
@@ -225,14 +218,12 @@
                             app:cornerRadius="26dp"
                             app:elevation="0dp" />
 
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="16dp"
                             android:background="@color/card_subtle_stroke" />
 
-                        <!-- Status & Progress -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -274,7 +265,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- 3. Collapsible Log Console Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -290,7 +280,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <!-- Toggle Header -->
                         <LinearLayout
                             android:id="@+id/layout_toggle_logs"
                             android:layout_width="match_parent"
@@ -327,7 +316,6 @@
 
                         </LinearLayout>
 
-                        <!-- Log Content Container (Hidden by default) -->
                         <LinearLayout
                             android:id="@+id/layout_log_content"
                             android:layout_width="match_parent"
@@ -358,7 +346,6 @@
 
         </ScrollView>
 
-        <!-- Bottom Export Button -->
         <LinearLayout
             android:id="@+id/button_container"
             android:layout_width="match_parent"

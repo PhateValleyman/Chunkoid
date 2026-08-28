@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:importantForAutofill="noExcludeDescendants">
 
-    <!-- Full-Screen Custom Wallpaper Layer -->
     <ImageView
         android:id="@+id/iv_custom_wallpaper"
         android:layout_width="match_parent"
@@ -15,7 +15,6 @@
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <!-- Dim Scrim Layer -->
     <View
         android:id="@+id/v_custom_scrim"
         android:layout_width="match_parent"
@@ -29,7 +28,6 @@
         android:orientation="vertical"
         android:fitsSystemWindows="true">
 
-        <!-- Toolbar -->
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,7 +58,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- 1. World Info & Progress Hero Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,14 +74,12 @@
                         android:orientation="vertical"
                         android:padding="20dp">
 
-                        <!-- World Header Row -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <!-- World Icon -->
                             <com.google.android.material.imageview.ShapeableImageView
                                 android:id="@+id/iv_world_icon"
                                 android:layout_width="56dp"
@@ -96,7 +91,6 @@
                                 app:strokeColor="@color/card_subtle_stroke"
                                 app:strokeWidth="1dp" />
 
-                            <!-- World Name and Badges -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -119,7 +113,6 @@
                                     android:layout_marginTop="6dp"
                                     android:orientation="horizontal">
 
-                                    <!-- Source Platform Card -->
                                     <TextView
                                         android:id="@+id/tv_platform"
                                         android:layout_width="wrap_content"
@@ -132,7 +125,6 @@
                                         android:textStyle="bold"
                                         android:layout_marginEnd="6dp" />
 
-                                    <!-- Target Version Card -->
                                     <TextView
                                         android:id="@+id/tv_target_version"
                                         android:layout_width="wrap_content"
@@ -150,14 +142,12 @@
 
                         </LinearLayout>
 
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="16dp"
                             android:background="@color/card_subtle_stroke" />
 
-                        <!-- Status & Progress -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -198,7 +188,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- 2. Collapsible Log Output Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -214,7 +203,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <!-- Toggle Header -->
                         <LinearLayout
                             android:id="@+id/layout_toggle_logs"
                             android:layout_width="match_parent"
@@ -251,7 +239,6 @@
 
                         </LinearLayout>
 
-                        <!-- Log Content Container (Hidden by default) -->
                         <LinearLayout
                             android:id="@+id/layout_log_content"
                             android:layout_width="match_parent"
@@ -282,7 +269,6 @@
 
         </ScrollView>
 
-        <!-- Bottom Action Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

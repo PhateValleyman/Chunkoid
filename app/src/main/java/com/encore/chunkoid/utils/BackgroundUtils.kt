@@ -22,8 +22,11 @@ import com.encore.chunkoid.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -46,6 +49,24 @@ object BackgroundUtils {
     private const val WALLPAPER_BLURRED_FILENAME = "custom_wallpaper_blurred.png"
 
     private var memoryCachedBitmap: Bitmap? = null
+    private var cachedCustomBgEnabled: Boolean? = null
+    private var cachedColorExtractionEnabled: Boolean? = null
+    private var cachedPrimaryColor: Int? = null
+    private var cachedOnPrimaryColor: Int? = null
+    private var cachedContainerColor: Int? = null
+    private var cachedOnContainerColor: Int? = null
+    private var cachedWallpaperFileExists: Boolean? = null
+
+    fun invalidateCache() {
+        cachedCustomBgEnabled = null
+        cachedColorExtractionEnabled = null
+        cachedPrimaryColor = null
+        cachedOnPrimaryColor = null
+        cachedContainerColor = null
+        cachedOnContainerColor = null
+        cachedWallpaperFileExists = null
+        memoryCachedBitmap = null
+    }
 
     fun getWallpaperFile(context: Context): File {
         return File(context.filesDir, WALLPAPER_FILENAME)
@@ -56,42 +77,65 @@ object BackgroundUtils {
     }
 
     fun isCustomBackgroundEnabled(context: Context): Boolean {
+        if (cachedCustomBgEnabled != null) return cachedCustomBgEnabled!!
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getBoolean(KEY_CUSTOM_BG_ENABLED, false) && getWallpaperFile(context).exists()
+        val enabledPref = prefs.getBoolean(KEY_CUSTOM_BG_ENABLED, false)
+        if (!enabledPref) {
+            cachedCustomBgEnabled = false
+            return false
+        }
+        val exists = cachedWallpaperFileExists ?: getWallpaperFile(context).exists().also { cachedWallpaperFileExists = it }
+        val enabled = exists
+        cachedCustomBgEnabled = enabled
+        return enabled
     }
 
     fun isColorExtractionEnabled(context: Context): Boolean {
         if (!isCustomBackgroundEnabled(context)) return false
+        if (cachedColorExtractionEnabled != null) return cachedColorExtractionEnabled!!
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getBoolean(KEY_EXTRACT_COLOR, true)
+        val enabled = prefs.getBoolean(KEY_EXTRACT_COLOR, true)
+        cachedColorExtractionEnabled = enabled
+        return enabled
     }
 
     fun getExtractedPrimaryColor(context: Context): Int? {
+        if (cachedPrimaryColor != null) return if (cachedPrimaryColor != 0) cachedPrimaryColor else null
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val color = prefs.getInt(KEY_EXTRACTED_PRIMARY, 0)
+        cachedPrimaryColor = color
         return if (color != 0) color else null
     }
 
     fun getExtractedOnPrimaryColor(context: Context): Int {
+        if (cachedOnPrimaryColor != null && cachedOnPrimaryColor != 0) return cachedOnPrimaryColor!!
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val color = prefs.getInt(KEY_EXTRACTED_ON_PRIMARY, 0)
-        if (color != 0) return color
+        if (color != 0) {
+            cachedOnPrimaryColor = color
+            return color
+        }
         return if (isSystemInDarkTheme(context)) Color.parseColor("#0A1424") else Color.WHITE
     }
 
     fun getExtractedContainerColor(context: Context): Int? {
+        if (cachedContainerColor != null) return if (cachedContainerColor != 0) cachedContainerColor else null
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val color = prefs.getInt(KEY_EXTRACTED_CONTAINER, 0)
+        cachedContainerColor = color
         return if (color != 0) color else null
     }
 
     fun getExtractedOnContainerColor(context: Context): Int? {
+        if (cachedOnContainerColor != null) return if (cachedOnContainerColor != 0) cachedOnContainerColor else null
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val color = prefs.getInt(KEY_EXTRACTED_ON_CONTAINER, 0)
+        cachedOnContainerColor = color
         return if (color != 0) color else null
     }
 
     suspend fun saveCustomWallpaper(context: Context, imageUri: Uri): Boolean = withContext(Dispatchers.IO) {
+        invalidateCache()
         try {
             val inputStream = context.contentResolver.openInputStream(imageUri) ?: return@withContext false
             val originalBitmap = BitmapFactory.decodeStream(inputStream)
@@ -193,7 +237,7 @@ object BackgroundUtils {
     fun clearCustomWallpaper(context: Context) {
         getWallpaperFile(context).delete()
         getBlurredWallpaperFile(context).delete()
-        memoryCachedBitmap = null
+        invalidateCache()
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         prefs.edit()
@@ -222,14 +266,11 @@ object BackgroundUtils {
         return null
     }
 
-    /**
-     * Apply wallpaper layer and full-spectrum dynamic Monet harmonization across all controls.
-     */
     fun applyCustomBackground(activity: Activity) {
         androidx.core.view.WindowCompat.setDecorFitsSystemWindows(activity.window, false)
         activity.window.statusBarColor = android.graphics.Color.TRANSPARENT
         activity.window.navigationBarColor = android.graphics.Color.TRANSPARENT
-        
+
         val ivWallpaper = activity.findViewById<ImageView>(R.id.iv_custom_wallpaper)
         val vScrim = activity.findViewById<View>(R.id.v_custom_scrim)
         val isDark = isSystemInDarkTheme(activity)
@@ -294,7 +335,8 @@ object BackgroundUtils {
 
         val navItemIds = listOf(
             R.id.nav_item_settings, R.id.nav_item_terminal, R.id.nav_item_resource_converter,
-            R.id.nav_item_decrypt, R.id.nav_item_map_downloader, R.id.nav_item_help, R.id.nav_item_about
+            R.id.nav_item_decrypt, R.id.nav_item_dimension_pruning, R.id.nav_item_nbt_editor,
+            R.id.nav_item_help, R.id.nav_item_about
         )
 
         for (i in 0 until viewGroup.childCount) {
@@ -336,12 +378,78 @@ object BackgroundUtils {
                 }
             }
 
+            if (child is TabLayout) {
+                child.setBackgroundColor(Color.TRANSPARENT)
+                if (primary != null) {
+                    child.setSelectedTabIndicatorColor(primary)
+                    val unselectedTextColor = ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant)
+                    child.setTabTextColors(unselectedTextColor, primary)
+                    child.tabRippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(primary, 40))
+                }
+            }
+
+            if (child is ChipGroup) {
+                child.setBackgroundColor(Color.TRANSPARENT)
+            }
+
+            if (child is Chip) {
+                if (isCustomBackgroundEnabled(context)) {
+                    child.elevation = 0f
+                    val unselectedBg = if (isDark) Color.argb(60, 255, 255, 255) else Color.argb(180, 255, 255, 255)
+                    val selectedBg = if (container != null) {
+                        ColorUtils.blendARGB(container, glassBg, 0.25f)
+                    } else if (primary != null) {
+                        ColorUtils.setAlphaComponent(primary, 130)
+                    } else {
+                        unselectedBg
+                    }
+
+                    val bgStates = arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    )
+                    val bgColors = intArrayOf(selectedBg, unselectedBg)
+                    child.chipBackgroundColor = ColorStateList(bgStates, bgColors)
+
+                    val strokeColors = intArrayOf(
+                        if (primary != null) primary else glassStroke,
+                        glassStroke
+                    )
+                    child.chipStrokeColor = ColorStateList(bgStates, strokeColors)
+                    child.chipStrokeWidth = (1 * context.resources.displayMetrics.density).coerceAtLeast(1f)
+
+                    val textColors = intArrayOf(
+                        if (onContainer != null) onContainer else onPrimary,
+                        ContextCompat.getColor(context, R.color.md_theme_onSurface)
+                    )
+                    child.setTextColor(ColorStateList(bgStates, textColors))
+                    if (primary != null) {
+                        child.checkedIconTint = ColorStateList.valueOf(textColors[0])
+                        child.chipIconTint = ColorStateList(bgStates, intArrayOf(textColors[0], primary))
+                    }
+                } else if (primary != null && container != null) {
+                    val bgStates = arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    )
+                    child.chipBackgroundColor = ColorStateList(bgStates, intArrayOf(container, ContextCompat.getColor(context, R.color.card_subtle_bg)))
+                    val textColors = intArrayOf(onContainer ?: primary, ContextCompat.getColor(context, R.color.md_theme_onSurface))
+                    child.setTextColor(ColorStateList(bgStates, textColors))
+                    child.checkedIconTint = ColorStateList.valueOf(onContainer ?: primary)
+                }
+            }
+
             when (child) {
                 is MaterialCardView -> {
                     child.cardElevation = 0f
-                    child.setCardBackgroundColor(glassBg)
+                    val cardBg = if (isCustomBackgroundEnabled(context)) {
+                        if (isDark) Color.argb(55, 255, 255, 255) else Color.argb(180, 255, 255, 255)
+                    } else {
+                        glassBg
+                    }
+                    child.setCardBackgroundColor(cardBg)
                     child.strokeColor = glassStroke
-                    child.strokeWidth = 1
+                    child.strokeWidth = (1 * context.resources.displayMetrics.density).toInt().coerceAtLeast(1)
                 }
                 is MaterialButton -> {
                     if (primary != null && child.id != R.id.btn_cancel) {
@@ -398,6 +506,7 @@ object BackgroundUtils {
                 }
                 child.background = circleDrawable
             }
+
             if (child is ImageView) {
                 val primaryIconIds = listOf(
                     R.id.iv_hero_plus,
@@ -415,7 +524,10 @@ object BackgroundUtils {
                     R.id.iv_github,
                     R.id.iv_app_logo,
                     R.id.iv_nav_logo,
-                    R.id.iv_splash_logo
+                    R.id.iv_splash_logo,
+                    R.id.iv_bedrock_arrow,
+                    R.id.iv_java_arrow,
+                    R.id.iv_group_arrow
                 )
                 if (child.id in primaryIconIds && primary != null) {
                     child.setColorFilter(primary)
@@ -464,15 +576,99 @@ object BackgroundUtils {
                     R.id.tv_website_link,
                     R.id.tv_docs_link,
                     R.id.tv_progress_text,
-                    R.id.tv_extract_progress
+                    R.id.tv_extract_progress,
+                    R.id.tv_group_title,
+                    R.id.tv_status
                 )
                 if (child.id in primaryTextIds && primary != null) {
                     child.setTextColor(primary)
                 }
             }
 
+            if (child is android.widget.RadioButton) {
+                if (primary != null) {
+                    val unselectedColor = ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant)
+                    val states = arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    )
+                    val colors = intArrayOf(primary, unselectedColor)
+                    child.buttonTintList = android.content.res.ColorStateList(states, colors)
+                }
+            }
+
             if (child is ViewGroup) {
                 applyUnifiedMonetTheme(child, isDark, context)
+            }
+        }
+    }
+
+    fun applyDialogTheme(dialog: android.app.Dialog, context: Context, contentView: View? = null) {
+        val window = dialog.window ?: return
+        val isDark = isSystemInDarkTheme(context)
+        val isColorExtraction = isColorExtractionEnabled(context)
+        val primary = if (isColorExtraction) getExtractedPrimaryColor(context) else null
+        val onPrimary = getExtractedOnPrimaryColor(context)
+        val isCustomBg = isCustomBackgroundEnabled(context)
+
+        val radius = 28 * context.resources.displayMetrics.density
+        val glassBg = if (isDark) {
+            if (primary != null) ColorUtils.blendARGB(Color.argb(235, 20, 28, 42), primary, 0.08f)
+            else Color.argb(235, 20, 28, 42)
+        } else {
+            Color.argb(245, 255, 255, 255)
+        }
+        val glassStroke = if (isDark) Color.argb(55, 255, 255, 255) else Color.argb(90, 255, 255, 255)
+
+        if (contentView is ViewGroup) {
+            applyUnifiedMonetTheme(contentView, isDark, context)
+        }
+
+        if (dialog is com.google.android.material.bottomsheet.BottomSheetDialog) {
+            window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(Color.TRANSPARENT))
+            dialog.setOnShowListener {
+                val bottomSheet = dialog.findViewById<android.widget.FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+                if (bottomSheet != null) {
+                    window.findViewById<View>(com.google.android.material.R.id.touch_outside)?.setBackgroundColor(Color.TRANSPARENT)
+                    bottomSheet.setBackgroundColor(Color.TRANSPARENT)
+
+                    if (isCustomBg) {
+                        val drawable = GradientDrawable().apply {
+                            setColor(glassBg)
+                            cornerRadii = floatArrayOf(
+                                radius, radius,
+                                radius, radius,
+                                0f, 0f,
+                                0f, 0f
+                            )
+                            setStroke((1 * context.resources.displayMetrics.density).toInt(), glassStroke)
+                        }
+                        bottomSheet.background = drawable
+                    }
+                    applyUnifiedMonetTheme(bottomSheet, isDark, context)
+                }
+            }
+        } else {
+
+            if (isCustomBg) {
+                val drawable = GradientDrawable().apply {
+                    setColor(glassBg)
+                    cornerRadius = radius
+                    setStroke((1 * context.resources.displayMetrics.density).toInt(), glassStroke)
+                }
+                window.setBackgroundDrawable(drawable)
+            }
+
+            dialog.setOnShowListener {
+                val alert = dialog as? androidx.appcompat.app.AlertDialog
+                if (alert != null && primary != null) {
+                    alert.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.setTextColor(primary)
+                    alert.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant))
+                    alert.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL)?.setTextColor(ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant))
+                }
+                (window.decorView as? ViewGroup)?.let {
+                    applyUnifiedMonetTheme(it, isDark, context)
+                }
             }
         }
     }
@@ -490,9 +686,6 @@ object BackgroundUtils {
         }
     }
 
-    /**
-     * Fast StackBlur algorithm in pure Kotlin for smooth background blurring without native dependencies.
-     */
     fun fastBlur(sentBitmap: Bitmap, radius: Int): Bitmap {
         val bitmap = sentBitmap.copy(sentBitmap.config ?: Bitmap.Config.ARGB_8888, true)
         if (radius < 1) return bitmap
@@ -709,5 +902,34 @@ object BackgroundUtils {
 
         bitmap.setPixels(pix, 0, w, 0, 0, w, h)
         return bitmap
+    }
+
+    fun getGlassCardBackgroundColor(context: Context): Int {
+        val isDark = isSystemInDarkTheme(context)
+        val isColorExtraction = isColorExtractionEnabled(context)
+        val primary = if (isColorExtraction) getExtractedPrimaryColor(context) else null
+        return if (isDark) {
+            if (primary != null) {
+                ColorUtils.blendARGB(Color.argb(55, 255, 255, 255), primary, 0.05f)
+            } else {
+                Color.argb(55, 255, 255, 255)
+            }
+        } else {
+            Color.argb(180, 255, 255, 255)
+        }
+    }
+
+    fun getGlassStrokeColor(context: Context): Int {
+        val isDark = isSystemInDarkTheme(context)
+        return if (isDark) Color.argb(55, 255, 255, 255) else Color.argb(90, 255, 255, 255)
+    }
+
+    fun applyGlassToCard(card: MaterialCardView, context: Context) {
+        if (isCustomBackgroundEnabled(context)) {
+            card.cardElevation = 0f
+            card.setCardBackgroundColor(getGlassCardBackgroundColor(context))
+            card.strokeColor = getGlassStrokeColor(context)
+            card.strokeWidth = (1 * context.resources.displayMetrics.density).toInt().coerceAtLeast(1)
+        }
     }
 }

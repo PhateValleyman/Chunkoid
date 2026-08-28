@@ -42,10 +42,10 @@ class DecryptActivity : AppCompatActivity() {
             }
             val docFile = DocumentFile.fromTreeUri(this, treeUri)
             selectedWorldDoc = docFile
-            
+
             val displayName = getDisplayNameFromDocFile(docFile)
             binding.tvSelectWorld.text = displayName ?: getString(R.string.select_decrypt_world)
-            
+
             startDecryption()
         }
     }
@@ -77,9 +77,11 @@ class DecryptActivity : AppCompatActivity() {
         applyNoElevationToCards()
     }
 
-    override fun onResume() {
-        super.onResume()
-        BackgroundUtils.applyCustomBackground(this)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            BackgroundUtils.applyCustomBackground(this)
+        }
     }
 
     private fun setupToolbar() {
@@ -197,7 +199,7 @@ class DecryptActivity : AppCompatActivity() {
 
     private fun getDisplayNameFromDocFile(docFile: DocumentFile?): String? {
         docFile ?: return null
-        
+
         val levelNameFile = docFile.findFile("levelname.txt")
         if (levelNameFile != null && levelNameFile.isFile) {
             return try {

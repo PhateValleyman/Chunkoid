@@ -12,8 +12,8 @@ android {
         applicationId "com.encore.chunkoid"
         minSdk 26
         targetSdk 34
-        versionCode 20
-        versionName "2.0.0"
+        versionCode 21
+        versionName "2.1.0-B"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -61,15 +61,16 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.9.3'
     implementation 'androidx.documentfile:documentfile:1.0.1'
 
-    // Preference
     implementation 'androidx.preference:preference-ktx:1.2.1'
 
-    // Palette Color Extraction
     implementation 'androidx.palette:palette-ktx:1.0.0'
 
-    // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
 
-    // NBT Module
     implementation project(':nbt')
+
+    implementation 'com.hivemc.leveldb:leveldb-api:1.1.0'
+    implementation files('libs/leveldb-1.1.0.jar')
+
+    implementation 'com.google.guava:guava:33.3.1-android'
 }

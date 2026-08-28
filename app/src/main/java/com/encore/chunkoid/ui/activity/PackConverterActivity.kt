@@ -75,8 +75,14 @@ class PackConverterActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        BackgroundUtils.applyCustomBackground(this)
         selectDirection(selectedDirection)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            BackgroundUtils.applyCustomBackground(this)
+        }
     }
 
     private fun setupToolbar() {
@@ -198,14 +204,14 @@ class PackConverterActivity : AppCompatActivity() {
                         lifecycleScope.launch(Dispatchers.Main) {
                             convertedPackPath = outputPath
                             binding.tvStatus.text = getString(R.string.convert_complete)
-                            
+
                             binding.btnExportCompressed.visibility = android.view.View.VISIBLE
                             binding.btnExportCompressed.text = if (direction == ConversionDirection.JAVA_TO_BEDROCK) {
                                 getString(R.string.export_as_mcpack)
                             } else {
                                 getString(R.string.export_as_zip)
                             }
-                            
+
                             addLog("转换完成，输出目录: $outputPath", LogEntry.Level.INFO)
                             ToastUtils.show(this@PackConverterActivity, getString(R.string.convert_complete))
                         }

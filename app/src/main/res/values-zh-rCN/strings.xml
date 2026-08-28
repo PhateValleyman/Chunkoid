@@ -8,12 +8,12 @@
     <string name="output_folder_not_found">未找到输出文件夹</string>
     <string name="cannot_open_folder">无法打开输出文件夹</string>
 
-    <!-- About Page -->
     <string name="about">关于</string>
-    <string name="app_version">2.0.0</string>
+    <string name="app_version">2.1.0-B</string>
     <string name="about_intro">一个安卓端的我的世界JE-BE双端世界转换器\n力求为手机用户提供一个方便快捷的存档转换体验</string>
     <string name="about_credits_chunker">Chunker-Cli为Hive Game的开源项目(MIT)</string>
     <string name="about_credits_nbt">NBT工具使用了Polyana-Fontes的NBT-Manipulator(MIT)</string>
+    <string name="about_credits_leveldb">LevelDB引擎使用了HiveGames的leveldb-mcpe-java(Apache 2.0 / BSD)</string>
     <string name="about_credits_sdk">存档解密器使用了Dicecan的NetEaseDecryptorSDK(GPL v3)</string>
     <string name="about_thanks">特别鸣谢：Dozener（原作者与奠基人）、Ryan Steven、Weiyin 1A</string>
     <string name="about_website">进入官网</string>
@@ -21,7 +21,6 @@
     <string name="check_update">检查更新</string>
     <string name="donate">捐赠</string>
 
-    <!-- Main Activity -->
     <string name="converter_title">转换工作台</string>
     <string name="start_conversion">开始转换</string>
     <string name="nav_desc">世界转换一站式套件</string>
@@ -41,13 +40,10 @@
     <string name="bedrock_edition">基岩版</string>
     <string name="java_edition">Java版</string>
 
-    <!-- Conversion Settings -->
     <string name="auto_detect">自动检测</string>
     <string name="select_target_format">选择目标版本</string>
     <string name="convert_to">转换为</string>
 
-    <!-- Version Subtitles -->
-    <!-- Java Edition Subtitles -->
     <string name="java_subtitle_1_8">多彩世界</string>
     <string name="java_subtitle_1_9">战斗革新</string>
     <string name="java_subtitle_1_10">霜炙交融</string>
@@ -64,7 +60,6 @@
     <string name="java_subtitle_1_21">棘巧试炼</string>
     <string name="java_subtitle_26">后续大版</string>
 
-    <!-- Bedrock Edition Subtitles -->
     <string name="bedrock_subtitle_1_12">水域同步</string>
     <string name="bedrock_subtitle_1_13">珊瑚沉船</string>
     <string name="bedrock_subtitle_1_14">村庄劫掠</string>
@@ -76,7 +71,6 @@
     <string name="bedrock_subtitle_1_21">棘巧试炼</string>
     <string name="bedrock_subtitle_1_26">后续大版</string>
 
-    <!-- Java Versions -->
     <string name="java_1_8_8">1.8.8</string>
     <string name="java_1_9">1.9</string>
     <string name="java_1_9_1">1.9.1</string>
@@ -140,7 +134,6 @@
     <string name="java_26_1">26.1</string>
     <string name="java_26_2">26.2</string>
 
-    <!-- Bedrock Versions -->
     <string name="bedrock_1_12">1.12</string>
     <string name="bedrock_1_13">1.13</string>
     <string name="bedrock_1_14">1.14</string>
@@ -199,7 +192,6 @@
     <string name="bedrock_1_26_20">1.26.20</string>
     <string name="bedrock_1_26_30">1.26.30</string>
 
-    <!-- Conversion Activity -->
     <string name="conversion_title">正在转换世界</string>
     <string name="conversion_progress">转换进度</string>
     <string name="converting">正在转换…</string>
@@ -209,12 +201,11 @@
     <string name="view_logs">查看日志</string>
     <string name="open_output">打开输出管理器</string>
 
-    <!-- Settings -->
     <string name="settings_title">设置</string>
     <string name="performance_settings">性能与优化</string>
     <string name="wake_lock">后台唤醒锁 (WakeLock)</string>
     <string name="wake_lock_desc">在转换期间保持 CPU 活跃，防止手机息屏或切后台时转换被系统休眠、降频或杀后台</string>
-    <string name="low_memory_mode">低运存防闪退 (实验性)</string>
+    <string name="low_memory_mode">低运存防闪退</string>
     <string name="low_memory_mode_desc">限制多线程并发并激进回收内存。有效防止OOM闪退，但会降低转换速度</string>
     <string name="dimension_pruning">维度裁剪与映射</string>
     <string name="dimension_pruning_desc">配置是否保留下界与末地，裁剪无效维度可大幅缩减耗时与内存</string>
@@ -246,24 +237,20 @@
     <string name="enable_conversion_log_output_desc">（该功能适用于世界转换出现错误）开启之后可在输出世界的导出选栏中找到该选项（注：无法查看之前没有启用转换日志输出的世界日志）你可以把这份日志输出发给社区寻求帮助</string>
     <string name="output_cleared">所有输出世界已清空</string>
 
-    <!-- Messages -->
     <string name="error_no_input">请选择一个输入世界</string>
     <string name="error_no_output">请选择一个输出位置</string>
     <string name="error_no_format">请选择一个目标格式</string>
     <string name="permission_required">需要存储权限才能访问世界文件</string>
 
-    <!-- Notifications -->
     <string name="conversion_notification_channel">世界转换</string>
     <string name="conversion_notification_channel_desc">世界转换进度通知</string>
     <string name="conversion_in_progress">正在转换世界</string>
 
-    <!-- Log levels -->
     <string name="log_info">信息</string>
     <string name="log_warning">警告</string>
     <string name="log_error">错误</string>
     <string name="log_debug">调试</string>
 
-    <!-- Progress steps -->
     <string name="reading_level_dat">正在读取 level.dat…</string>
     <string name="analyzing_world_dimensions">正在分析世界维度…</string>
     <string name="converting_chunks">正在转换区块…</string>
@@ -272,17 +259,14 @@
     <string name="writing_output">正在写入输出…</string>
     <string name="finalizing">正在完成…</string>
 
-    <!-- Conversion Activity -->
     <string name="conversion_details">转换详情</string>
     <string name="log_output">日志输出</string>
 
-    <!-- Main Activity -->
     <string name="storage_permission_required_title">需要存储权限</string>
     <string name="storage_permission_required_message">此应用需要访问所有文件才能读取和写入 Minecraft 世界数据。</string>
     <string name="grant">授权</string>
     <string name="cancel">取消</string>
 
-    <!-- Log messages -->
     <string name="starting_conversion">开始转换…</string>
     <string name="target_format_log">目标格式：%s</string>
     <string name="input_log">输入：%s</string>
@@ -292,8 +276,6 @@
     <string name="conversion_cancelled">用户已取消转换</string>
     <string name="service_not_bound">服务未绑定</string>
 
-
-    <!-- Output Manager -->
     <string name="export">导出</string>
     <string name="open_folder">打开文件夹</string>
     <string name="export_as_mcworld">导出为.mcworld</string>
@@ -315,7 +297,6 @@
     <string name="launch_failed">启动失败</string>
     <string name="view_conversion_log">查看转换日志</string>
 
-    <!-- Decryptor -->
     <string name="decryptor_title">存档解密器</string>
     <string name="decrypt_shortcut_short">存档解密</string>
     <string name="decrypt_shortcut_long">存档解密</string>
@@ -327,7 +308,6 @@
     <string name="decrypt_failed">解密失败</string>
     <string name="export_decrypted_world">导出到指定目录</string>
 
-    <!-- Pack Converter -->
     <string name="pack_converter_title">材质包转换器</string>
     <string name="pack_converter_shortcut_short">材质转换</string>
     <string name="pack_converter_shortcut_long">材质转换</string>
@@ -341,7 +321,6 @@
     <string name="export_as_mcpack">导出为.mcpack</string>
     <string name="export_pack_as_archive">导出材质包压缩文件</string>
 
-    <!-- 自定义背景与毛玻璃 -->
     <string name="custom_wallpaper_title">自定义背景与毛玻璃</string>
     <string name="custom_wallpaper_desc">设置个性化背景并开启全站控件磨砂透视与动态取色</string>
     <string name="enable_custom_wallpaper">启用自定义背景</string>
@@ -354,4 +333,119 @@
     <string name="clear_wallpaper">清除背景图片</string>
     <string name="wallpaper_set_success">自定义背景设置成功！</string>
     <string name="wallpaper_cleared_success">已清除自定义背景</string>
+
+    <string name="nbt_editor_title">NBT 编辑器</string>
+    <string name="nbt_open_file">打开 NBT 文件</string>
+    <string name="nbt_open_file_desc">选择 level.dat、*.dat 或 *.nbt 结构文件进行可视化编辑</string>
+    <string name="nbt_save_file">保存修改</string>
+    <string name="nbt_save_as">另存为...</string>
+    <string name="nbt_save_success">文件保存成功！已创建备份文件 (.bak)</string>
+    <string name="nbt_save_failed">保存失败：%s</string>
+    <string name="nbt_load_failed">无法解析该文件为有效 NBT 格式</string>
+    <string name="nbt_search_hint">搜索标签名称或路径...</string>
+    <string name="nbt_expand_all">全部展开</string>
+    <string name="nbt_collapse_all">全部折叠</string>
+    <string name="nbt_edit_value">编辑数值</string>
+    <string name="nbt_add_tag">新建标签</string>
+    <string name="nbt_tag_key">标签名称 (Key)</string>
+    <string name="nbt_tag_value">标签数值 (Value)</string>
+    <string name="nbt_tag_type">标签数据类型</string>
+    <string name="nbt_delete_tag">删除标签</string>
+    <string name="nbt_delete_confirm">确定要删除标签「%s」及其所有子节点吗？</string>
+    <string name="nbt_rename_key">重命名键名</string>
+    <string name="nbt_copy_path">复制标签路径</string>
+    <string name="nbt_copy_value">复制数值</string>
+    <string name="nbt_copied">已复制到剪贴板</string>
+    <string name="nbt_empty_state_title">未打开任何文件</string>
+    <string name="nbt_empty_state_desc">点击下方按钮选择要查看或编辑的 Minecraft NBT 文件</string>
+    <string name="nbt_invalid_number">输入的数值不合法或超出该类型取值范围</string>
+    <string name="nbt_key_empty">键名不能为空</string>
+    <string name="nbt_key_exists">已存在同名键「%s」</string>
+    <string name="nbt_root_tag">Root</string>
+    <string name="nbt_select_file_in_zip">选择压缩包内要编辑的 NBT 文件</string>
+    <string name="nbt_no_nbt_in_zip">在压缩包「%s」中未找到任何 .dat 或 .nbt 文件</string>
+    <string name="nbt_zip_save_success">已成功更新并保存压缩包中的「%s」！</string>
+    <string name="nbt_switch_file">切换文件</string>
+    <string name="nbt_unsaved_title">未保存的修改</string>
+    <string name="nbt_unsaved_message">当前文件「%s」存在未保存的修改，是否在离开前保存？</string>
+    <string name="nbt_save_and_exit">保存</string>
+    <string name="nbt_discard_and_exit">不保存</string>
+    <string name="nbt_auto_save_title">自动保存修改</string>
+    <string name="nbt_auto_save_enabled_msg">已开启退出时自动保存</string>
+    <string name="nbt_auto_save_disabled_msg">已关闭自动保存，退出时将弹窗询问</string>
+    <string name="nbt_close_workspace">关闭工作空间</string>
+    <string name="nbt_workspace_restored">已恢复上次工作空间</string>
+
+    <string name="nbt_region_browser_title">Anvil 区块浏览器</string>
+    <string name="nbt_region_stats">已生成 %1$d / 1024 个区块 (%2$.1f%%)</string>
+    <string name="nbt_chunk_coord_local">局部区块: [%1$d, %2$d]</string>
+    <string name="nbt_chunk_coord_global">全局区块: [%1$d, %2$d]</string>
+    <string name="nbt_block_range">方块范围: [X: %1$d..%2$d, Z: %3$d..%4$d]</string>
+    <string name="nbt_chunk_status_populated">状态: 已生成 (%1$d 扇区)</string>
+    <string name="nbt_chunk_status_empty">状态: 未生成</string>
+    <string name="nbt_chunk_empty_prompt">该区块在当前区域文件中尚未生成（扇区为空）。\n是否要初始化并为其创建空的区块 NBT 数据？</string>
+    <string name="nbt_edit_chunk">编辑此区块</string>
+    <string name="nbt_switch_chunk">切换区块</string>
+    <string name="nbt_chunk_save_success">已成功保存区块 [%1$d, %2$d] 到区域文件「%3$s」！</string>
+
+    <string name="nbt_leveldb_browser_title">LevelDB 数据库浏览器</string>
+    <string name="nbt_leveldb_stats">共 %1$d 条键值数据 (%2$s)</string>
+    <string name="nbt_leveldb_save_success">已成功保存键值「%s」到 LevelDB 数据库！</string>
+    <string name="nbt_leveldb_add_key">新建 LevelDB 键</string>
+    <string name="nbt_leveldb_key_hint">输入键名 (Key) 或文本</string>
+    <string name="nbt_leveldb_not_nbt">该条目为原始二进制数据，不支持 NBT 树状解析</string>
+    <string name="nbt_switch_leveldb_record">切换键值</string>
+
+    <string name="nbt_delete_chunk_title">删除区块</string>
+    <string name="nbt_delete_chunk_confirm">确定要删除区块 [%1$d, %2$d] 吗？此操作将从区域文件中彻底清除该区块的数据。</string>
+    <string name="nbt_delete_chunk_success">已成功删除区块 [%1$d, %2$d]！</string>
+    <string name="nbt_delete_chunk_failed">删除区块失败：%s</string>
+    <string name="nbt_prune_useless_chunks">清理无用区块</string>
+    <string name="nbt_pruning_scan_title">正在扫描无用区块...</string>
+    <string name="nbt_prune_dialog_title">无用区块智能瘦身</string>
+    <string name="nbt_prune_stats_zero">发现 %1$d 个 0 停留时间无用区块 (仅路过未常驻开发，占已生成区块的 %2$.1f%%)。</string>
+    <string name="nbt_prune_option_zero">⚡ 一键清理 0 停留时间区块 (推荐)</string>
+    <string name="nbt_prune_option_low">⏱️ 清理低停留时间区块 (&lt; 20 刻 / 1秒)</string>
+    <string name="nbt_prune_option_all">🗑️ 清空重置当前区域所有区块</string>
+    <string name="nbt_prune_success">已成功清理 %1$d 个无用区块！</string>
+    <string name="nbt_prune_no_useless">未发现无用区块，所有区块均有玩家有效活动记录。</string>
+    <string name="nbt_inhabited_time_zero">停留时间: 0 刻 (仅探索路过未常驻)</string>
+    <string name="nbt_inhabited_time_fmt">停留时间: %1$d 刻 (~%2$d 秒)</string>
+    <string name="nbt_leveldb_delete_chunk">删除该区块全部数据</string>
+    <string name="nbt_leveldb_delete_chunk_confirm">确定要删除区块 [%1$d, %2$d] 在 LevelDB 中的全部 %3$d 条关联数据吗？</string>
+    <string name="nbt_leveldb_delete_chunk_success">已删除区块 [%1$d, %2$d] 相关的 %3$d 条记录</string>
+    <string name="world_prune_chunks_title">全存档无用区块瘦身</string>
+    <string name="world_prune_chunks_desc">一键扫描并清理所有区域文件 (.mca) 中仅路过未停留的无用区块</string>
+    <string name="dimension_and_chunk_settings">维度与区块裁剪设置</string>
+    <string name="chunk_pruning_title">区块范围裁剪 (Bounding Box)</string>
+    <string name="chunk_pruning_desc">限制转换的区块坐标范围，自动剔除远距离跑图生成的无用区块</string>
+    <string name="enable_chunk_pruning">启用区块范围裁剪</string>
+    <string name="chunk_range_preset">预设保留范围</string>
+    <string name="chunk_range_preset_core">核心出生点范围 (±16 区块 / 256 格)</string>
+    <string name="chunk_range_preset_medium">中等探索范围 (±32 区块 / 512 格)</string>
+    <string name="chunk_range_preset_large">大型区域范围 (±64 区块 / 1024 格)</string>
+    <string name="chunk_range_preset_custom">自定义坐标范围</string>
+
+    <string name="smart_pruning_profile_title">智能瘦身情景预设</string>
+    <string name="smart_pruning_profile_desc">根据您的实际游玩需要一键自动配置多维度最佳裁剪策略</string>
+    <string name="profile_smart_auto">🌟 智能推荐瘦身 (出生点+中心龙岛)</string>
+    <string name="profile_builder">🏰 建筑师大基地 (±64区块大范围)</string>
+    <string name="profile_speed">⚡ 极速核心主城 (仅保留出生点)</string>
+    <string name="profile_custom">🛠️ 高级专家自定义</string>
+    <string name="nether_strategy_title">下界 (Nether) 保留策略</string>
+    <string name="nether_strategy_all">保留全部下界维度 (不裁剪)</string>
+    <string name="nether_strategy_core">🌟 保留主传送门核心区 (±16 区块 / 256 格)</string>
+    <string name="nether_strategy_none">丢弃下界维度 (不转换)</string>
+    <string name="end_strategy_title">末地 (The End) 保留策略</string>
+    <string name="end_strategy_island_only">🌟 智能仅保留中心龙岛 (清理万格跑图外岛，保留±16区块)</string>
+    <string name="end_strategy_all">保留全部末地维度 (包含所有外岛)</string>
+    <string name="end_strategy_none">丢弃末地维度 (不转换)</string>
+    <string name="overworld_center_anchor">主世界中心锚点</string>
+    <string name="center_spawn_point">🧭 世界真实出生点 (自动识别)</string>
+    <string name="center_origin">🎯 坐标原点 (0, 0)</string>
+    <string name="world_analyzer_title">存档智能体检与一键瘦身</string>
+    <string name="world_analyzer_desc">选择存档进行智能体检，自动识别出生点与无用跑图区块并支持一键物理瘦身</string>
+    <string name="world_analyzer_select_btn">选择存档进行体检与瘦身</string>
+    <string name="world_analyzer_scanning">正在深度分析世界存档...</string>
+    <string name="world_analyzer_ready_btn">⚡ 立即执行全存档智能瘦身</string>
 </resources>

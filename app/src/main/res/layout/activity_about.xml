@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:importantForAutofill="noExcludeDescendants">
 
-    <!-- Full-Screen Custom Wallpaper Layer -->
     <ImageView
         android:id="@+id/iv_custom_wallpaper"
         android:layout_width="match_parent"
@@ -15,7 +15,6 @@
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <!-- Dim Scrim Layer -->
     <View
         android:id="@+id/v_custom_scrim"
         android:layout_width="match_parent"
@@ -59,7 +58,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Hero Branding Section -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -108,7 +106,6 @@
 
                 </LinearLayout>
 
-                <!-- Author & Maintainer Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -152,7 +149,6 @@
 
                         </LinearLayout>
 
-                        <!-- Social Buttons -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -223,7 +219,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Project Intro & Credits Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -250,7 +245,6 @@
                             android:lineSpacingExtra="4dp"
                             android:lineSpacingMultiplier="1.35" />
 
-                        <!-- Divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
@@ -272,6 +266,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/about_credits_nbt"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tv_leveldb_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/about_credits_leveldb"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="13sp"
                             android:layout_marginTop="8dp" />
@@ -338,7 +341,6 @@
 
         </ScrollView>
 
-        <!-- Bottom Action Buttons -->
         <LinearLayout
             android:id="@+id/button_container"
             android:layout_width="match_parent"

@@ -70,3 +70,4 @@ NBT 编辑器套件、结构方块跨端转换等高级工具正在持续规划�
 - **chunker-cli** - [The Hive](https://www.chunker.app) 的 [chunker](https://github.com/HiveGamesOSS/Chunker) (MIT License)
 - **NetEaseDecryptorSDK** - [Dicecan](https://github.com/Dicecan) 的 [NetEaseDecryptorSDK](https://github.com/Dicecan/NetEaseDecryptorSDK) (GPL-3.0 License)
 - **NBT-Manipulator** - [PowerNukkit](https://github.com/PowerNukkit) 的 [NBT-Manipulator](https://github.com/PowerNukkit/NBT-Manipulator) (MIT License)
+- **leveldb-mcpe-java** - [HiveGamesOSS](https://github.com/HiveGamesOSS) 的 [leveldb-mcpe-java](https://github.com/HiveGamesOSS/leveldb-mcpe-java) (Apache 2.0 / BSD 3-Clause)

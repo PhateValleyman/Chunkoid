@@ -70,3 +70,4 @@ Chunkoid is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. Se
 - **chunker-cli** - [The Hive](https://www.chunker.app) / [chunker](https://github.com/HiveGamesOSS/Chunker) (MIT License)
 - **NetEaseDecryptorSDK** - [Dicecan](https://github.com/Dicecan) / [NetEaseDecryptorSDK](https://github.com/Dicecan/NetEaseDecryptorSDK) (GPL-3.0 License)
 - **NBT-Manipulator** - [PowerNukkit](https://github.com/PowerNukkit) / [NBT-Manipulator](https://github.com/PowerNukkit/NBT-Manipulator) (MIT License)
+- **leveldb-mcpe-java** - [HiveGamesOSS](https://github.com/HiveGamesOSS) / [leveldb-mcpe-java](https://github.com/HiveGamesOSS/leveldb-mcpe-java) (Apache 2.0 / BSD 3-Clause)

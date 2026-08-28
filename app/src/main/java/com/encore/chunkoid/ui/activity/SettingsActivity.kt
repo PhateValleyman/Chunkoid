@@ -20,7 +20,9 @@ import com.encore.chunkoid.R
 import com.encore.chunkoid.databinding.ActivitySettingsBinding
 import com.encore.chunkoid.utils.BackgroundUtils
 import com.encore.chunkoid.utils.ToastUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class SettingsActivity : AppCompatActivity() {
@@ -50,16 +52,16 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        applyNoElevationToCards()
-
         setupToolbar()
         setupSettings()
         setupCustomWallpaperSettings()
     }
 
-    override fun onResume() {
-        super.onResume()
-        BackgroundUtils.applyCustomBackground(this)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            BackgroundUtils.applyCustomBackground(this)
+        }
     }
 
     private fun setupToolbar() {
@@ -236,11 +238,23 @@ class SettingsActivity : AppCompatActivity() {
     private fun updateWallpaperPreview() {
         val wallpaperFile = BackgroundUtils.getWallpaperFile(this)
         if (wallpaperFile.exists()) {
-            val bitmap = BitmapFactory.decodeFile(wallpaperFile.absolutePath)
-            if (bitmap != null) {
-                binding.ivWallpaperPreview.setImageBitmap(bitmap)
-                binding.tvWallpaperFilename.text = "已应用自定义壁纸 (${bitmap.width}x${bitmap.height})"
-                binding.btnClearWallpaper.visibility = View.VISIBLE
+            lifecycleScope.launch(Dispatchers.IO) {
+                val bitmap = try {
+                    BitmapFactory.decodeFile(wallpaperFile.absolutePath)
+                } catch (e: Exception) {
+                    null
+                }
+                withContext(Dispatchers.Main) {
+                    if (bitmap != null && !isFinishing && !isDestroyed) {
+                        binding.ivWallpaperPreview.setImageBitmap(bitmap)
+                        binding.tvWallpaperFilename.text = "已应用自定义壁纸 (${bitmap.width}x${bitmap.height})"
+                        binding.btnClearWallpaper.visibility = View.VISIBLE
+                    } else if (bitmap == null) {
+                        binding.ivWallpaperPreview.setImageResource(R.drawable.ic_texture)
+                        binding.tvWallpaperFilename.text = getString(R.string.select_wallpaper_desc)
+                        binding.btnClearWallpaper.visibility = View.GONE
+                    }
+                }
             }
         } else {
             binding.ivWallpaperPreview.setImageResource(R.drawable.ic_texture)
@@ -310,7 +324,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun clearOutput() {
         val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         val chunkoidOutputDir = File(documentsDir, CHUNKOID_OUTPUT_DIR)
-        
+
         if (!chunkoidOutputDir.exists()) {
             ToastUtils.show(this, getString(R.string.output_cleared))
             return

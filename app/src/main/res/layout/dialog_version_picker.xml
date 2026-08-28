@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/dialog_background"
+    android:background="@color/transparent"
     android:padding="20dp">
 
-    <!-- Drag Handle Bar -->
     <View
         android:layout_width="36dp"
         android:layout_height="4dp"
@@ -15,7 +14,6 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/bg_handle_bar" />
 
-    <!-- Title & Subtitle -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +44,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Bedrock Edition Selector Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_bedrock"
                 android:layout_width="match_parent"
@@ -116,7 +113,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Bedrock Versions Container -->
             <LinearLayout
                 android:id="@+id/ll_bedrock_versions"
                 android:layout_width="match_parent"
@@ -125,10 +121,8 @@
                 android:layout_marginBottom="10dp"
                 android:visibility="gone">
 
-                <!-- Dynamically populated version groups -->
             </LinearLayout>
 
-            <!-- Java Edition Selector Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_java"
                 android:layout_width="match_parent"
@@ -198,7 +192,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Java Versions Container -->
             <LinearLayout
                 android:id="@+id/ll_java_versions"
                 android:layout_width="match_parent"
@@ -207,14 +200,12 @@
                 android:layout_marginBottom="10dp"
                 android:visibility="gone">
 
-                <!-- Dynamically populated version groups -->
             </LinearLayout>
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Confirm Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"

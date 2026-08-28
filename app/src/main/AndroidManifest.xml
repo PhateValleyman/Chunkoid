@@ -47,7 +47,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
-
         <activity
             android:name=".ui.activity.SettingsActivity"
             android:label="@string/settings_title"
@@ -81,6 +80,11 @@
         <activity
             android:name=".ui.activity.PackConverterActivity"
             android:label="@string/pack_converter_title"
+            android:parentActivityName=".ui.activity.MainActivity" />
+
+        <activity
+            android:name=".ui.activity.NbtEditorActivity"
+            android:label="@string/nbt_editor_title"
             android:parentActivityName=".ui.activity.MainActivity" />
 
         <provider

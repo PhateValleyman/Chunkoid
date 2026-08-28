@@ -82,6 +82,9 @@ Chunkoid 是首个专为安卓设备打造的 **Minecraft 世界转换器**。�
 - **NBT解析器** - [PowerNukkit](https://github.com/PowerNukkit) 的 [NBT-Manipulator](https://github.com/PowerNukkit/NBT-Manipulator)
   - 许可证：MIT License
   - 文件位置：`nbt`
+- **LevelDB-MCPE 引擎** - [HiveGamesOSS](https://github.com/HiveGamesOSS) 的 [leveldb-mcpe-java](https://github.com/HiveGamesOSS/leveldb-mcpe-java)
+  - 许可证：Apache 2.0 / BSD 3-Clause
+  - 用途：Minecraft 基岩版 LevelDB 格式区块与实体数据库读写支持
 
 ### 致谢
 
@@ -156,6 +159,9 @@ This project uses the following open-source software/SDK:
 - **NBT Parser** - [NBT-Manipulator](https://github.com/PowerNukkit/NBT-Manipulator) by [PowerNukkit](https://github.com/PowerNukkit)
   - License: MIT License
   - Location: `nbt`
+- **LevelDB-MCPE Engine** - [leveldb-mcpe-java](https://github.com/HiveGamesOSS/leveldb-mcpe-java) by [HiveGamesOSS](https://github.com/HiveGamesOSS)
+  - License: Apache 2.0 / BSD 3-Clause
+  - Usage: Bedrock Edition LevelDB world database streaming read/write support
 
 ### Acknowledgments
 

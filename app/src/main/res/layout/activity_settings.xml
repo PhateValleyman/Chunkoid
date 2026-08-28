@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:importantForAutofill="noExcludeDescendants">
     <ImageView
         android:id="@+id/iv_custom_wallpaper"
         android:layout_width="match_parent"
@@ -945,4 +946,3 @@
         </ScrollView>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-

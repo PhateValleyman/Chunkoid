@@ -68,9 +68,11 @@ class ConversionActivity : AppCompatActivity() {
         applyNoElevationToCards()
     }
 
-    override fun onResume() {
-        super.onResume()
-        BackgroundUtils.applyCustomBackground(this)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            BackgroundUtils.applyCustomBackground(this)
+        }
     }
 
     private fun applyNoElevationToCards() {
@@ -201,19 +203,19 @@ class ConversionActivity : AppCompatActivity() {
 
         loadWorldIcon()
     }
-    
+
     private fun loadWorldIcon() {
         val uri = settings.inputUri
         val mimeType = contentResolver.getType(uri)
-        
-        if (mimeType == "application/zip" || uri.lastPathSegment?.endsWith(".zip") == true || 
+
+        if (mimeType == "application/zip" || uri.lastPathSegment?.endsWith(".zip") == true ||
             uri.lastPathSegment?.endsWith(".mcworld") == true) {
             loadWorldIconFromArchive(uri)
         } else {
             loadWorldIconFromDirectory(uri)
         }
     }
-    
+
     private fun loadWorldIconFromDirectory(uri: Uri) {
         try {
             val documentFile = DocumentFile.fromTreeUri(this, uri)
@@ -238,13 +240,13 @@ class ConversionActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-    
+
     private fun loadWorldIconFromArchive(uri: Uri) {
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 val zipInputStream = ZipInputStream(inputStream)
                 var entry = zipInputStream.nextEntry
-                
+
                 while (entry != null) {
                     val entryName = entry.name.lowercase()
                     if (entryName.contains("icon.png") ||
@@ -268,7 +270,7 @@ class ConversionActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-    
+
     private fun loadIconFromUri(uri: Uri) {
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -282,7 +284,7 @@ class ConversionActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-    
+
     private fun formatTargetFormat(format: String): String {
         val result = when (format) {
             "JAVA_1_8_8" -> getString(R.string.java_1_8_8)
@@ -511,10 +513,10 @@ class ConversionActivity : AppCompatActivity() {
                 chunkoidOutputDir.mkdirs()
                 Log.d("ConversionActivity", "Created output directory: ${chunkoidOutputDir.absolutePath}")
             }
-            
+
             val safeWorldName = settings.inputWorldName.replace(Regex("[^\\p{L}\\p{N}_\\- ]"), "_")
             val worldOutputDir = File(chunkoidOutputDir, safeWorldName)
-            
+
             if (!worldOutputDir.exists()) {
                 worldOutputDir.mkdirs()
                 Log.d("ConversionActivity", "Created world directory: ${worldOutputDir.absolutePath}")
@@ -562,7 +564,7 @@ class ConversionActivity : AppCompatActivity() {
     private fun saveConversionLog(outputDir: File) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val enableLogOutput = prefs.getBoolean("enable_conversion_log", false)
-        
+
         if (!enableLogOutput || rawLogContent.isEmpty()) {
             return
         }

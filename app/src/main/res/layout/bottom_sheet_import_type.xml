@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/dialog_background"
+    android:background="@color/transparent"
     android:paddingHorizontal="20dp"
     android:paddingTop="12dp"
     android:paddingBottom="28dp">
 
-    <!-- Drag Handle -->
     <View
         android:layout_width="36dp"
         android:layout_height="4dp"
@@ -18,7 +17,6 @@
         android:layout_marginBottom="16dp"
         android:background="?attr/colorOutlineVariant" />
 
-    <!-- Title & Subtitle -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,7 +34,6 @@
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="13sp" />
 
-    <!-- Option 1: Archive Import (.zip / .mcworld) -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btn_import_archive_option"
         android:layout_width="match_parent"
@@ -107,7 +104,6 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Option 2: Folder Import (World Directory) -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btn_import_folder_option"
         android:layout_width="match_parent"

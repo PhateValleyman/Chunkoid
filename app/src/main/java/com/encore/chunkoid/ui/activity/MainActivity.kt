@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun mapVersionToChunkerFormat(displayName: String): String {
         val versionNum = displayName.replace("Java ", "").replace("Bedrock ", "")
-        
+
         return if (displayName.startsWith("Java")) {
             mapJavaVersion(versionNum)
         } else {
@@ -284,8 +284,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
         updateNavDrawerVisibility()
         updateDockBarState()
-        applyNoElevationToCards()
-        
+
         archiveSearcher = ArchiveSearcher(contentResolver, filesDir)
 
         handleIntent(intent)
@@ -300,7 +299,13 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateNavDrawerVisibility()
-        BackgroundUtils.applyCustomBackground(this)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            BackgroundUtils.applyCustomBackground(this)
+        }
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -329,11 +334,15 @@ class MainActivity : AppCompatActivity() {
         switchToConverter()
     }
 
+    private var outputManagerFragment: OutputManagerFragment? = null
+
     private fun switchToConverter() {
         activeItemId = R.id.nav_item_converter
         binding.scrollWorkbench.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.GONE
-        supportFragmentManager.popBackStack()
+        outputManagerFragment?.let {
+            supportFragmentManager.beginTransaction().hide(it).commitAllowingStateLoss()
+        }
     }
 
     private fun switchToOutputManager(animate: Boolean) {
@@ -341,13 +350,21 @@ class MainActivity : AppCompatActivity() {
         binding.scrollWorkbench.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
 
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-        if (currentFragment !is OutputManagerFragment) {
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
-                .replace(R.id.fragment_container, OutputManagerFragment())
-                .addToBackStack(null)
-                .commit()
+        val fm = supportFragmentManager
+        if (outputManagerFragment == null) {
+            val existing = fm.findFragmentById(R.id.fragment_container) as? OutputManagerFragment
+            if (existing != null) {
+                outputManagerFragment = existing
+                fm.beginTransaction().show(existing).commitAllowingStateLoss()
+            } else {
+                val newFrag = OutputManagerFragment()
+                outputManagerFragment = newFrag
+                fm.beginTransaction()
+                    .add(R.id.fragment_container, newFrag)
+                    .commitAllowingStateLoss()
+            }
+        } else {
+            fm.beginTransaction().show(outputManagerFragment!!).commitAllowingStateLoss()
         }
     }
 
@@ -361,65 +378,86 @@ class MainActivity : AppCompatActivity() {
 
         val navItemSettings = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_settings)
         val navItemTerminal = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_terminal)
-        val navItemMapDownloader = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_map_downloader)
+
         val navItemResourceConverter = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_resource_converter)
         val navItemDecrypt = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_decrypt)
+        val navItemDimensionPruning = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_dimension_pruning)
+        val navItemNbtEditor = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_nbt_editor)
         val navItemAbout = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_about)
         val navItemHelp = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_help)
 
         navItemSettings.setOnClickListener {
+            drawerLayout.closeDrawer(navDrawerView, false)
             startActivity(Intent(this, SettingsActivity::class.java))
-            drawerLayout.closeDrawer(navDrawerView)
         }
 
         navItemTerminal.setOnClickListener {
+            drawerLayout.closeDrawer(navDrawerView, false)
             startActivity(Intent(this, TerminalActivity::class.java))
-            drawerLayout.closeDrawer(navDrawerView)
         }
-
-        val featureNotAvailableListener = View.OnClickListener {
-            drawerLayout.closeDrawer(navDrawerView)
-            showCustomToast("功能尚未开发，敬请期待")
-        }
-
-        navItemMapDownloader.setOnClickListener(featureNotAvailableListener)
 
         navItemResourceConverter.setOnClickListener {
+            drawerLayout.closeDrawer(navDrawerView, false)
             startActivity(Intent(this, PackConverterActivity::class.java))
-            drawerLayout.closeDrawer(navDrawerView)
         }
 
         navItemDecrypt.setOnClickListener {
+            drawerLayout.closeDrawer(navDrawerView, false)
             startActivity(Intent(this, DecryptActivity::class.java))
-            drawerLayout.closeDrawer(navDrawerView)
+        }
+
+        navItemDimensionPruning.setOnClickListener {
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("实验性功能")
+                .setMessage("即将打开「维度与区块裁剪工具」。\n\n此工具会直接修改底层 MCA/LevelDB 数据。如有误操作可能导致存档区块损坏或丢失，建议在使用前对存档进行备份！")
+                .setPositiveButton("我知道了") { _, _ ->
+                    drawerLayout.closeDrawer(navDrawerView, false)
+                    val intent = Intent(this, DimensionSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+
+        navItemNbtEditor.setOnClickListener {
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("实验性功能")
+                .setMessage("即将打开「NBT与底层数据编辑器」。\n\n此工具具备直接读写核心数据结构的能力，强烈建议新手玩家谨慎操作，操作前请务必备份存档！")
+                .setPositiveButton("我知道了") { _, _ ->
+                    drawerLayout.closeDrawer(navDrawerView, false)
+                    val intent = Intent(this, NbtEditorActivity::class.java)
+                    startActivity(intent)
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
         }
 
         navItemHelp.setOnClickListener {
+            drawerLayout.closeDrawer(navDrawerView, false)
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://chunkoid.top/docs/index.html"))
             startActivity(intent)
-            drawerLayout.closeDrawer(navDrawerView)
         }
 
         navItemAbout.setOnClickListener {
+            drawerLayout.closeDrawer(navDrawerView, false)
             startActivity(Intent(this, AboutActivity::class.java))
-            drawerLayout.closeDrawer(navDrawerView)
         }
     }
 
     fun updateNavDrawerVisibility() {
         val navDrawerView = binding.navDrawer.root
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        
+
         val navItemTerminal = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_terminal)
-        val navItemMapDownloader = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_map_downloader)
+
         val navItemResourceConverter = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_resource_converter)
         val navItemDecrypt = navDrawerView.findViewById<LinearLayout>(R.id.nav_item_decrypt)
-        
+
         val showTerminal = prefs.getBoolean("show_terminal", true)
         val showUndeveloped = prefs.getBoolean("show_undeveloped", false)
-        
+
         navItemTerminal.visibility = if (showTerminal) View.VISIBLE else View.GONE
-        navItemMapDownloader.visibility = if (showUndeveloped) View.VISIBLE else View.GONE
+
         navItemResourceConverter.visibility = View.VISIBLE
         navItemDecrypt.visibility = View.VISIBLE
     }
@@ -495,8 +533,6 @@ class MainActivity : AppCompatActivity() {
     fun switchToConverterTab() {
         binding.bottomNavigation.selectedItemId = R.id.nav_item_converter
     }
-
-
 
     private fun updateDockBarState() {
         if (inputUri == null) {
@@ -648,7 +684,7 @@ class MainActivity : AppCompatActivity() {
                 button.setBackgroundResource(R.drawable.version_button_bg)
                 button.setPadding(12, 8, 12, 8)
                 button.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f)
-                
+
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -755,7 +791,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val documentFile = DocumentFile.fromTreeUri(this, inputUri!!)
                 if (documentFile?.isDirectory != true) return false
-                
+
                 val dbDir = documentFile.findFile("db")
                 val regionDir = documentFile.findFile("region")
                 val dimensionsDir = documentFile.findFile("dimensions")
@@ -988,7 +1024,7 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 versionInfo?.let { info ->
                     binding.tvVersion.text = NbtVersionReader.getVersionDisplay(info)
-                    // If platform was not explicitly fixed by .mcworld extension, sync with NBT platform detection
+
                     if (!archiveSearcher.isMcWorldFile(inputUri ?: Uri.EMPTY)) {
                         worldPlatform = info.platform
                         binding.tvPlatform.text = if (worldPlatform == Platform.JAVA) {
@@ -1049,7 +1085,7 @@ class MainActivity : AppCompatActivity() {
         val maxMemory = prefs.getInt("max_memory", 4096)
         val keepOriginalNbt = prefs.getBoolean("keep_original_nbt", false)
         val lowMemoryMode = prefs.getBoolean("low_memory_mode", false)
-        
+
         val keepNether = prefs.getBoolean("keep_nether", true)
         val keepEnd = prefs.getBoolean("keep_end", true)
 

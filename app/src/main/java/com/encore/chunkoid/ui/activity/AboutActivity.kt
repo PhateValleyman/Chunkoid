@@ -49,6 +49,12 @@ class AboutActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val tvLevelDbLink = findViewById<TextView>(R.id.tv_leveldb_link)
+        tvLevelDbLink.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/HiveGamesOSS/leveldb-mcpe-java"))
+            startActivity(intent)
+        }
+
         val tvsdkLink = findViewById<TextView>(R.id.tv_sdk_link)
         tvsdkLink.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Dicecan/NetEaseDecryptorSDK"))
@@ -96,9 +102,11 @@ class AboutActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        BackgroundUtils.applyCustomBackground(this)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            BackgroundUtils.applyCustomBackground(this)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

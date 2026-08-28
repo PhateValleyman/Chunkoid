@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:importantForAutofill="noExcludeDescendants">
 
-    <!-- Full-Screen Custom Wallpaper Layer -->
     <ImageView
         android:id="@+id/iv_custom_wallpaper"
         android:layout_width="match_parent"
@@ -15,7 +15,6 @@
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <!-- Dim Scrim Layer -->
     <View
         android:id="@+id/v_custom_scrim"
         android:layout_width="match_parent"
@@ -29,7 +28,6 @@
         android:orientation="vertical"
         android:fitsSystemWindows="true">
 
-        <!-- Terminal Top Header Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -110,7 +108,6 @@
 
     </LinearLayout>
 
-    <!-- Terminal Output with Floating Buttons -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -134,7 +131,6 @@
 
         </ScrollView>
 
-        <!-- Floating Debug Action Chips -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -213,7 +209,6 @@
 
     </FrameLayout>
 
-    <!-- Command Input Bar -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

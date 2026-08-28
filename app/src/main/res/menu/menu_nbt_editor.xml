@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_open"
+        android:icon="@drawable/ic_folder"
+        android:title="@string/nbt_open_file"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_check"
+        android:title="@string/nbt_save_file"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_save_as"
+        android:title="@string/nbt_save_as"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_switch_file"
+        android:title="@string/nbt_switch_file"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_auto_save"
+        android:checkable="true"
+        android:title="@string/nbt_auto_save_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_expand_all"
+        android:title="@string/nbt_expand_all"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_collapse_all"
+        android:title="@string/nbt_collapse_all"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_close_workspace"
+        android:title="@string/nbt_close_workspace"
+        app:showAsAction="never" />
+
+</menu>

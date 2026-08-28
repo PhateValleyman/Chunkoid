@@ -8,12 +8,12 @@
     <string name="output_folder_not_found">Output folder not found</string>
     <string name="cannot_open_folder">Cannot open output folder</string>
 
-    <!-- About Page -->
     <string name="about">About</string>
-    <string name="app_version">2.0.0</string>
+    <string name="app_version">2.1.0-B</string>
     <string name="about_intro">A Minecraft Java-Bedrock world converter for Android devices. This unique application supports version downgrade and upgrade functionality, offering a convenient conversion environment for mobile users.</string>
     <string name="about_credits_chunker">Chunker-Cli is an open-source project (MIT) for Hive Game</string>
     <string name="about_credits_nbt">The NBT tool uses Polyana-Fontes NBT-Manipulator (MIT)</string>
+    <string name="about_credits_leveldb">LevelDB engine uses HiveGames leveldb-mcpe-java (Apache 2.0 / BSD)</string>
     <string name="about_credits_sdk">The archive decryptor uses Dicecan NetEaseDecryptorSDK (GPL v3)</string>
     <string name="about_thanks">Special Thanks: Dozener (Original Creator), Ryan Steven, Weiyin 1A</string>
     <string name="about_website">Click to visit website</string>
@@ -21,7 +21,6 @@
     <string name="check_update">Check for Updates</string>
     <string name="donate">Donate</string>
 
-    <!-- Main Activity -->
     <string name="converter_title">Conversion Workbench</string>
     <string name="start_conversion">Start Conversion</string>
     <string name="nav_desc">Converter Kit</string>
@@ -41,13 +40,10 @@
     <string name="bedrock_edition">Bedrock Edition</string>
     <string name="java_edition">Java Edition</string>
 
-    <!-- Conversion Settings -->
     <string name="auto_detect">Auto Detect</string>
     <string name="select_target_format">Select target format</string>
     <string name="convert_to">Convert to</string>
 
-    <!-- Version Subtitles -->
-    <!-- Java Edition Subtitles -->
     <string name="java_subtitle_1_8">Colorful World</string>
     <string name="java_subtitle_1_9">Combat Update</string>
     <string name="java_subtitle_1_10">Frost &amp; Fire</string>
@@ -64,7 +60,6 @@
     <string name="java_subtitle_1_21"> Tricky Trials</string>
     <string name="java_subtitle_26">Future Updates</string>
 
-    <!-- Bedrock Edition Subtitles -->
     <string name="bedrock_subtitle_1_12">Aquatic Sync</string>
     <string name="bedrock_subtitle_1_13">Coral Update</string>
     <string name="bedrock_subtitle_1_14">Village &amp; Pillage</string>
@@ -76,7 +71,6 @@
     <string name="bedrock_subtitle_1_21"> Tricky Trials</string>
     <string name="bedrock_subtitle_1_26">Future Updates</string>
 
-    <!-- Java Versions -->
     <string name="java_1_8_8">1.8.8</string>
     <string name="java_1_9">1.9</string>
     <string name="java_1_9_1">1.9.1</string>
@@ -140,7 +134,6 @@
     <string name="java_26_1">26.1</string>
     <string name="java_26_2">26.2</string>
 
-    <!-- Bedrock Versions -->
     <string name="bedrock_1_12">1.12</string>
     <string name="bedrock_1_13">1.13</string>
     <string name="bedrock_1_14">1.14</string>
@@ -199,7 +192,6 @@
     <string name="bedrock_1_26_20">1.26.20</string>
     <string name="bedrock_1_26_30">1.26.30</string>
 
-    <!-- Conversion Activity -->
     <string name="conversion_title">Converting World</string>
     <string name="conversion_progress">Conversion Progress</string>
     <string name="converting">Converting...</string>
@@ -209,12 +201,11 @@
     <string name="view_logs">View Logs</string>
     <string name="open_output">Open Output Folder</string>
 
-    <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="performance_settings">Performance &amp; Optimization</string>
     <string name="wake_lock">Background WakeLock</string>
     <string name="wake_lock_desc">Keep CPU active during conversion to prevent sleep, throttling, or app killing when screen is off</string>
-    <string name="low_memory_mode">Low-Memory Mode (Experimental)</string>
+    <string name="low_memory_mode">Low-Memory Mode</string>
     <string name="low_memory_mode_desc">Limit multi-threading and aggressively reclaim memory to prevent OOM crashes, at the cost of conversion speed</string>
     <string name="dimension_pruning">Dimension Pruning &amp; Mapping</string>
     <string name="dimension_pruning_desc">Configure preservation for Nether and End to reduce world size and conversion time</string>
@@ -246,24 +237,20 @@
     <string name="output_cleared">All output worlds cleared</string>
     <string name="theme_changed">Theme mode updated!</string>
 
-    <!-- Messages -->
     <string name="error_no_input">Please select an input world</string>
     <string name="error_no_output">Please select an output location</string>
     <string name="error_no_format">Please select a target format</string>
     <string name="permission_required">Storage permission is required to access world files</string>
 
-    <!-- Notifications -->
     <string name="conversion_notification_channel">World Conversion</string>
     <string name="conversion_notification_channel_desc">Notifications for world conversion progress</string>
     <string name="conversion_in_progress">World conversion in progress</string>
 
-    <!-- Log levels -->
     <string name="log_info">INFO</string>
     <string name="log_warning">WARN</string>
     <string name="log_error">ERROR</string>
     <string name="log_debug">DEBUG</string>
 
-    <!-- Progress steps -->
     <string name="reading_level_dat">Reading level.dat...</string>
     <string name="analyzing_world_dimensions">Analyzing world dimensions...</string>
     <string name="converting_chunks">Converting chunks...</string>
@@ -272,17 +259,14 @@
     <string name="writing_output">Writing output...</string>
     <string name="finalizing">Finalizing...</string>
 
-    <!-- Conversion Activity -->
     <string name="conversion_details">Conversion Details</string>
     <string name="log_output">Log Output</string>
 
-    <!-- Main Activity -->
     <string name="storage_permission_required_title">Storage Permission Required</string>
     <string name="storage_permission_required_message">This app needs access to all files to read and write Minecraft world data.</string>
     <string name="grant">Grant</string>
     <string name="cancel">Cancel</string>
 
-    <!-- Log messages -->
     <string name="starting_conversion">Starting conversion...</string>
     <string name="target_format_log">Target format: %s</string>
     <string name="input_log">Input: %s</string>
@@ -292,12 +276,10 @@
     <string name="conversion_cancelled">Conversion cancelled by user</string>
     <string name="service_not_bound">Service not bound</string>
 
-    <!-- Conversion details -->
     <string name="input_details">Input: %s</string>
     <string name="output_details">Output: %s</string>
     <string name="format_details">Target Format: %s</string>
 
-    <!-- Output Manager -->
     <string name="export">Export</string>
     <string name="open_folder">Open Folder</string>
     <string name="export_as_mcworld">Export as .mcworld</string>
@@ -319,7 +301,6 @@
     <string name="launch_failed">Launch failed</string>
     <string name="view_conversion_log">View Conversion Log</string>
 
-    <!-- Decryptor -->
     <string name="decryptor_title">Archive Decryptor</string>
     <string name="decrypt_shortcut_short">Archive Decrypt</string>
     <string name="decrypt_shortcut_long">Archive Decrypt</string>
@@ -331,7 +312,6 @@
     <string name="decrypt_failed">Decryption Failed</string>
     <string name="export_decrypted_world">Save</string>
 
-    <!-- Pack Converter -->
     <string name="pack_converter_title">Resource Pack Converter</string>
     <string name="pack_converter_shortcut_short">Pack Converter</string>
     <string name="pack_converter_shortcut_long">Pack Converter</string>
@@ -345,7 +325,6 @@
     <string name="export_as_mcpack">Export as .mcpack</string>
     <string name="export_pack_as_archive">Export Pack as Archive</string>
 
-    <!-- Custom Wallpaper & Frosted Glass -->
     <string name="custom_wallpaper_title">Custom Background &amp; Frosted Glass</string>
     <string name="custom_wallpaper_desc">Set custom wallpaper and enable frosted glass &amp; palette colors</string>
     <string name="enable_custom_wallpaper">Enable Custom Background</string>
@@ -358,4 +337,119 @@
     <string name="clear_wallpaper">Clear Background Image</string>
     <string name="wallpaper_set_success">Custom background updated successfully</string>
     <string name="wallpaper_cleared_success">Custom background cleared</string>
+
+    <string name="nbt_editor_title">NBT Editor</string>
+    <string name="nbt_open_file">Open NBT File</string>
+    <string name="nbt_open_file_desc">Select level.dat, *.dat or *.nbt files for visual editing</string>
+    <string name="nbt_save_file">Save Changes</string>
+    <string name="nbt_save_as">Save As...</string>
+    <string name="nbt_save_success">File saved successfully! Backup (.bak) created.</string>
+    <string name="nbt_save_failed">Failed to save: %s</string>
+    <string name="nbt_load_failed">Unable to parse file as valid NBT format</string>
+    <string name="nbt_search_hint">Search tag name or path...</string>
+    <string name="nbt_expand_all">Expand All</string>
+    <string name="nbt_collapse_all">Collapse All</string>
+    <string name="nbt_edit_value">Edit Value</string>
+    <string name="nbt_add_tag">New Tag</string>
+    <string name="nbt_tag_key">Tag Name (Key)</string>
+    <string name="nbt_tag_value">Tag Value</string>
+    <string name="nbt_tag_type">Data Type</string>
+    <string name="nbt_delete_tag">Delete Tag</string>
+    <string name="nbt_delete_confirm">Are you sure you want to delete tag \"%s\" and all its children?</string>
+    <string name="nbt_rename_key">Rename Key</string>
+    <string name="nbt_copy_path">Copy Tag Path</string>
+    <string name="nbt_copy_value">Copy Value</string>
+    <string name="nbt_copied">Copied to clipboard</string>
+    <string name="nbt_empty_state_title">No File Opened</string>
+    <string name="nbt_empty_state_desc">Tap the button below to select a Minecraft NBT file to view or edit</string>
+    <string name="nbt_invalid_number">Invalid number or out of bounds for selected type</string>
+    <string name="nbt_key_empty">Key name cannot be empty</string>
+    <string name="nbt_key_exists">A tag with key \"%s\" already exists</string>
+    <string name="nbt_root_tag">Root</string>
+    <string name="nbt_select_file_in_zip">Select NBT file inside archive to edit</string>
+    <string name="nbt_no_nbt_in_zip">No .dat or .nbt files found inside archive \"%s\"</string>
+    <string name="nbt_zip_save_success">Successfully updated and saved \"%s\" inside archive!</string>
+    <string name="nbt_switch_file">Switch File</string>
+    <string name="nbt_unsaved_title">Unsaved Changes</string>
+    <string name="nbt_unsaved_message">You have unsaved changes in \"%s\". Would you like to save before continuing?</string>
+    <string name="nbt_save_and_exit">Save</string>
+    <string name="nbt_discard_and_exit">Don\'t Save</string>
+    <string name="nbt_auto_save_title">Auto-Save Changes</string>
+    <string name="nbt_auto_save_enabled_msg">Auto-save on exit enabled</string>
+    <string name="nbt_auto_save_disabled_msg">Auto-save disabled, will prompt on exit</string>
+    <string name="nbt_close_workspace">Close Workspace</string>
+    <string name="nbt_workspace_restored">Restored previous workspace</string>
+
+    <string name="nbt_region_browser_title">Anvil Chunk Browser</string>
+    <string name="nbt_region_stats">Generated %1$d / 1024 chunks (%2$.1f%%)</string>
+    <string name="nbt_chunk_coord_local">Local Chunk: [%1$d, %2$d]</string>
+    <string name="nbt_chunk_coord_global">Global Chunk: [%1$d, %2$d]</string>
+    <string name="nbt_block_range">Block Range: [X: %1$d..%2$d, Z: %3$d..%4$d]</string>
+    <string name="nbt_chunk_status_populated">Status: Populated (%1$d sectors)</string>
+    <string name="nbt_chunk_status_empty">Status: Not generated</string>
+    <string name="nbt_chunk_empty_prompt">This chunk is not generated in this region file (empty sector).\nDo you want to initialize empty chunk NBT data?</string>
+    <string name="nbt_edit_chunk">Edit Chunk</string>
+    <string name="nbt_switch_chunk">Switch Chunk</string>
+    <string name="nbt_chunk_save_success">Chunk [%1$d, %2$d] saved to region file \"%3$s\"!</string>
+
+    <string name="nbt_leveldb_browser_title">LevelDB Database Browser</string>
+    <string name="nbt_leveldb_stats">%1$d total entries (%2$s)</string>
+    <string name="nbt_leveldb_save_success">Successfully saved entry \"%s\" to LevelDB database!</string>
+    <string name="nbt_leveldb_add_key">New LevelDB Key</string>
+    <string name="nbt_leveldb_key_hint">Enter Key Name or Text</string>
+    <string name="nbt_leveldb_not_nbt">This entry is raw binary data and does not support NBT tree parsing</string>
+    <string name="nbt_switch_leveldb_record">Switch Entry</string>
+
+    <string name="nbt_delete_chunk_title">Delete Chunk</string>
+    <string name="nbt_delete_chunk_confirm">Are you sure you want to delete chunk [%1$d, %2$d]? This will remove all data for this chunk from the region file.</string>
+    <string name="nbt_delete_chunk_success">Chunk [%1$d, %2$d] deleted successfully!</string>
+    <string name="nbt_delete_chunk_failed">Failed to delete chunk: %s</string>
+    <string name="nbt_prune_useless_chunks">Prune Useless Chunks</string>
+    <string name="nbt_pruning_scan_title">Scanning useless chunks...</string>
+    <string name="nbt_prune_dialog_title">Useless Chunk Optimizer</string>
+    <string name="nbt_prune_stats_zero">Found %1$d useless chunks with 0 inhabited time (%2$.1f%% of populated chunks).</string>
+    <string name="nbt_prune_option_zero">⚡ Prune 0-Inhabited-Time Chunks (Recommended)</string>
+    <string name="nbt_prune_option_low">⏱️ Prune Low Inhabited Time (&lt; 20 ticks / 1s)</string>
+    <string name="nbt_prune_option_all">🗑️ Reset/Clear All Chunks in Region</string>
+    <string name="nbt_prune_success">Successfully pruned %1$d useless chunks!</string>
+    <string name="nbt_prune_no_useless">No useless chunks found; all chunks are populated with active playtime.</string>
+    <string name="nbt_inhabited_time_zero">Inhabited Time: 0 ticks (uninhabited / explored only)</string>
+    <string name="nbt_inhabited_time_fmt">Inhabited Time: %1$d ticks (~%2$ds)</string>
+    <string name="nbt_leveldb_delete_chunk">Delete Entire Chunk Data</string>
+    <string name="nbt_leveldb_delete_chunk_confirm">Delete all %3$d records for chunk [%1$d, %2$d] in LevelDB?</string>
+    <string name="nbt_leveldb_delete_chunk_success">Deleted %3$d records for chunk [%1$d, %2$d]</string>
+    <string name="world_prune_chunks_title">World-wide Chunk Optimizer</string>
+    <string name="world_prune_chunks_desc">Scan and prune all 0-tick uninhabited chunks across all region (.mca) files</string>
+    <string name="dimension_and_chunk_settings">Dimension &amp; Chunk Pruning Settings</string>
+    <string name="chunk_pruning_title">Chunk Range Pruning (Bounding Box)</string>
+    <string name="chunk_pruning_desc">Limit converted chunks within specified bounds, removing far-off exploratory chunks</string>
+    <string name="enable_chunk_pruning">Enable Chunk Range Pruning</string>
+    <string name="chunk_range_preset">Preset Range</string>
+    <string name="chunk_range_preset_core">Core Spawn Range (±16 chunks / 256m)</string>
+    <string name="chunk_range_preset_medium">Medium Range (±32 chunks / 512m)</string>
+    <string name="chunk_range_preset_large">Large Range (±64 chunks / 1024m)</string>
+    <string name="chunk_range_preset_custom">Custom Bounds</string>
+
+    <string name="smart_pruning_profile_title">Smart Pruning Profiles</string>
+    <string name="smart_pruning_profile_desc">Auto-configure optimal pruning &amp; slimming strategy for your scenario</string>
+    <string name="profile_smart_auto">🌟 Smart Slimming (Recommended)</string>
+    <string name="profile_builder">🏰 Builder &amp; Base</string>
+    <string name="profile_speed">⚡ Speed Core</string>
+    <string name="profile_custom">🛠️ Custom Expert</string>
+    <string name="nether_strategy_title">Nether Strategy</string>
+    <string name="nether_strategy_all">Keep All Nether</string>
+    <string name="nether_strategy_core">🌟 Keep Portal Hub (±16 chunks / 256m)</string>
+    <string name="nether_strategy_none">Drop Nether Dimension</string>
+    <string name="end_strategy_title">The End Strategy</string>
+    <string name="end_strategy_island_only">🌟 Keep Dragon Island Only (±16 chunks, clean outer islands)</string>
+    <string name="end_strategy_all">Keep All The End (with outer islands)</string>
+    <string name="end_strategy_none">Drop The End Dimension</string>
+    <string name="overworld_center_anchor">Overworld Center Anchor</string>
+    <string name="center_spawn_point">🧭 World Spawn Point (Auto-detected)</string>
+    <string name="center_origin">🎯 Origin Point (0, 0)</string>
+    <string name="world_analyzer_title">World Scanner &amp; Optimizer</string>
+    <string name="world_analyzer_desc">Scan world save to analyze spawn, detect uninhabited chunks and physically slim down world files</string>
+    <string name="world_analyzer_select_btn">Select World to Scan &amp; Slim</string>
+    <string name="world_analyzer_scanning">Deep scanning world archive...</string>
+    <string name="world_analyzer_ready_btn">⚡ Run One-Click World Slimming</string>
 </resources>

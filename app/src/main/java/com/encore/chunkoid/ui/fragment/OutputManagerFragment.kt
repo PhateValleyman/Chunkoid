@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.encore.chunkoid.R
@@ -24,6 +25,9 @@ import com.encore.chunkoid.ui.adapter.WorldCardAdapter
 import com.encore.chunkoid.utils.BackgroundUtils
 import com.encore.chunkoid.utils.ToastUtils
 import androidx.documentfile.provider.DocumentFile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -111,27 +115,41 @@ class OutputManagerFragment : Fragment() {
         binding.fabStartGame.setOnClickListener { showGameLauncherMenu() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadWorlds()
+    }
+
     private fun loadWorlds() {
-        worlds.clear()
-        val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        val chunkoidOutputDir = File(documentsDir, CHUNKOID_OUTPUT_DIR)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+            val chunkoidOutputDir = File(documentsDir, CHUNKOID_OUTPUT_DIR)
 
-        if (!chunkoidOutputDir.exists() || !chunkoidOutputDir.isDirectory) {
-            showEmptyState()
-            return
-        }
-
-        chunkoidOutputDir.listFiles()?.filter { it.isDirectory }?.forEach { worldDir ->
-            val convertInfoFile = File(worldDir, "Convertinfo.txt")
-            if (convertInfoFile.exists()) {
-                parseWorldInfo(worldDir, convertInfoFile)?.let { worlds.add(it) }
+            if (!chunkoidOutputDir.exists() || !chunkoidOutputDir.isDirectory) {
+                withContext(Dispatchers.Main) {
+                    worlds.clear()
+                    showEmptyState()
+                }
+                return@launch
             }
-        }
 
-        if (worlds.isEmpty()) {
-            showEmptyState()
-        } else {
-            showWorldList()
+            val loadedList = mutableListOf<WorldInfo>()
+            chunkoidOutputDir.listFiles()?.filter { it.isDirectory }?.forEach { worldDir ->
+                val convertInfoFile = File(worldDir, "Convertinfo.txt")
+                if (convertInfoFile.exists()) {
+                    parseWorldInfo(worldDir, convertInfoFile)?.let { loadedList.add(it) }
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                worlds.clear()
+                worlds.addAll(loadedList)
+                if (worlds.isEmpty()) {
+                    showEmptyState()
+                } else {
+                    showWorldList()
+                }
+            }
         }
     }
 
@@ -298,7 +316,7 @@ class OutputManagerFragment : Fragment() {
                 requireContext().packageName + ".fileprovider",
                 logFile
             )
-            
+
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, "text/plain")
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -334,7 +352,7 @@ class OutputManagerFragment : Fragment() {
 
     private fun showGameLauncherMenu() {
         data class GameInfo(val iconRes: Int, val packageName: String, val displayName: String, val subtitle: String)
-        
+
         val games = listOf(
             GameInfo(R.drawable.ne, "com.netease.x19", "基岩版：网易", "网易 Minecraft 客户端"),
             GameInfo(R.drawable.be, "com.mojang.minecraftpe", "基岩版：国际版", "Mojang Minecraft PE"),
@@ -347,6 +365,8 @@ class OutputManagerFragment : Fragment() {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_game_launcher, null)
         val container = view.findViewById<LinearLayout>(R.id.ll_launcher_items)
         val pm = requireContext().packageManager
+
+        val primaryColor = BackgroundUtils.getExtractedPrimaryColor(requireContext()) ?: ContextCompat.getColor(requireContext(), R.color.md_theme_primary)
 
         for (game in games) {
             val itemView = LayoutInflater.from(requireContext()).inflate(R.layout.launcher_menu_item, container, false)
@@ -362,7 +382,7 @@ class OutputManagerFragment : Fragment() {
             val isInstalled = pm.getLaunchIntentForPackage(game.packageName) != null
             if (isInstalled) {
                 tvStatus.text = "已安装"
-                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_primary))
+                tvStatus.setTextColor(primaryColor)
             } else {
                 tvStatus.text = "未安装"
                 tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_outline))
@@ -377,6 +397,7 @@ class OutputManagerFragment : Fragment() {
         }
 
         bottomSheetDialog.setContentView(view)
+        BackgroundUtils.applyDialogTheme(bottomSheetDialog, requireContext(), view)
         bottomSheetDialog.show()
     }
 
