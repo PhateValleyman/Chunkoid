@@ -6,13 +6,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/transparent"
-    android:padding="20dp">
+    android:padding="16dp"
+    android:importantForAutofill="noExcludeDescendants">
 
     <View
-        android:layout_width="40dp"
+        android:layout_width="36dp"
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         android:background="@drawable/bg_handle_bar" />
 
     <LinearLayout
@@ -31,9 +32,9 @@
                 android:id="@+id/tv_region_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="r.0.0.mca"
+                android:text="区块地图选择器"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -41,202 +42,337 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="已生成 0 / 1024 个区块"
+                android:text="已生成 0 个区块"
                 android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="13sp" />
+                android:textSize="11sp" />
 
         </LinearLayout>
 
-        <LinearLayout
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_select_tool"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            app:singleSelection="true"
+            app:selectionRequired="true">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_prune_useless_chunks"
-                style="@style/Widget.Material3.Button.TonalButton"
+                android:id="@+id/btn_tool_tap"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="清理无用区块"
-                android:textSize="12sp"
-                android:layout_marginEnd="8dp"
-                app:icon="@drawable/ic_delete"
-                app:iconSize="16dp"
-                android:paddingHorizontal="10dp" />
+                android:layout_height="34dp"
+                android:text="👆 点选"
+                android:textSize="11sp"
+                android:paddingHorizontal="8dp"
+                android:checked="true" />
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/toggle_view_mode"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tool_box"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:selectionRequired="true">
+                android:layout_height="34dp"
+                android:text="📐 框选"
+                android:textSize="11sp"
+                android:paddingHorizontal="8dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_mode_grid"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="网格"
-                    android:textSize="12sp"
-                    android:paddingHorizontal="12dp"
-                    android:checked="true" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_mode_list"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="列表"
-                    android:textSize="12sp"
-                    android:paddingHorizontal="12dp" />
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        </LinearLayout>
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_grid_container"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
-        <com.encore.chunkoid.ui.view.ChunkGridView
-            android:id="@+id/chunk_grid_view"
-            android:layout_width="280dp"
-            android:layout_height="280dp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_selected_chunk_info"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            app:cardBackgroundColor="@color/card_subtle_bg"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/card_subtle_stroke"
-            app:strokeWidth="1dp">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-            <LinearLayout
+            <HorizontalScrollView
+                android:id="@+id/scroll_dimension_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:layout_marginTop="8dp"
+                android:scrollbars="none"
+                android:visibility="gone">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_dimensions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_dim_overworld"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="主世界 (Overworld)"
+                        android:textSize="12sp"
+                        android:checked="true" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_dim_nether"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="下界 (Nether)"
+                        android:textSize="12sp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_dim_end"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="末地 (The End)"
+                        android:textSize="12sp" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/card_subtle_stroke"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="4dp"
+                    android:weightSum="4">
 
-                    <TextView
-                        android:id="@+id/tv_selected_chunk_coord"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_action_select_all"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="区块: [0, 0]"
+                        android:layout_height="36dp"
+                        android:text="全选"
+                        android:textSize="11sp"
                         android:textColor="?attr/colorOnSurface"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:paddingHorizontal="0dp"
+                        app:icon="@drawable/ic_select_all"
+                        app:iconGravity="textStart"
+                        app:iconPadding="4dp"
+                        app:iconSize="14dp"
+                        app:iconTint="?attr/colorOnSurfaceVariant"
+                        app:strokeColor="@color/transparent"
+                        app:backgroundTint="@color/transparent"
+                        android:layout_marginEnd="2dp" />
 
-                    <TextView
-                        android:id="@+id/tv_selected_chunk_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="状态: 已生成"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_action_invert"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="36dp"
+                        android:text="反选"
+                        android:textSize="11sp"
+                        android:textColor="?attr/colorOnSurface"
+                        android:paddingHorizontal="0dp"
+                        app:icon="@drawable/ic_swap"
+                        app:iconGravity="textStart"
+                        app:iconPadding="4dp"
+                        app:iconSize="14dp"
+                        app:iconTint="?attr/colorOnSurfaceVariant"
+                        app:strokeColor="@color/transparent"
+                        app:backgroundTint="@color/transparent"
+                        android:layout_marginEnd="2dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_action_clear"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="36dp"
+                        android:text="清空"
+                        android:textSize="11sp"
+                        android:textColor="?attr/colorOnSurface"
+                        android:paddingHorizontal="0dp"
+                        app:icon="@drawable/ic_close"
+                        app:iconGravity="textStart"
+                        app:iconPadding="4dp"
+                        app:iconSize="14dp"
+                        app:iconTint="?attr/colorOnSurfaceVariant"
+                        app:strokeColor="@color/transparent"
+                        app:backgroundTint="@color/transparent"
+                        android:layout_marginEnd="2dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_prune_useless_chunks"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="36dp"
+                        android:text="无用"
+                        android:textSize="11sp"
+                        android:textColor="?attr/colorError"
+                        android:paddingHorizontal="0dp"
+                        app:icon="@drawable/ic_delete"
+                        app:iconGravity="textStart"
+                        app:iconPadding="4dp"
+                        app:iconSize="14dp"
+                        app:iconTint="?attr/colorError"
+                        app:strokeColor="@color/transparent"
+                        app:backgroundTint="@color/transparent" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_selected_block_range"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="方块范围: [X: 0..15, Z: 0..15]"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp" />
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tv_selected_inhabited_time"
+            <LinearLayout
+                android:id="@+id/layout_grid_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal">
+
+                <com.encore.chunkoid.ui.view.ChunkGridView
+                    android:id="@+id/chunk_grid_view"
+                    android:layout_width="260dp"
+                    android:layout_height="260dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_selected_chunk_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="停留时间: 0 刻 (仅探索路过)"
-                    android:textColor="?attr/colorOutline"
-                    android:textSize="11sp"
-                    android:visibility="gone" />
+                    android:layout_marginTop="8dp"
+                    app:cardBackgroundColor="@color/card_subtle_bg"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/card_subtle_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/tv_selected_chunk_coord"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="区块: [0, 0]"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_selected_chunk_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="状态: 已生成"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_selected_block_range"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="方块范围: [X: 0..15, Z: 0..15]"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tv_selected_inhabited_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="停留时间: 0 刻 (仅探索路过)"
+                            android:textColor="?attr/colorOutline"
+                            android:textSize="10sp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_list_container"
-        android:layout_width="match_parent"
-        android:layout_height="360dp"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:visibility="gone">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_chunk_search"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="搜索区块坐标或方块坐标 (如 0,0)"
-            app:boxCornerRadiusBottomEnd="14dp"
-            app:boxCornerRadiusBottomStart="14dp"
-            app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusTopStart="14dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_chunk_search"
+            <LinearLayout
+                android:id="@+id/layout_list_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textSize="14sp" />
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_chunk_search"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="搜索区块坐标或方块坐标 (如 0,0)"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chunk_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"
-            android:clipToPadding="false"
-            android:overScrollMode="never" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_chunk_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="13sp" />
 
-    </LinearLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_chunk_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="6dp"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="4dp"
         android:gravity="center_vertical">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_delete_chunk_dialog"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:id="@+id/btn_cancel_chunk_picker"
+            style="?attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="删除此区块"
-            android:textColor="?attr/colorError"
-            app:strokeColor="?attr/colorError"
-            app:icon="@drawable/ic_delete"
-            app:iconTint="?attr/colorError"
-            app:cornerRadius="24dp"
-            android:visibility="gone" />
+            android:layout_height="44dp"
+            android:text="@string/cancel"
+            android:textSize="13sp"
+            app:backgroundTint="@color/transparent"
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
         <Space
             android:layout_width="0dp"
@@ -244,22 +380,30 @@
             android:layout_weight="1" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cancel_chunk_picker"
-            style="@style/Widget.Material3.Button.TextButton"
+            android:id="@+id/btn_delete_chunk_dialog"
+            style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="@string/cancel"
-            android:textColor="?attr/colorOnSurfaceVariant" />
+            android:layout_height="44dp"
+            android:text="删除此区块"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/md_theme_error"
+            app:icon="@drawable/ic_delete"
+            app:iconTint="@color/white"
+            app:iconSize="16dp"
+            app:cornerRadius="22dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm_select_chunk"
+            style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="44dp"
             android:layout_marginStart="8dp"
             android:text="编辑此区块"
+            android:textSize="12sp"
             android:textColor="?attr/colorOnPrimary"
             app:backgroundTint="?attr/colorPrimary"
-            app:cornerRadius="24dp" />
+            app:cornerRadius="22dp" />
 
     </LinearLayout>
 

@@ -167,6 +167,65 @@ class BedrockLevelDbHelper(val dbFolder: File) : Closeable, AutoCloseable {
         return toDelete.size
     }
 
+    fun getPopulatedChunkCoordinates(dimensionId: Int = 0): Set<Pair<Int, Int>> {
+        val database = open()
+        val set = mutableSetOf<Pair<Int, Int>>()
+        val iterator = database.iterator()
+        try {
+            iterator.seekToFirst()
+            while (iterator.hasNext()) {
+                val entry = iterator.next()
+                val key = entry.key
+                if (key.size in 9..14 || key.size in 4..8) {
+                    try {
+                        val buffer = ByteBuffer.wrap(key).order(ByteOrder.LITTLE_ENDIAN)
+                        if (key.size >= 8) {
+                            val chunkX = buffer.getInt(0)
+                            val chunkZ = buffer.getInt(4)
+                            val hasDim = key.size >= 13
+                            val dim = if (hasDim) buffer.getInt(8) else 0
+                            if (dim == dimensionId) {
+                                set.add(Pair(chunkX, chunkZ))
+                            }
+                        }
+                    } catch (e: Exception) {}
+                }
+            }
+        } finally {
+            iterator.close()
+        }
+        return set
+    }
+
+    fun getBlockEntityChunkCoordinates(dimensionId: Int = 0): Set<Pair<Int, Int>> {
+        val database = open()
+        val set = mutableSetOf<Pair<Int, Int>>()
+        val iterator = database.iterator()
+        try {
+            iterator.seekToFirst()
+            while (iterator.hasNext()) {
+                val entry = iterator.next()
+                val key = entry.key
+                if (key.size in 9..14) {
+                    try {
+                        val buffer = ByteBuffer.wrap(key).order(ByteOrder.LITTLE_ENDIAN)
+                        val chunkX = buffer.getInt(0)
+                        val chunkZ = buffer.getInt(4)
+                        val hasDim = key.size >= 13
+                        val dim = if (hasDim) buffer.getInt(8) else 0
+                        val tagByte = if (hasDim && key.size >= 13) key[12].toInt() and 0xFF else key[8].toInt() and 0xFF
+                        if (dim == dimensionId && tagByte == 0x31) {
+                            set.add(Pair(chunkX, chunkZ))
+                        }
+                    } catch (e: Exception) {}
+                }
+            }
+        } finally {
+            iterator.close()
+        }
+        return set
+    }
+
     override fun close() {
         try {
             db?.close()

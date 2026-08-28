@@ -85,10 +85,6 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        binding.itemDimensionPruning.setOnClickListener {
-            val intent = android.content.Intent(this, DimensionSettingsActivity::class.java)
-            startActivity(intent)
-        }
 
         binding.switchWakeLock.isChecked = prefs.getBoolean("enable_wake_lock", true)
         binding.switchWakeLock.setOnCheckedChangeListener { _, isChecked ->

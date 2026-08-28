@@ -173,13 +173,23 @@
                                     android:textSize="12sp" />
 
                                 <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_open_chunk_map_picker"
+                                    style="@style/Widget.Material3.Button.TonalButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="48dp"
+                                    android:layout_marginTop="12dp"
+                                    android:text="🗺️ 地图可视化选区删除"
+                                    app:cornerRadius="16dp"
+                                    app:icon="@drawable/ic_world" />
+
+                                <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btn_run_world_prune"
                                     style="@style/Widget.Material3.Button"
                                     android:layout_width="match_parent"
-                                    android:layout_height="52dp"
-                                    android:layout_marginTop="14dp"
+                                    android:layout_height="48dp"
+                                    android:layout_marginTop="8dp"
                                     android:text="@string/world_analyzer_ready_btn"
-                                    app:cornerRadius="18dp"
+                                    app:cornerRadius="16dp"
                                     app:icon="@drawable/ic_delete" />
 
                             </LinearLayout>

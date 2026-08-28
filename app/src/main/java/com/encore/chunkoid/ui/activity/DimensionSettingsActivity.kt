@@ -32,6 +32,13 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
+import android.widget.TextView
+import com.encore.chunkoid.core.leveldb.BedrockLevelDbHelper
+import com.encore.chunkoid.ui.view.ChunkGridView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.chip.ChipGroup
+
 class DimensionSettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDimensionSettingsBinding
@@ -40,9 +47,13 @@ class DimensionSettingsActivity : AppCompatActivity() {
     private var scannedWorldUri: Uri? = null
     private var scannedZipBytes: ByteArray? = null
     private var scannedMcaEntries: MutableMap<String, ByteArray> = mutableMapOf()
+    private var scannedBedrockDbFiles: MutableMap<String, ByteArray> = mutableMapOf()
     private var scannedRegionList: MutableList<Pair<String, List<Pair<Int, Int>>>> = mutableListOf()
     private var scannedTotalPopulated = 0
     private var scannedTotalUseless = 0
+    private var scannedIsBedrockWorld: Boolean = false
+    private var scannedSpawnX: Int = 0
+    private var scannedSpawnZ: Int = 0
 
     private val selectWorldLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         if (uri != null) {
@@ -289,6 +300,10 @@ class DimensionSettingsActivity : AppCompatActivity() {
             selectWorldLauncher.launch(arrayOf("*/*"))
         }
 
+        binding.btnOpenChunkMapPicker.setOnClickListener {
+            showWorldChunkMapPickerDialog()
+        }
+
         binding.btnRunWorldPrune.setOnClickListener {
             runOneClickWorldPrune()
         }
@@ -321,6 +336,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
             try {
                 scannedWorldUri = uri
                 scannedMcaEntries.clear()
+                scannedBedrockDbFiles.clear()
                 scannedRegionList.clear()
                 scannedTotalPopulated = 0
                 scannedTotalUseless = 0
@@ -400,9 +416,10 @@ class DimensionSettingsActivity : AppCompatActivity() {
                             } catch (e: Exception) {
                                 android.util.Log.e("ChunkoidSlim", "Error parsing MCA ${name}: ${e.message}")
                             }
-                        } else if (name.contains("db/") && (name.endsWith(".ldb") || name.endsWith(".log"))) {
+                        } else if ((name.contains("db/") || name.contains("db\\")) && !entry.isDirectory) {
                             isBedrockWorld = true
                             bedrockChunkKeysCount++
+                            scannedBedrockDbFiles[name] = zis.readBytes()
                         }
                         zis.closeEntry()
                         entry = zis.nextEntry
@@ -410,6 +427,10 @@ class DimensionSettingsActivity : AppCompatActivity() {
                 }
 
                 tempDir.deleteRecursively()
+
+                scannedIsBedrockWorld = isBedrockWorld
+                scannedSpawnX = spawnX
+                scannedSpawnZ = spawnZ
 
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@DimensionSettingsActivity)
                 prefs.edit()
@@ -424,7 +445,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
 
                     val rawArchiveSize = scannedZipBytes?.size?.toLong() ?: 0L
                     if (isBedrockWorld && scannedMcaEntries.isEmpty()) {
-                        binding.tvScanChunksStats.text = "已识别基岩版 LevelDB 数据库存档 | 数据文件: $bedrockChunkKeysCount 个 | 存档大小: ${formatBytes(rawArchiveSize)}\n支持应用下方的全维度转换范围裁剪规则。"
+                        binding.tvScanChunksStats.text = "已识别基岩版 LevelDB 数据库存档 | 数据文件: $bedrockChunkKeysCount 个 | 存档大小: ${formatBytes(rawArchiveSize)}\n点击下方【地图可视化选区删除】可圈选任意区块物理擦除。"
                     } else {
                         val pct = if (scannedTotalPopulated > 0) (scannedTotalUseless.toFloat() / scannedTotalPopulated.toFloat()) * 100f else 0f
                         val estimatedSavings = if (scannedTotalPopulated > 0) {
@@ -446,6 +467,477 @@ class DimensionSettingsActivity : AppCompatActivity() {
                     Toast.makeText(this@DimensionSettingsActivity, "分析失败: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    private fun showWorldChunkMapPickerDialog() {
+        val uri = scannedWorldUri
+        val zipBytes = scannedZipBytes
+        if (uri == null || zipBytes == null || (scannedMcaEntries.isEmpty() && scannedBedrockDbFiles.isEmpty())) {
+            Toast.makeText(this, "请先选择并体检一个世界存档", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_chunk_picker, null)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogView)
+            .create()
+        BackgroundUtils.applyDialogTheme(dialog, this, dialogView)
+
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tv_region_title)
+        val tvSubtitle = dialogView.findViewById<TextView>(R.id.tv_region_subtitle)
+        val toggleTool = dialogView.findViewById<MaterialButtonToggleGroup>(R.id.toggle_select_tool)
+        val scrollDims = dialogView.findViewById<View>(R.id.scroll_dimension_tabs)
+        val chipGroupDims = dialogView.findViewById<ChipGroup>(R.id.chip_group_dimensions)
+        val chunkGridView = dialogView.findViewById<ChunkGridView>(R.id.chunk_grid_view)
+        val tvSelectedChunkCoord = dialogView.findViewById<TextView>(R.id.tv_selected_chunk_coord)
+        val tvSelectedChunkStatus = dialogView.findViewById<TextView>(R.id.tv_selected_chunk_status)
+        val tvSelectedBlockRange = dialogView.findViewById<TextView>(R.id.tv_selected_block_range)
+        val btnActionSelectAll = dialogView.findViewById<View>(R.id.btn_action_select_all)
+        val btnActionInvert = dialogView.findViewById<View>(R.id.btn_action_invert)
+        val btnActionClear = dialogView.findViewById<View>(R.id.btn_action_clear)
+        val btnPruneUseless = dialogView.findViewById<View>(R.id.btn_prune_useless_chunks)
+        val btnCancel = dialogView.findViewById<View>(R.id.btn_cancel_chunk_picker)
+        val btnConfirm = dialogView.findViewById<MaterialButton>(R.id.btn_confirm_select_chunk)
+        val btnDeleteChunk = dialogView.findViewById<MaterialButton>(R.id.btn_delete_chunk_dialog)
+
+        btnConfirm?.visibility = View.GONE
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        toggleTool?.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                chunkGridView.selectMode = if (checkedId == R.id.btn_tool_box) {
+                    ChunkGridView.SelectMode.BOX
+                } else {
+                    ChunkGridView.SelectMode.TAP
+                }
+            }
+        }
+
+        btnActionSelectAll?.setOnClickListener { chunkGridView.selectAllPopulated() }
+        btnActionInvert?.setOnClickListener { chunkGridView.invertSelection() }
+        btnActionClear?.setOnClickListener { chunkGridView.clearSelection() }
+
+        fun updateSelectedInfo(cx: Int, cz: Int, exists: Boolean) {
+            val bx = cx * 16
+            val bz = cz * 16
+            tvSelectedChunkCoord.text = "区块: [$cx, $cz]"
+            tvSelectedBlockRange.text = "方块范围: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
+            val count = chunkGridView.selectedChunks.size
+            if (count > 0) {
+                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
+                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.isEnabled = true
+                btnDeleteChunk.alpha = 1.0f
+                btnDeleteChunk.visibility = View.VISIBLE
+            } else {
+                tvSelectedChunkStatus.text = if (exists) "状态: 已生成" else "状态: 未生成"
+                tvSelectedChunkStatus.setTextColor(
+                    if (exists) ContextCompat.getColor(this, R.color.md_theme_primary)
+                    else ContextCompat.getColor(this, R.color.md_theme_outline)
+                )
+                btnDeleteChunk.text = "删除此区块"
+                btnDeleteChunk.isEnabled = exists
+                btnDeleteChunk.alpha = if (exists) 1.0f else 0.4f
+                btnDeleteChunk.visibility = View.VISIBLE
+            }
+        }
+
+        chunkGridView.onChunkSelectedListener = { cx, cz, exists ->
+            updateSelectedInfo(cx, cz, exists)
+        }
+
+        chunkGridView.onSelectionChangedListener = { count, _ ->
+            if (count > 0) {
+                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
+                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.visibility = View.VISIBLE
+            } else {
+                val exists = chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)
+                updateSelectedInfo(chunkGridView.selectedX, chunkGridView.selectedZ, exists)
+            }
+        }
+
+        if (!scannedIsBedrockWorld && scannedMcaEntries.isNotEmpty()) {
+            tvTitle.text = "世界 2D 区块地图 (Java 版)"
+            scrollDims.visibility = View.GONE
+
+            showLoading("正在解析全部区域地图...")
+            lifecycleScope.launch(Dispatchers.IO) {
+                val allGlobalChunks = mutableSetOf<Pair<Int, Int>>()
+                val uselessChunks = mutableSetOf<Pair<Int, Int>>()
+
+                val tempDir = File(cacheDir, "map_picker_temp").apply {
+                    if (exists()) deleteRecursively()
+                    mkdirs()
+                }
+
+                for ((mcaName, mcaBytes) in scannedMcaEntries) {
+                    val coords = AnvilRegionFile.parseRegionCoordinates(File(mcaName).name) ?: continue
+                    val rx = coords.first
+                    val rz = coords.second
+                    val tempFile = File(tempDir, File(mcaName).name)
+                    tempFile.writeBytes(mcaBytes)
+                    try {
+                        AnvilRegionFile(tempFile).use { anvil ->
+                            for (c in anvil.getPopulatedChunks()) {
+                                val gx = rx * 32 + c.localX
+                                val gz = rz * 32 + c.localZ
+                                allGlobalChunks.add(Pair(gx, gz))
+                            }
+                            for (u in anvil.scanUselessChunks(0L)) {
+                                val gx = rx * 32 + u.first.localX
+                                val gz = rz * 32 + u.first.localZ
+                                uselessChunks.add(Pair(gx, gz))
+                            }
+                        }
+                    } catch (e: Exception) {}
+                }
+                tempDir.deleteRecursively()
+
+                withContext(Dispatchers.Main) {
+                    hideLoading()
+                    tvSubtitle.text = "已生成 ${allGlobalChunks.size} 个区块 (含 ${uselessChunks.size} 个0停留时间区块)"
+                    chunkGridView.setWorldChunkData(
+                        allGlobalChunks,
+                        spawnX = scannedSpawnX shr 4,
+                        spawnZ = scannedSpawnZ shr 4
+                    )
+                    btnPruneUseless?.setOnClickListener {
+                        chunkGridView.clearSelection()
+                        chunkGridView.selectedChunks.addAll(uselessChunks)
+                        chunkGridView.onSelectionChangedListener?.invoke(uselessChunks.size, uselessChunks)
+                        chunkGridView.invalidate()
+                    }
+
+                    btnDeleteChunk.setOnClickListener {
+                        val targets = if (chunkGridView.selectedChunks.isNotEmpty()) {
+                            chunkGridView.selectedChunks.toSet()
+                        } else if (chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)) {
+                            setOf(Pair(chunkGridView.selectedX, chunkGridView.selectedZ))
+                        } else emptySet()
+
+                        if (targets.isEmpty()) return@setOnClickListener
+
+                        MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
+                            .setTitle("确认物理删除区块")
+                            .setMessage("确定要物理删除选中的 ${targets.size} 个区块吗？\n将自动创建原存档备份。")
+                            .setPositiveButton("立即删除") { _, _ ->
+                                dialog.dismiss()
+                                executeCustomJavaChunksPrune(uri, zipBytes, targets)
+                            }
+                            .setNegativeButton(R.string.cancel, null)
+                            .show()
+                    }
+
+                    dialog.show()
+                }
+            }
+        } else if (scannedIsBedrockWorld) {
+            tvTitle.text = "世界 2D 区块地图 (基岩版)"
+            scrollDims.visibility = View.VISIBLE
+
+            showLoading("正在解析 LevelDB 数据库区块...")
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val tempDbDir = File(cacheDir, "bedrock_map_db").apply {
+                        if (exists()) deleteRecursively()
+                        mkdirs()
+                    }
+                    for ((fName, fBytes) in scannedBedrockDbFiles) {
+                        val relPath = if (fName.contains("db/")) fName.substringAfter("db/") else if (fName.contains("db\\")) fName.substringAfter("db\\") else File(fName).name
+                        if (relPath.isNotBlank()) {
+                            val targetFile = File(tempDbDir, relPath)
+                            targetFile.parentFile?.mkdirs()
+                            targetFile.writeBytes(fBytes)
+                        }
+                    }
+
+                    val helper = BedrockLevelDbHelper(tempDbDir)
+
+                    var currentDim = 0
+                    fun loadBedrockDim(dimId: Int) {
+                        currentDim = dimId
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            try {
+                                val populated = helper.getPopulatedChunkCoordinates(dimId)
+                                val blockEntities = helper.getBlockEntityChunkCoordinates(dimId)
+                                withContext(Dispatchers.Main) {
+                                    tvSubtitle.text = "当前维度已生成 ${populated.size} 个区块"
+                                    chunkGridView.clearSelection()
+                                    chunkGridView.setWorldChunkData(
+                                        populated,
+                                        blockEntityCoords = blockEntities,
+                                        spawnX = if (dimId == 0) scannedSpawnX shr 4 else null,
+                                        spawnZ = if (dimId == 0) scannedSpawnZ shr 4 else null
+                                    )
+                                }
+                            } catch (e: Exception) {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(this@DimensionSettingsActivity, "加载维度区块失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        hideLoading()
+                        loadBedrockDim(0)
+
+                        chipGroupDims?.setOnCheckedStateChangeListener { _, checkedIds ->
+                            if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
+                            when (checkedIds.first()) {
+                                R.id.chip_dim_overworld -> loadBedrockDim(0)
+                                R.id.chip_dim_nether -> loadBedrockDim(1)
+                                R.id.chip_dim_end -> loadBedrockDim(2)
+                            }
+                        }
+
+                        btnPruneUseless?.visibility = View.GONE
+
+                        btnDeleteChunk.setOnClickListener {
+                            val targets = if (chunkGridView.selectedChunks.isNotEmpty()) {
+                                chunkGridView.selectedChunks.toSet()
+                            } else if (chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)) {
+                                setOf(Pair(chunkGridView.selectedX, chunkGridView.selectedZ))
+                            } else emptySet()
+
+                            if (targets.isEmpty()) return@setOnClickListener
+
+                            MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
+                                .setTitle("确认物理删除区块")
+                                .setMessage("确定要物理删除当前维度的 ${targets.size} 个区块吗？\n将自动创建原存档备份。")
+                                .setPositiveButton("立即删除") { _, _ ->
+                                    dialog.dismiss()
+                                    executeCustomBedrockChunksPrune(uri, zipBytes, tempDbDir, helper, targets, currentDim)
+                                }
+                                .setNegativeButton(R.string.cancel, null)
+                                .show()
+                        }
+
+                        dialog.setOnDismissListener {
+                            try {
+                                helper.close()
+                                tempDbDir.deleteRecursively()
+                            } catch (e: Exception) {}
+                        }
+
+                        dialog.show()
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        hideLoading()
+                        Toast.makeText(this@DimensionSettingsActivity, "打开 LevelDB 数据库失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun executeCustomJavaChunksPrune(uri: Uri, zipBytes: ByteArray, targets: Set<Pair<Int, Int>>) {
+        showLoading("正在执行指定区块物理删除...")
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                try {
+                    val bakDir = File(filesDir, "backups").apply { mkdirs() }
+                    val bakFile = File(bakDir, "world_backup_${System.currentTimeMillis()}.zip")
+                    bakFile.writeBytes(zipBytes)
+                } catch (e: Exception) {}
+
+                val tempDir = File(cacheDir, "prune_custom_temp").apply {
+                    if (exists()) deleteRecursively()
+                    mkdirs()
+                }
+
+                val regionGroup = targets.groupBy { Pair(it.first shr 5, it.second shr 5) }
+                val updatedMcaEntries = mutableMapOf<String, ByteArray>()
+                var prunedCount = 0
+
+                for ((name, mcaData) in scannedMcaEntries) {
+                    val coords = AnvilRegionFile.parseRegionCoordinates(File(name).name)
+                    if (coords != null && regionGroup.containsKey(coords)) {
+                        val chunksInRegion = regionGroup[coords] ?: emptyList()
+                        val localCoords = chunksInRegion.map { Pair(it.first and 31, it.second and 31) }
+                        val tempFile = File(tempDir, "prune_${File(name).name}")
+                        tempFile.writeBytes(mcaData)
+                        try {
+                            AnvilRegionFile(tempFile).use { anvil ->
+                                anvil.deleteChunks(localCoords)
+                                prunedCount += localCoords.size
+                            }
+                            updatedMcaEntries[name] = tempFile.readBytes()
+                        } catch (e: Exception) {}
+                    }
+                }
+                tempDir.deleteRecursively()
+
+                val baos = ByteArrayOutputStream()
+                ZipInputStream(ByteArrayInputStream(zipBytes)).use { zis ->
+                    ZipOutputStream(baos).use { zos ->
+                        var entry = zis.nextEntry
+                        while (entry != null) {
+                            val newEntry = ZipEntry(entry.name)
+                            zos.putNextEntry(newEntry)
+                            val updated = updatedMcaEntries[entry.name]
+                            if (updated != null) {
+                                zos.write(updated)
+                            } else {
+                                zis.copyTo(zos)
+                            }
+                            zos.closeEntry()
+                            entry = zis.nextEntry
+                        }
+                    }
+                }
+
+                savePrunedZipAndNotify(uri, zipBytes, baos.toByteArray(), prunedCount)
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    hideLoading()
+                    Toast.makeText(this@DimensionSettingsActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun executeCustomBedrockChunksPrune(
+        uri: Uri,
+        zipBytes: ByteArray,
+        tempDbDir: File,
+        helper: BedrockLevelDbHelper,
+        targets: Set<Pair<Int, Int>>,
+        dimId: Int
+    ) {
+        showLoading("正在执行基岩版 LevelDB 区块删除...")
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                try {
+                    val bakDir = File(filesDir, "backups").apply { mkdirs() }
+                    val bakFile = File(bakDir, "bedrock_backup_${System.currentTimeMillis()}.zip")
+                    bakFile.writeBytes(zipBytes)
+                } catch (e: Exception) {}
+
+                val deletedCount = helper.deleteChunks(targets, dimId)
+                helper.close()
+
+                val updatedDbMap = mutableMapOf<String, ByteArray>()
+                tempDbDir.walkTopDown().forEach { file ->
+                    if (file.isFile) {
+                        val relPath = file.relativeTo(tempDbDir).path.replace('\\', '/')
+                        updatedDbMap[relPath] = file.readBytes()
+                    }
+                }
+                tempDbDir.deleteRecursively()
+
+                val baos = ByteArrayOutputStream()
+                val writtenDbKeys = mutableSetOf<String>()
+                ZipInputStream(ByteArrayInputStream(zipBytes)).use { zis ->
+                    ZipOutputStream(baos).use { zos ->
+                        var entry = zis.nextEntry
+                        while (entry != null) {
+                            val name = entry.name
+                            if (name.contains("db/") || name.contains("db\\")) {
+                                val rel = if (name.contains("db/")) name.substringAfter("db/") else name.substringAfter("db\\")
+                                val updatedBytes = updatedDbMap[rel]
+                                if (updatedBytes != null) {
+                                    val newEntry = ZipEntry(name)
+                                    zos.putNextEntry(newEntry)
+                                    zos.write(updatedBytes)
+                                    zos.closeEntry()
+                                    writtenDbKeys.add(rel)
+                                }
+                            } else {
+                                val newEntry = ZipEntry(name)
+                                zos.putNextEntry(newEntry)
+                                zis.copyTo(zos)
+                                zos.closeEntry()
+                            }
+                            entry = zis.nextEntry
+                        }
+                        for ((rel, bData) in updatedDbMap) {
+                            if (!writtenDbKeys.contains(rel)) {
+                                val newEntry = ZipEntry("db/$rel")
+                                zos.putNextEntry(newEntry)
+                                zos.write(bData)
+                                zos.closeEntry()
+                            }
+                        }
+                    }
+                }
+
+                savePrunedZipAndNotify(uri, zipBytes, baos.toByteArray(), targets.size)
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    hideLoading()
+                    Toast.makeText(this@DimensionSettingsActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private suspend fun savePrunedZipAndNotify(uri: Uri, origZipBytes: ByteArray, finalZipBytes: ByteArray, prunedCount: Int) {
+        var writeDirectSuccess = false
+        var savedOutFile: File? = null
+        var directWriteError = ""
+
+        try {
+            val outStream = contentResolver.openOutputStream(uri, "rwt")
+                ?: contentResolver.openOutputStream(uri, "wt")
+                ?: contentResolver.openOutputStream(uri)
+            if (outStream != null) {
+                outStream.use { it.write(finalZipBytes) }
+                writeDirectSuccess = true
+            } else {
+                directWriteError = "openOutputStream returned null"
+            }
+        } catch (e: Exception) {
+            directWriteError = e.message ?: "Unknown security error"
+        }
+
+        if (!writeDirectSuccess) {
+            val baseName = getFileName(uri).substringBeforeLast(".")
+            var fallbackSuccess = false
+            try {
+                val outDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Chunkoid").apply { mkdirs() }
+                val target = File(outDir, "${baseName}_pruned_${System.currentTimeMillis() % 10000}.zip")
+                target.writeBytes(finalZipBytes)
+                savedOutFile = target
+                fallbackSuccess = true
+            } catch (e: Exception) {}
+
+            if (!fallbackSuccess) {
+                val outDir = File(filesDir, "pruned").apply { mkdirs() }
+                val target = File(outDir, "${baseName}_pruned_saved.zip")
+                target.writeBytes(finalZipBytes)
+                savedOutFile = target
+            }
+        }
+
+        val origSize = origZipBytes.size.toLong()
+        val newSize = finalZipBytes.size.toLong()
+        val savedDiff = (origSize - newSize).coerceAtLeast(0L)
+
+        withContext(Dispatchers.Main) {
+            hideLoading()
+            val resultMessage = if (writeDirectSuccess) {
+                "🎉 删除成功！原存档已更新。\n\n• 成功删除区块: $prunedCount 个\n• 存档体积: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (节省 ${formatBytes(savedDiff)})"
+            } else {
+                "🎉 删除成功！\n注: 原存档为只读，新存档已另存至：\n📂 ${savedOutFile?.absolutePath}\n\n• 成功删除区块: $prunedCount 个\n• 存档体积: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (节省 ${formatBytes(savedDiff)})"
+            }
+
+            val resDialog = MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
+                .setTitle("区块删除完成")
+                .setMessage(resultMessage)
+                .setPositiveButton("确定") { _, _ ->
+                    if (writeDirectSuccess) {
+                        analyzeWorldSave(uri)
+                    }
+                }
+                .create()
+            BackgroundUtils.applyDialogTheme(resDialog, this@DimensionSettingsActivity)
+            resDialog.show()
         }
     }
 

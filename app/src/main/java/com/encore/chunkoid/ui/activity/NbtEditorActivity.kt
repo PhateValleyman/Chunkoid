@@ -262,13 +262,6 @@ class NbtEditorActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(
-                "application/octet-stream",
-                "application/x-gzip",
-                "application/zip",
-                "application/x-zip-compressed",
-                "*/*"
-            ))
         }
         openFileLauncher.launch(intent)
     }
@@ -640,16 +633,15 @@ class NbtEditorActivity : AppCompatActivity() {
 
         val tvTitle = dialogView.findViewById<TextView>(R.id.tv_region_title)
         val tvSubtitle = dialogView.findViewById<TextView>(R.id.tv_region_subtitle)
-        val toggleViewMode = dialogView.findViewById<MaterialButtonToggleGroup>(R.id.toggle_view_mode)
-        val layoutGrid = dialogView.findViewById<View>(R.id.layout_grid_container)
-        val layoutList = dialogView.findViewById<View>(R.id.layout_list_container)
+        val toggleTool = dialogView.findViewById<MaterialButtonToggleGroup>(R.id.toggle_select_tool)
         val chunkGridView = dialogView.findViewById<ChunkGridView>(R.id.chunk_grid_view)
         val tvSelectedChunkCoord = dialogView.findViewById<TextView>(R.id.tv_selected_chunk_coord)
         val tvSelectedChunkStatus = dialogView.findViewById<TextView>(R.id.tv_selected_chunk_status)
         val tvSelectedBlockRange = dialogView.findViewById<TextView>(R.id.tv_selected_block_range)
         val tvSelectedInhabitedTime = dialogView.findViewById<TextView>(R.id.tv_selected_inhabited_time)
-        val etSearch = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_chunk_search)
-        val rvChunkList = dialogView.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_chunk_list)
+        val btnActionSelectAll = dialogView.findViewById<View>(R.id.btn_action_select_all)
+        val btnActionInvert = dialogView.findViewById<View>(R.id.btn_action_invert)
+        val btnActionClear = dialogView.findViewById<View>(R.id.btn_action_clear)
         val btnCancel = dialogView.findViewById<View>(R.id.btn_cancel_chunk_picker)
         val btnConfirm = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_confirm_select_chunk)
         val btnDeleteChunk = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_delete_chunk_dialog)
@@ -667,6 +659,20 @@ class NbtEditorActivity : AppCompatActivity() {
 
         chunkGridView.setChunkData(chunkTable)
 
+        toggleTool?.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                chunkGridView.selectMode = if (checkedId == R.id.btn_tool_box) {
+                    ChunkGridView.SelectMode.BOX
+                } else {
+                    ChunkGridView.SelectMode.TAP
+                }
+            }
+        }
+
+        btnActionSelectAll?.setOnClickListener { chunkGridView.selectAllPopulated() }
+        btnActionInvert?.setOnClickListener { chunkGridView.invertSelection() }
+        btnActionClear?.setOnClickListener { chunkGridView.clearSelection() }
+
         fun updateSelectedDetails(lx: Int, lz: Int, exists: Boolean) {
             val gx = if (rx != null) rx * 32 + lx else lx
             val gz = if (rz != null) rz * 32 + lz else lz
@@ -681,33 +687,45 @@ class NbtEditorActivity : AppCompatActivity() {
 
             tvSelectedBlockRange.text = "方块范围: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
 
-            if (exists) {
-                val info = region.getChunkInfo(lx, lz)
-                tvSelectedChunkStatus.text = getString(R.string.nbt_chunk_status_populated, info.sectorCount)
-                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_primary))
-                btnConfirm.text = getString(R.string.nbt_edit_chunk)
+            val count = chunkGridView.selectedChunks.size
+            if (count > 0) {
+                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
+                btnDeleteChunk?.text = "删除所选 ($count)"
                 btnDeleteChunk?.visibility = View.VISIBLE
+            } else {
+                if (exists) {
+                    val info = region.getChunkInfo(lx, lz)
+                    tvSelectedChunkStatus.text = getString(R.string.nbt_chunk_status_populated, info.sectorCount)
+                    tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_primary))
+                    btnConfirm.text = getString(R.string.nbt_edit_chunk)
+                    btnDeleteChunk?.text = "删除此区块"
+                    btnDeleteChunk?.visibility = View.VISIBLE
 
-                val inhabitedTime = region.readChunkInhabitedTime(lx, lz)
-                if (inhabitedTime != null) {
-                    tvSelectedInhabitedTime?.visibility = View.VISIBLE
-                    if (inhabitedTime == 0L) {
-                        tvSelectedInhabitedTime?.text = getString(R.string.nbt_inhabited_time_zero)
-                        tvSelectedInhabitedTime?.setTextColor(android.graphics.Color.parseColor("#FF9100"))
+                    val inhabitedTime = region.readChunkInhabitedTime(lx, lz)
+                    if (inhabitedTime != null) {
+                        tvSelectedInhabitedTime?.visibility = View.VISIBLE
+                        if (inhabitedTime == 0L) {
+                            tvSelectedInhabitedTime?.text = getString(R.string.nbt_inhabited_time_zero)
+                            tvSelectedInhabitedTime?.setTextColor(android.graphics.Color.parseColor("#FF9100"))
+                        } else {
+                            val seconds = inhabitedTime / 20L
+                            tvSelectedInhabitedTime?.text = getString(R.string.nbt_inhabited_time_fmt, inhabitedTime, seconds)
+                            tvSelectedInhabitedTime?.setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSurfaceVariant))
+                        }
                     } else {
-                        val seconds = inhabitedTime / 20L
-                        tvSelectedInhabitedTime?.text = getString(R.string.nbt_inhabited_time_fmt, inhabitedTime, seconds)
-                        tvSelectedInhabitedTime?.setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSurfaceVariant))
+                        tvSelectedInhabitedTime?.visibility = View.GONE
                     }
                 } else {
+                    tvSelectedChunkStatus.text = getString(R.string.nbt_chunk_status_empty)
+                    tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_outline))
+                    btnConfirm.text = "初始化并编辑"
+                    btnDeleteChunk?.text = "删除此区块"
+                    btnDeleteChunk?.isEnabled = false
+                    btnDeleteChunk?.alpha = 0.4f
+                    btnDeleteChunk?.visibility = View.VISIBLE
                     tvSelectedInhabitedTime?.visibility = View.GONE
                 }
-            } else {
-                tvSelectedChunkStatus.text = getString(R.string.nbt_chunk_status_empty)
-                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_outline))
-                btnConfirm.text = "初始化并编辑"
-                btnDeleteChunk?.visibility = View.GONE
-                tvSelectedInhabitedTime?.visibility = View.GONE
             }
         }
 
@@ -715,40 +733,15 @@ class NbtEditorActivity : AppCompatActivity() {
             updateSelectedDetails(lx, lz, exists)
         }
 
-        lateinit var listAdapter: ChunkListAdapter
-        listAdapter = ChunkListAdapter(
-            context = this,
-            regionX = rx,
-            regionZ = rz,
-            onChunkClicked = { chunk ->
-                loadChunkFromRegion(chunk.localX, chunk.localZ)
-                dialog.dismiss()
-            },
-            onChunkDeleteClicked = { chunk ->
-                confirmDeleteChunk(region, chunk.localX, chunk.localZ, chunkGridView, listAdapter, tvSubtitle, ::updateSelectedDetails)
-            }
-        )
-        rvChunkList.layoutManager = LinearLayoutManager(this)
-        rvChunkList.adapter = listAdapter
-        listAdapter.setData(chunkTable)
-
-        etSearch?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                listAdapter.filter(s?.toString().orEmpty())
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        toggleViewMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isChecked) {
-                if (checkedId == R.id.btn_mode_grid) {
-                    layoutGrid.visibility = View.VISIBLE
-                    layoutList.visibility = View.GONE
-                } else {
-                    layoutGrid.visibility = View.GONE
-                    layoutList.visibility = View.VISIBLE
-                }
+        chunkGridView.onSelectionChangedListener = { count, _ ->
+            if (count > 0) {
+                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
+                btnDeleteChunk?.text = "删除所选 ($count)"
+                btnDeleteChunk?.visibility = View.VISIBLE
+            } else {
+                val exists = chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)
+                updateSelectedDetails(chunkGridView.selectedX, chunkGridView.selectedZ, exists)
             }
         }
 
@@ -767,15 +760,20 @@ class NbtEditorActivity : AppCompatActivity() {
         }
 
         btnDeleteChunk?.setOnClickListener {
-            val lx = chunkGridView.selectedX
-            val lz = chunkGridView.selectedZ
-            if (lx in 0..31 && lz in 0..31 && chunkGridView.isChunkPopulated(lx, lz)) {
-                confirmDeleteChunk(region, lx, lz, chunkGridView, listAdapter, tvSubtitle, ::updateSelectedDetails)
+            val selected = chunkGridView.selectedChunks
+            if (selected.isNotEmpty()) {
+                confirmBatchDeleteChunks(region, selected, chunkGridView, tvSubtitle, ::updateSelectedDetails)
+            } else {
+                val lx = chunkGridView.selectedX
+                val lz = chunkGridView.selectedZ
+                if (lx in 0..31 && lz in 0..31 && chunkGridView.isChunkPopulated(lx, lz)) {
+                    confirmDeleteChunk(region, lx, lz, chunkGridView, tvSubtitle, ::updateSelectedDetails)
+                }
             }
         }
 
         btnPrune?.setOnClickListener {
-            showPruneUselessChunksDialog(region, chunkGridView, listAdapter, tvSubtitle, ::updateSelectedDetails)
+            showPruneUselessChunksDialog(region, chunkGridView, tvSubtitle, ::updateSelectedDetails)
         }
 
         if (chunkGridView.selectedX in 0..31 && chunkGridView.selectedZ in 0..31) {
@@ -789,12 +787,49 @@ class NbtEditorActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun confirmBatchDeleteChunks(
+        region: AnvilRegionFile,
+        chunksToDelete: Set<Pair<Int, Int>>,
+        chunkGridView: ChunkGridView,
+        tvSubtitle: TextView,
+        onDetailsUpdated: (Int, Int, Boolean) -> Unit
+    ) {
+        val count = chunksToDelete.size
+        val confirmDialog = MaterialAlertDialogBuilder(this)
+            .setTitle("批量删除区块")
+            .setMessage("确定要物理删除选中的 $count 个区块吗？\n删除后不可恢复。")
+            .setPositiveButton(R.string.ok) { _, _ ->
+                try {
+                    region.deleteChunks(chunksToDelete)
+                    syncRegionFileToStorage()
+
+                    chunkGridView.clearSelection()
+                    chunkGridView.setChunkData(region.getChunkTable())
+
+                    val popCount = region.getPopulatedChunks().size
+                    val pct = (popCount.toFloat() / 1024f) * 100f
+                    tvSubtitle.text = getString(R.string.nbt_region_stats, popCount, pct)
+                    val first = region.getPopulatedChunks().firstOrNull()
+                    if (first != null) {
+                        onDetailsUpdated(first.localX, first.localZ, true)
+                    }
+
+                    Toast.makeText(this, "成功删除 $count 个区块", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this, "批量删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .create()
+        BackgroundUtils.applyDialogTheme(confirmDialog, this)
+        confirmDialog.show()
+    }
+
     private fun confirmDeleteChunk(
         region: AnvilRegionFile,
         localX: Int,
         localZ: Int,
         chunkGridView: ChunkGridView,
-        listAdapter: ChunkListAdapter,
         tvSubtitle: TextView,
         onDetailsUpdated: (Int, Int, Boolean) -> Unit
     ) {
@@ -812,7 +847,6 @@ class NbtEditorActivity : AppCompatActivity() {
                     syncRegionFileToStorage()
 
                     chunkGridView.setChunkPopulated(localX, localZ, false)
-                    listAdapter.removeChunk(localX, localZ)
 
                     val popCount = region.getPopulatedChunks().size
                     val pct = (popCount.toFloat() / 1024f) * 100f
@@ -833,7 +867,6 @@ class NbtEditorActivity : AppCompatActivity() {
     private fun showPruneUselessChunksDialog(
         region: AnvilRegionFile,
         chunkGridView: ChunkGridView,
-        listAdapter: ChunkListAdapter,
         tvSubtitle: TextView,
         onDetailsUpdated: (Int, Int, Boolean) -> Unit
     ) {
@@ -896,7 +929,6 @@ class NbtEditorActivity : AppCompatActivity() {
                                 withContext(Dispatchers.Main) {
                                     hideLoadingDialog()
                                     chunkGridView.refreshWithData(newTable)
-                                    listAdapter.setData(newTable)
 
                                     val pop = newTable.count { it.exists }
                                     val pct = (pop.toFloat() / 1024f) * 100f
@@ -1383,31 +1415,37 @@ class NbtEditorActivity : AppCompatActivity() {
         val distinctChunks = chunkRecords.map { Pair(it.chunkX!!, it.chunkZ!!) }.distinct()
 
         val options = arrayOf(
+            "🗺️ 打开 2D 可视化地图选区删除 (推荐)",
             "清理核心区之外全部区块 (保留 ±16 区块 / 256m)",
             "清理中等区域之外区块 (保留 ±32 区块 / 512m)",
             "清理大型区域之外区块 (保留 ±64 区块 / 1024m)",
             "清空当前数据库中全部区块数据 (共 ${distinctChunks.size} 个区块)"
         )
-        var selected = 1
+        var selected = 0
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setTitle("LevelDB 区块裁剪与瘦身")
             .setMessage("数据库中已识别 ${distinctChunks.size} 个独立区块（共 ${chunkRecords.size} 条记录）。\n请选择要执行的区块清理策略：")
-            .setSingleChoiceItems(options, 1) { _, which ->
+            .setSingleChoiceItems(options, 0) { _, which ->
                 selected = which
             }
-            .setPositiveButton("开始清理") { _, _ ->
+            .setPositiveButton(R.string.ok) { _, _ ->
+                if (selected == 0) {
+                    showBedrockChunkMapPickerDialog()
+                    return@setPositiveButton
+                }
+
                 val (minCoord, maxCoord) = when (selected) {
-                    0 -> Pair(-16, 16)
-                    1 -> Pair(-32, 32)
-                    2 -> Pair(-64, 64)
+                    1 -> Pair(-16, 16)
+                    2 -> Pair(-32, 32)
+                    3 -> Pair(-64, 64)
                     else -> Pair(0, -1)
                 }
 
                 showLoadingDialog("正在清理 LevelDB 区块...")
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        val deletedCount = if (selected == 3) {
+                        val deletedCount = if (selected == 4) {
                             helper.deleteChunks(distinctChunks)
                         } else {
                             helper.deleteChunksOutsideRange(minCoord, maxCoord, minCoord, maxCoord)
@@ -1430,6 +1468,163 @@ class NbtEditorActivity : AppCompatActivity() {
             .create()
 
         BackgroundUtils.applyDialogTheme(dialog, this)
+        dialog.show()
+    }
+
+    private fun showBedrockChunkMapPickerDialog() {
+        val helper = currentLevelDbHelper ?: return
+        val dialogView = layoutInflater.inflate(R.layout.dialog_chunk_picker, null)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogView)
+            .create()
+        BackgroundUtils.applyDialogTheme(dialog, this, dialogView)
+
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tv_region_title)
+        val tvSubtitle = dialogView.findViewById<TextView>(R.id.tv_region_subtitle)
+        val toggleTool = dialogView.findViewById<MaterialButtonToggleGroup>(R.id.toggle_select_tool)
+        val scrollDims = dialogView.findViewById<View>(R.id.scroll_dimension_tabs)
+        val chipGroupDims = dialogView.findViewById<com.google.android.material.chip.ChipGroup>(R.id.chip_group_dimensions)
+        val chunkGridView = dialogView.findViewById<ChunkGridView>(R.id.chunk_grid_view)
+        val tvSelectedChunkCoord = dialogView.findViewById<TextView>(R.id.tv_selected_chunk_coord)
+        val tvSelectedChunkStatus = dialogView.findViewById<TextView>(R.id.tv_selected_chunk_status)
+        val tvSelectedBlockRange = dialogView.findViewById<TextView>(R.id.tv_selected_block_range)
+        val btnActionSelectAll = dialogView.findViewById<View>(R.id.btn_action_select_all)
+        val btnActionInvert = dialogView.findViewById<View>(R.id.btn_action_invert)
+        val btnActionClear = dialogView.findViewById<View>(R.id.btn_action_clear)
+        val btnPruneUseless = dialogView.findViewById<View>(R.id.btn_prune_useless_chunks)
+        val btnCancel = dialogView.findViewById<View>(R.id.btn_cancel_chunk_picker)
+        val btnConfirm = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_confirm_select_chunk)
+        val btnDeleteChunk = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_delete_chunk_dialog)
+
+        tvTitle.text = "LevelDB 2D 区块地图"
+        scrollDims.visibility = View.VISIBLE
+        btnPruneUseless?.visibility = View.GONE
+        btnConfirm?.visibility = View.GONE
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+
+        toggleTool?.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                chunkGridView.selectMode = if (checkedId == R.id.btn_tool_box) {
+                    ChunkGridView.SelectMode.BOX
+                } else {
+                    ChunkGridView.SelectMode.TAP
+                }
+            }
+        }
+
+        btnActionSelectAll?.setOnClickListener { chunkGridView.selectAllPopulated() }
+        btnActionInvert?.setOnClickListener { chunkGridView.invertSelection() }
+        btnActionClear?.setOnClickListener { chunkGridView.clearSelection() }
+
+        fun updateSelectedInfo(cx: Int, cz: Int, exists: Boolean) {
+            val bx = cx * 16
+            val bz = cz * 16
+            tvSelectedChunkCoord.text = "区块: [$cx, $cz]"
+            tvSelectedBlockRange.text = "方块范围: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
+            val count = chunkGridView.selectedChunks.size
+            if (count > 0) {
+                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
+                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.isEnabled = true
+                btnDeleteChunk.alpha = 1.0f
+                btnDeleteChunk.visibility = View.VISIBLE
+            } else {
+                tvSelectedChunkStatus.text = if (exists) "状态: 已生成" else "状态: 未生成"
+                tvSelectedChunkStatus.setTextColor(
+                    if (exists) ContextCompat.getColor(this, R.color.md_theme_primary)
+                    else ContextCompat.getColor(this, R.color.md_theme_outline)
+                )
+                btnDeleteChunk.text = "删除此区块"
+                btnDeleteChunk.isEnabled = exists
+                btnDeleteChunk.alpha = if (exists) 1.0f else 0.4f
+                btnDeleteChunk.visibility = View.VISIBLE
+            }
+        }
+
+        chunkGridView.onChunkSelectedListener = { cx, cz, exists ->
+            updateSelectedInfo(cx, cz, exists)
+        }
+
+        chunkGridView.onSelectionChangedListener = { count, _ ->
+            if (count > 0) {
+                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
+                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.visibility = View.VISIBLE
+            } else {
+                val exists = chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)
+                updateSelectedInfo(chunkGridView.selectedX, chunkGridView.selectedZ, exists)
+            }
+        }
+
+        var currentDim = 0
+        fun loadDimension(dimId: Int) {
+            currentDim = dimId
+            showLoadingDialog("正在加载维度区块...")
+            lifecycleScope.launch(Dispatchers.IO) {
+                val populated = helper.getPopulatedChunkCoordinates(dimId)
+                val blockEntities = helper.getBlockEntityChunkCoordinates(dimId)
+                withContext(Dispatchers.Main) {
+                    hideLoadingDialog()
+                    tvSubtitle.text = "当前维度已生成 ${populated.size} 个区块"
+                    chunkGridView.clearSelection()
+                    chunkGridView.setWorldChunkData(
+                        populated,
+                        blockEntityCoords = blockEntities
+                    )
+                }
+            }
+        }
+
+        chipGroupDims?.setOnCheckedStateChangeListener { _, checkedIds ->
+            if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
+            when (checkedIds.first()) {
+                R.id.chip_dim_overworld -> loadDimension(0)
+                R.id.chip_dim_nether -> loadDimension(1)
+                R.id.chip_dim_end -> loadDimension(2)
+            }
+        }
+
+        loadDimension(0)
+
+        btnDeleteChunk.setOnClickListener {
+            val targets = if (chunkGridView.selectedChunks.isNotEmpty()) {
+                chunkGridView.selectedChunks.toSet()
+            } else if (chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)) {
+                setOf(Pair(chunkGridView.selectedX, chunkGridView.selectedZ))
+            } else emptySet()
+
+            if (targets.isEmpty()) return@setOnClickListener
+
+            MaterialAlertDialogBuilder(this)
+                .setTitle("确认删除 LevelDB 区块")
+                .setMessage("确定要物理删除当前维度的 ${targets.size} 个区块数据吗？\n删除后不可恢复。")
+                .setPositiveButton("立即删除") { _, _ ->
+                    showLoadingDialog("正在物理删除 LevelDB 区块...")
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            val deleted = helper.deleteChunks(targets, currentDim)
+                            syncLevelDbToStorage()
+                            withContext(Dispatchers.Main) {
+                                hideLoadingDialog()
+                                reloadLevelDbCacheAsync()
+                                Toast.makeText(this@NbtEditorActivity, "已成功删除 ${targets.size} 个区块 ($deleted 条记录)！", Toast.LENGTH_SHORT).show()
+                                loadDimension(currentDim)
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                hideLoadingDialog()
+                                Toast.makeText(this@NbtEditorActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+
         dialog.show()
     }
 
