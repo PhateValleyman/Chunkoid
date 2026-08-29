@@ -51,7 +51,7 @@ class OutputManagerFragment : Fragment() {
     }
 
     private val createDocumentLauncher = registerForActivityResult(
-        ActivityResultContracts.CreateDocument("application/octet-stream")
+        ActivityResultContracts.CreateDocument("*/*")
     ) { uri ->
         uri?.let { destinationUri ->
             pendingExportWorld?.let { world ->

@@ -105,7 +105,7 @@ class NbtEditorActivity : AppCompatActivity() {
     }
 
     private val saveAsLauncher = registerForActivityResult(
-        ActivityResultContracts.CreateDocument("application/octet-stream")
+        ActivityResultContracts.CreateDocument("*/*")
     ) { uri ->
         uri?.let { saveToUri(it) }
     }
