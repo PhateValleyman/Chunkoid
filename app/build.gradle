@@ -4,6 +4,22 @@ plugins {
     id 'kotlin-parcelize'
 }
 
+def levelDbJar = file('libs/leveldb-1.1.0.jar')
+def filteredLevelDbJar = tasks.register('filterLevelDbJar', Zip) {
+	group = 'build'
+	description = 'Exclude the ZLib class already provided by the app source.'
+	archiveFileName.set('leveldb-1.1.0-filtered.jar')
+	destinationDirectory.set(layout.buildDirectory.dir('generated/leveldb'))
+	from(zipTree(levelDbJar)) {
+		exclude 'org/iq80/leveldb/util/ZLib.class'
+	}
+	doFirst {
+		if (!levelDbJar.isFile()) {
+			throw new GradleException("Required local LevelDB dependency is missing: ${levelDbJar}")
+		}
+	}
+}
+
 android {
     namespace 'com.encore.chunkoid'
     compileSdk 34
@@ -70,7 +86,7 @@ dependencies {
     implementation project(':nbt')
 
     implementation 'com.hivemc.leveldb:leveldb-api:1.1.0'
-    implementation files('libs/leveldb-1.1.0.jar')
+	implementation files(filteredLevelDbJar.flatMap { it.archiveFile })
 
     implementation 'com.google.guava:guava:33.3.1-android'
 }
