@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="选择启动项"
+            android:text="Vyberte položku ke spuštění"
             android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="选择已安装的 Minecraft 游戏或启动器"
+            android:text="Vyberte nainstalovanou hru Minecraft nebo spouštěč"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp" />
 

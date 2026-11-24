@@ -207,7 +207,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="52dp"
                             android:layout_marginTop="14dp"
-                            android:text="开始转换"
+                            android:text="Spustit převod"
                             app:icon="@drawable/ic_bolt"
                             app:iconGravity="textStart"
                             app:iconPadding="8dp"

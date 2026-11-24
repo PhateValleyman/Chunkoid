@@ -254,7 +254,7 @@ class OutputManagerFragment : Fragment() {
         try {
             val sourceDir = File(world.directoryPath)
             if (!sourceDir.exists() || !sourceDir.isDirectory) {
-                ToastUtils.show(requireContext(), "源文件夹不存在", isError = true)
+                ToastUtils.show(requireContext(), "Zdrojová složka neexistuje", isError = true)
                 return
             }
 
@@ -266,13 +266,13 @@ class OutputManagerFragment : Fragment() {
 
             val targetRoot = DocumentFile.fromTreeUri(requireContext(), treeUri)
                 ?: run {
-                    ToastUtils.show(requireContext(), "无法访问目标目录", isError = true)
+                    ToastUtils.show(requireContext(), "K cílové složce nelze získat přístup", isError = true)
                     return
                 }
 
             val targetWorldDir = targetRoot.createDirectory(world.name)
                 ?: run {
-                    ToastUtils.show(requireContext(), "无法创建目标文件夹", isError = true)
+                    ToastUtils.show(requireContext(), "Cílovou složku nelze vytvořit", isError = true)
                     return
                 }
 
@@ -307,7 +307,7 @@ class OutputManagerFragment : Fragment() {
         try {
             val logFile = File(world.directoryPath, "converse_log.txt")
             if (!logFile.exists() || !logFile.isFile) {
-                ToastUtils.show(requireContext(), "转换日志不存在", isError = true)
+                ToastUtils.show(requireContext(), "Protokol převodu neexistuje", isError = true)
                 return
             }
 
@@ -326,10 +326,10 @@ class OutputManagerFragment : Fragment() {
             if (intent.resolveActivity(requireContext().packageManager) != null) {
                 startActivity(intent)
             } else {
-                ToastUtils.show(requireContext(), "未找到可打开文本文件的应用", isError = true)
+                ToastUtils.show(requireContext(), "Nenašla se aplikace pro otevření textového souboru", isError = true)
             }
         } catch (e: Exception) {
-            ToastUtils.show(requireContext(), "打开日志失败: ${e.message}", isError = true)
+            ToastUtils.show(requireContext(), "Otevření protokolu se nezdařilo: ${e.message}", isError = true)
         }
     }
 
@@ -346,7 +346,7 @@ class OutputManagerFragment : Fragment() {
                 ToastUtils.show(requireContext(), getString(R.string.delete_world) + ": " + world.name)
             }
         } catch (e: Exception) {
-            ToastUtils.show(requireContext(), "Delete failed: ${e.message}", isError = true)
+            ToastUtils.show(requireContext(), "Odstranění se nezdařilo: ${e.message}", isError = true)
         }
     }
 
@@ -354,11 +354,11 @@ class OutputManagerFragment : Fragment() {
         data class GameInfo(val iconRes: Int, val packageName: String, val displayName: String, val subtitle: String)
 
         val games = listOf(
-            GameInfo(R.drawable.ne, "com.netease.x19", "基岩版：网易", "网易 Minecraft 客户端"),
-            GameInfo(R.drawable.be, "com.mojang.minecraftpe", "基岩版：国际版", "Mojang Minecraft PE"),
-            GameInfo(R.drawable.pojav, "net.kdt.pojavlaunch", "Java版：Pojav", "PojavLauncher 启动器"),
-            GameInfo(R.drawable.fcl, "com.tungsten.fcl", "Java版：Fcl", "Fold Craft Launcher 启动器"),
-            GameInfo(R.drawable.zl2, "com.movtery.zalithlauncher.v2", "Java版：ZL2", "Zalith Launcher 启动器")
+            GameInfo(R.drawable.ne, "com.netease.x19", "Bedrock Edition: NetEase", "Klient Minecraft NetEase"),
+            GameInfo(R.drawable.be, "com.mojang.minecraftpe", "Bedrock Edition: mezinárodní verze", "Mojang Minecraft PE"),
+            GameInfo(R.drawable.pojav, "net.kdt.pojavlaunch", "Java Edition: Pojav", "Spouštěč PojavLauncher"),
+            GameInfo(R.drawable.fcl, "com.tungsten.fcl", "Java Edition: Fcl", "Spouštěč Fold Craft Launcher"),
+            GameInfo(R.drawable.zl2, "com.movtery.zalithlauncher.v2", "Java Edition: ZL2", "Spouštěč Zalith Launcher")
         )
 
         val bottomSheetDialog = com.google.android.material.bottomsheet.BottomSheetDialog(requireContext())
@@ -381,10 +381,10 @@ class OutputManagerFragment : Fragment() {
 
             val isInstalled = pm.getLaunchIntentForPackage(game.packageName) != null
             if (isInstalled) {
-                tvStatus.text = "已安装"
+                tvStatus.text = "Nainstalováno"
                 tvStatus.setTextColor(primaryColor)
             } else {
-                tvStatus.text = "未安装"
+                tvStatus.text = "Nenainstalováno"
                 tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_outline))
             }
 

@@ -111,7 +111,7 @@ class LevelDbRecordAdapter(
         } else {
             "0x" + record.keyToHex()
         }
-        holder.tvSubtitle.text = "大小: $sizeStr | Key: $keyDisplay"
+        holder.tvSubtitle.text = "Velikost: $sizeStr | Klíč: $keyDisplay"
 
         holder.chipNbt.visibility = if (record.isNbt) View.VISIBLE else View.GONE
         holder.chipCategory.text = record.category.title

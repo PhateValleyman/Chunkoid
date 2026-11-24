@@ -107,23 +107,23 @@ class ChunkListAdapter(
         val bz = if (regionZ != null) chunk.getBlockStartZ(rz) else chunk.localZ * 16
 
         holder.tvChunkCoord.text = if (regionX != null && regionZ != null) {
-            "全局区块: [$gx, $gz] (局部: [${chunk.localX}, ${chunk.localZ}])"
+            "Globální chunk: [$gx, $gz] (místní: [${chunk.localX}, ${chunk.localZ}])"
         } else {
-            "区块: [${chunk.localX}, ${chunk.localZ}]"
+            "Chunk: [${chunk.localX}, ${chunk.localZ}]"
         }
 
-        holder.tvBlockCoord.text = "方块范围: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
+        holder.tvBlockCoord.text = "Rozsah bloků: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
 
         if (chunk.timestamp > 0) {
             val dateStr = dateFormat.format(Date(chunk.timestamp.toLong() * 1000L))
-            holder.tvChunkTimestamp.text = "最后修改: $dateStr"
+            holder.tvChunkTimestamp.text = "Naposledy změněno: $dateStr"
             holder.tvChunkTimestamp.visibility = View.VISIBLE
         } else {
             holder.tvChunkTimestamp.visibility = View.GONE
         }
 
         if (chunk.exists) {
-            holder.chipStatus.text = "已生成 (${chunk.sectorCount} 扇区)"
+            holder.chipStatus.text = "Vygenerováno (${chunk.sectorCount} sektorů)"
             holder.chipStatus.setChipBackgroundColorResource(R.color.card_subtle_bg)
             holder.chipStatus.setTextColor(ContextCompat.getColor(context, R.color.md_theme_primary))
             holder.btnDelete.visibility = View.VISIBLE
@@ -131,7 +131,7 @@ class ChunkListAdapter(
                 onChunkDeleteClicked?.invoke(chunk)
             }
         } else {
-            holder.chipStatus.text = "未生成"
+            holder.chipStatus.text = "Nevygenerováno"
             holder.chipStatus.setTextColor(ContextCompat.getColor(context, R.color.md_theme_outline))
             holder.btnDelete.visibility = View.GONE
         }

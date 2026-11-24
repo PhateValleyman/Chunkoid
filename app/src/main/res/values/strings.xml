@@ -452,4 +452,21 @@
     <string name="world_analyzer_select_btn">Select World to Scan &amp; Slim</string>
     <string name="world_analyzer_scanning">Deep scanning world archive...</string>
     <string name="world_analyzer_ready_btn">⚡ Run One-Click World Slimming</string>
+    <string name="about_logo_desc">App logo</string>
+    <string name="about_author_desc">Author</string>
+    <string name="about_developer_maintainer">Developer &amp; maintainer: DICECAN</string>
+    <string name="about_original_author">Original author: Dozener</string>
+    <string name="dimension_settings_title">Dimension trimming and mapping</string>
+    <string name="update_checking">Checking for updates...</string>
+    <string name="update_no_release_title">No release available</string>
+    <string name="update_no_release_message">The fork does not have a stable APK release yet.</string>
+    <string name="update_available_title">Release available</string>
+    <string name="update_available_message">Release %1$s is available in the fork. Installed version: %2$s.\n\nWould you like to download this APK?</string>
+    <string name="update_notes_label">Release notes</string>
+    <string name="update_download_button">Download APK</string>
+    <string name="update_download_description">Downloading a Chunkoid release APK</string>
+    <string name="update_download_started">Download started. When it finishes, tap the notification and confirm installation in Android. Chunkoid will never install an update automatically.</string>
+    <string name="update_error_title">Update check failed</string>
+    <string name="update_error_message">Could not check for updates or start the download: %1$s</string>
+    <string name="update_error_unknown">Unknown error</string>
 </resources>

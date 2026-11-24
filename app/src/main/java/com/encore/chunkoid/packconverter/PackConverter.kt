@@ -26,7 +26,7 @@ class PackConverter(private val context: Context) {
         listener: ConvertListener
     ): String? = withContext(Dispatchers.IO) {
         try {
-            listener.onLog("开始扫描材质包目录结构...")
+            listener.onLog("Prohledávám strukturu složky balíčku...")
 
             if (targetDir.exists()) {
                 targetDir.deleteRecursively()
@@ -36,10 +36,10 @@ class PackConverter(private val context: Context) {
             val allFiles = mutableListOf<Pair<String, DocumentFile>>()
             collectFiles(sourceDoc, "", allFiles)
 
-            listener.onLog("发现 ${allFiles.size} 个文件")
+            listener.onLog("Nalezeno ${allFiles.size} souborů")
 
             if (allFiles.isEmpty()) {
-                listener.onError("未找到任何文件，请确保选择正确的材质包文件夹")
+                listener.onError("Nebyly nalezeny žádné soubory. Zkontrolujte, zda jste vybrali správnou složku balíčku.")
                 return@withContext null
             }
 
@@ -73,7 +73,7 @@ class PackConverter(private val context: Context) {
                                 convertSplashesTxtToJson(file, targetFile, listener)
                             }
                             relativePath.endsWith(".png.mcmeta") -> {
-                                listener.onLog("跳过动画元数据: $relativePath")
+                                listener.onLog("Přeskakuji metadata animace: $relativePath")
                                 continue
                             }
                             relativePath.startsWith("assets/minecraft/textures/block/") -> {
@@ -119,7 +119,7 @@ class PackConverter(private val context: Context) {
                                         }
                                     }
                                 } catch (e: Exception) {
-                                    listener.onLog("解析 pack.mcmeta 失败: ${e.message}")
+                                    listener.onLog("Soubor pack.mcmeta se nepodařilo zpracovat: ${e.message}")
                                 }
                                 generateBedrockManifest(targetDir, packName, packDescription, headerUuid, moduleUuid, listener)
                             }
@@ -128,7 +128,7 @@ class PackConverter(private val context: Context) {
                                 copyFile(file, targetFile)
                             }
                             else -> {
-                                listener.onLog("跳过未映射文件: $relativePath")
+                                listener.onLog("Přeskakuji soubor bez mapování: $relativePath")
                             }
                         }
                     } else {
@@ -151,7 +151,7 @@ class PackConverter(private val context: Context) {
                                         }
                                     }
                                 } catch (e: Exception) {
-                                    listener.onLog("解析 manifest.json 失败: ${e.message}")
+                                    listener.onLog("Soubor manifest.json se nepodařilo zpracovat: ${e.message}")
                                 }
                                 generateJavaMcmeta(targetDir, packDescription, listener)
                             }
@@ -160,7 +160,7 @@ class PackConverter(private val context: Context) {
                                 copyFile(file, targetFile)
                             }
                             else -> {
-                                listener.onLog("跳过未映射文件: $relativePath")
+                                listener.onLog("Přeskakuji soubor bez mapování: $relativePath")
                             }
                         }
                     }
@@ -188,7 +188,7 @@ class PackConverter(private val context: Context) {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            listener.onError("转换发生未知异常: ${e.message}")
+            listener.onError("Při převodu došlo k neznámé chybě: ${e.message}")
             null
         }
     }
@@ -228,9 +228,9 @@ class PackConverter(private val context: Context) {
                 langBuilder.append("$key=$value\n")
             }
             target.writeText(langBuilder.toString())
-            listener.onLog("转换语言文件: ${source.name} -> ${target.name}")
+            listener.onLog("Převádím jazykový soubor: ${source.name} -> ${target.name}")
         } catch (e: Exception) {
-            listener.onLog("转换语言文件失败: ${source.name}, ${e.message}")
+            listener.onLog("Jazykový soubor se nepodařilo převést: ${source.name}, ${e.message}")
             copyFile(source, target)
         }
     }
@@ -248,9 +248,9 @@ class PackConverter(private val context: Context) {
                 }
             }
             target.writeText(json.toString(2))
-            listener.onLog("转换语言文件: ${source.name} -> ${target.name}")
+            listener.onLog("Převádím jazykový soubor: ${source.name} -> ${target.name}")
         } catch (e: Exception) {
-            listener.onLog("转换语言文件失败: ${source.name}, ${e.message}")
+            listener.onLog("Jazykový soubor se nepodařilo převést: ${source.name}, ${e.message}")
             copyFile(source, target)
         }
     }
@@ -286,9 +286,9 @@ class PackConverter(private val context: Context) {
             }
 
             target.writeText(result.toString(2))
-            listener.onLog("转换音效定义: ${target.name}")
+            listener.onLog("Převádím definice zvuků: ${target.name}")
         } catch (e: Exception) {
-            listener.onLog("转换音效定义失败: ${e.message}")
+            listener.onLog("Definice zvuků se nepodařilo převést: ${e.message}")
             copyFile(source, target)
         }
     }
@@ -319,9 +319,9 @@ class PackConverter(private val context: Context) {
             }
 
             target.writeText(result.toString(2))
-            listener.onLog("转换音效定义: ${target.name}")
+            listener.onLog("Převádím definice zvuků: ${target.name}")
         } catch (e: Exception) {
-            listener.onLog("转换音效定义失败: ${e.message}")
+            listener.onLog("Definice zvuků se nepodařilo převést: ${e.message}")
             copyFile(source, target)
         }
     }
@@ -333,9 +333,9 @@ class PackConverter(private val context: Context) {
             val json = JSONObject()
             json.put("splashes", JSONArray(lines))
             target.writeText(json.toString(2))
-            listener.onLog("转换彩蛋文本: ${target.name}")
+            listener.onLog("Převádím úvodní hlášky: ${target.name}")
         } catch (e: Exception) {
-            listener.onLog("转换彩蛋文本失败: ${e.message}")
+            listener.onLog("Úvodní hlášky se nepodařilo převést: ${e.message}")
             copyFile(source, target)
         }
     }
@@ -362,9 +362,9 @@ class PackConverter(private val context: Context) {
             }
 
             File(targetDir, "manifest.json").writeText(manifest.toString(2))
-            listener.onLog("生成 Bedrock manifest.json")
+            listener.onLog("Vytvářím manifest.json pro Bedrock Edition")
         } catch (e: Exception) {
-            listener.onLog("生成 manifest.json 失败: ${e.message}")
+            listener.onLog("Soubor manifest.json se nepodařilo vytvořit: ${e.message}")
         }
     }
 
@@ -378,9 +378,9 @@ class PackConverter(private val context: Context) {
             }
 
             File(targetDir, "pack.mcmeta").writeText(mcmeta.toString(2))
-            listener.onLog("生成 Java pack.mcmeta")
+            listener.onLog("Vytvářím pack.mcmeta pro Java Edition")
         } catch (e: Exception) {
-            listener.onLog("生成 pack.mcmeta 失败: ${e.message}")
+            listener.onLog("Soubor pack.mcmeta se nepodařilo vytvořit: ${e.message}")
         }
     }
 
@@ -400,9 +400,9 @@ class PackConverter(private val context: Context) {
             }
 
             File(targetDir, "textures/terrain_texture.json").writeText(terrainTexture.toString(2))
-            listener.onLog("生成 terrain_texture.json (${textures.size} 个方块纹理)")
+            listener.onLog("Vytvářím terrain_texture.json (${textures.size} textur bloků)")
         } catch (e: Exception) {
-            listener.onLog("生成 terrain_texture.json 失败: ${e.message}")
+            listener.onLog("Soubor terrain_texture.json se nepodařilo vytvořit: ${e.message}")
         }
     }
 
@@ -425,9 +425,9 @@ class PackConverter(private val context: Context) {
             }
 
             File(targetDir, "blocks.json").writeText(blocks.toString(2))
-            listener.onLog("生成 blocks.json (${textures.size} 个方块)")
+            listener.onLog("Vytvářím blocks.json (${textures.size} bloků)")
         } catch (e: Exception) {
-            listener.onLog("生成 blocks.json 失败: ${e.message}")
+            listener.onLog("Soubor blocks.json se nepodařilo vytvořit: ${e.message}")
         }
     }
 
@@ -447,9 +447,9 @@ class PackConverter(private val context: Context) {
             }
 
             File(targetDir, "textures/item_texture.json").writeText(itemTexture.toString(2))
-            listener.onLog("生成 item_texture.json (${textures.size} 个物品纹理)")
+            listener.onLog("Vytvářím item_texture.json (${textures.size} textur předmětů)")
         } catch (e: Exception) {
-            listener.onLog("生成 item_texture.json 失败: ${e.message}")
+            listener.onLog("Soubor item_texture.json se nepodařilo vytvořit: ${e.message}")
         }
     }
 
@@ -457,9 +457,9 @@ class PackConverter(private val context: Context) {
         try {
             val json = JSONArray(textures.toList())
             File(targetDir, "textures/textures_list.json").writeText(json.toString(2))
-            listener.onLog("生成 textures_list.json (${textures.size} 个纹理)")
+            listener.onLog("Vytvářím textures_list.json (${textures.size} textur)")
         } catch (e: Exception) {
-            listener.onLog("生成 textures_list.json 失败: ${e.message}")
+            listener.onLog("Soubor textures_list.json se nepodařilo vytvořit: ${e.message}")
         }
     }
 }

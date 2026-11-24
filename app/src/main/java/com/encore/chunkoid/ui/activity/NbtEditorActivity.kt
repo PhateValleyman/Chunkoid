@@ -234,7 +234,7 @@ class NbtEditorActivity : AppCompatActivity() {
     }
     private var loadingDialog: androidx.appcompat.app.AlertDialog? = null
 
-    private fun showLoadingDialog(message: String = "正在加载地图存档...") {
+    private fun showLoadingDialog(message: String = "Načítám svět...") {
         runOnUiThread {
             if (loadingDialog?.isShowing == true) return@runOnUiThread
             val progressBar = ProgressBar(this).apply {
@@ -276,7 +276,7 @@ class NbtEditorActivity : AppCompatActivity() {
         currentFilePath = null
         currentFileName = uri.lastPathSegment?.substringAfterLast('/') ?: "NBT File"
 
-        showLoadingDialog("正在读取文件...")
+        showLoadingDialog("Načítám soubor...")
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -329,7 +329,7 @@ class NbtEditorActivity : AppCompatActivity() {
         currentFilePath = file.absolutePath
         currentFileName = file.name
 
-        showLoadingDialog("正在加载存档...")
+        showLoadingDialog("Načítám svět...")
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -415,7 +415,7 @@ class NbtEditorActivity : AppCompatActivity() {
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
                 hideLoadingDialog()
-                Toast.makeText(this@NbtEditorActivity, "解析 LevelDB 失败: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@NbtEditorActivity, "Zpracování LevelDB se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -441,7 +441,7 @@ class NbtEditorActivity : AppCompatActivity() {
 
             showChunkPickerDialog()
         } catch (e: Exception) {
-            Toast.makeText(this, "解析区块错误: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Chyba při zpracování chunku: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -462,7 +462,7 @@ class NbtEditorActivity : AppCompatActivity() {
 
             showChunkPickerDialog()
         } catch (e: Exception) {
-            Toast.makeText(this, "解析区块错误: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Chyba při zpracování chunku: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -507,7 +507,7 @@ class NbtEditorActivity : AppCompatActivity() {
         }
 
         if (hasLevelDb) {
-            workspaceZipEntries["db/ (LevelDB 数据库)"] = byteArrayOf()
+            workspaceZipEntries["db/ (Databáze LevelDB)"] = byteArrayOf()
         }
 
         this.originalZipBytes = bytes
@@ -518,7 +518,7 @@ class NbtEditorActivity : AppCompatActivity() {
             this.currentLevelDbCachedFolder = cacheFolder
             this.currentLevelDbHelper?.close()
             this.currentLevelDbHelper = BedrockLevelDbHelper(cacheFolder)
-            this.selectedZipEntryName = "db/ (LevelDB 数据库)"
+            this.selectedZipEntryName = "db/ (Databáze LevelDB)"
             this.currentFileName = "db/"
         }
 
@@ -585,7 +585,7 @@ class NbtEditorActivity : AppCompatActivity() {
                 updateWorkspaceUi()
                 showLevelDbBrowserDialog()
             } catch (e: Exception) {
-                Toast.makeText(this, "解析区块错误: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Chyba při zpracování chunku: ${e.message}", Toast.LENGTH_LONG).show()
             }
             return
         }
@@ -609,7 +609,7 @@ class NbtEditorActivity : AppCompatActivity() {
                 updateWorkspaceUi()
                 showChunkPickerDialog()
             } catch (e: Exception) {
-                Toast.makeText(this, "未找到该区块数据", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Data tohoto chunku nebyla nalezena", Toast.LENGTH_SHORT).show()
             }
         } else {
             currentAnvilRegionFile?.close()
@@ -650,7 +650,7 @@ class NbtEditorActivity : AppCompatActivity() {
         val rx = region.regionX
         val rz = region.regionZ
         val displayName = currentFileName.ifEmpty { region.file.name }
-        tvTitle.text = if (rx != null && rz != null) "$displayName (区块 [$rx, $rz])" else displayName
+        tvTitle.text = if (rx != null && rz != null) "$displayName (chunk [$rx, $rz])" else displayName
 
         val chunkTable = region.getChunkTable()
         val populatedCount = chunkTable.count { it.exists }
@@ -680,18 +680,18 @@ class NbtEditorActivity : AppCompatActivity() {
             val bz = gz * 16
 
             tvSelectedChunkCoord.text = if (rx != null && rz != null) {
-                "全局区块: [$gx, $gz] (局部: [$lx, $lz])"
+                "Globální chunk: [$gx, $gz] (místní: [$lx, $lz])"
             } else {
-                "区块: [$lx, $lz]"
+                "Chunk: [$lx, $lz]"
             }
 
-            tvSelectedBlockRange.text = "方块范围: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
+            tvSelectedBlockRange.text = "Rozsah bloků: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
 
             val count = chunkGridView.selectedChunks.size
             if (count > 0) {
-                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.text = "Vybráno $count chunků"
                 tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
-                btnDeleteChunk?.text = "删除所选 ($count)"
+                btnDeleteChunk?.text = "Odstranit vybrané ($count)"
                 btnDeleteChunk?.visibility = View.VISIBLE
             } else {
                 if (exists) {
@@ -699,7 +699,7 @@ class NbtEditorActivity : AppCompatActivity() {
                     tvSelectedChunkStatus.text = getString(R.string.nbt_chunk_status_populated, info.sectorCount)
                     tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_primary))
                     btnConfirm.text = getString(R.string.nbt_edit_chunk)
-                    btnDeleteChunk?.text = "删除此区块"
+                    btnDeleteChunk?.text = "Odstranit tento chunk"
                     btnDeleteChunk?.visibility = View.VISIBLE
 
                     val inhabitedTime = region.readChunkInhabitedTime(lx, lz)
@@ -719,8 +719,8 @@ class NbtEditorActivity : AppCompatActivity() {
                 } else {
                     tvSelectedChunkStatus.text = getString(R.string.nbt_chunk_status_empty)
                     tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_outline))
-                    btnConfirm.text = "初始化并编辑"
-                    btnDeleteChunk?.text = "删除此区块"
+                    btnConfirm.text = "Inicializovat a upravit"
+                    btnDeleteChunk?.text = "Odstranit tento chunk"
                     btnDeleteChunk?.isEnabled = false
                     btnDeleteChunk?.alpha = 0.4f
                     btnDeleteChunk?.visibility = View.VISIBLE
@@ -735,9 +735,9 @@ class NbtEditorActivity : AppCompatActivity() {
 
         chunkGridView.onSelectionChangedListener = { count, _ ->
             if (count > 0) {
-                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.text = "Vybráno $count chunků"
                 tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
-                btnDeleteChunk?.text = "删除所选 ($count)"
+                btnDeleteChunk?.text = "Odstranit vybrané ($count)"
                 btnDeleteChunk?.visibility = View.VISIBLE
             } else {
                 val exists = chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)
@@ -796,8 +796,8 @@ class NbtEditorActivity : AppCompatActivity() {
     ) {
         val count = chunksToDelete.size
         val confirmDialog = MaterialAlertDialogBuilder(this)
-            .setTitle("批量删除区块")
-            .setMessage("确定要物理删除选中的 $count 个区块吗？\n删除后不可恢复。")
+            .setTitle("Hromadné odstranění chunků")
+            .setMessage("Opravdu chcete trvale odstranit vybraných $count chunků?\nTuto akci nelze vrátit zpět.")
             .setPositiveButton(R.string.ok) { _, _ ->
                 try {
                     region.deleteChunks(chunksToDelete)
@@ -814,9 +814,9 @@ class NbtEditorActivity : AppCompatActivity() {
                         onDetailsUpdated(first.localX, first.localZ, true)
                     }
 
-                    Toast.makeText(this, "成功删除 $count 个区块", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Úspěšně odstraněno $count chunků", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(this, "批量删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Hromadné odstranění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
             .setNegativeButton(R.string.cancel, null)
@@ -879,7 +879,7 @@ class NbtEditorActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 hideLoadingDialog()
                 if (totalPopulated.isEmpty()) {
-                    Toast.makeText(this@NbtEditorActivity, "当前区域文件中没有已生成的区块", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@NbtEditorActivity, "V aktuálním souboru oblasti nejsou žádné vygenerované chunky", Toast.LENGTH_SHORT).show()
                     return@withContext
                 }
 
@@ -889,9 +889,9 @@ class NbtEditorActivity : AppCompatActivity() {
                 val uselessPct = if (totalCount > 0) (uselessCount.toFloat() / totalCount.toFloat()) * 100f else 0f
 
                 val options = arrayOf(
-                    "${getString(R.string.nbt_prune_option_zero)} (共 $uselessCount 个)",
-                    "${getString(R.string.nbt_prune_option_low)} (共 $lowCount 个)",
-                    "${getString(R.string.nbt_prune_option_all)} (共 $totalCount 个)"
+                    "${getString(R.string.nbt_prune_option_zero)} (celkem $uselessCount)",
+                    "${getString(R.string.nbt_prune_option_low)} (celkem $lowCount)",
+                    "${getString(R.string.nbt_prune_option_all)} (celkem $totalCount)"
                 )
                 var selectedOption = 0
 
@@ -906,7 +906,7 @@ class NbtEditorActivity : AppCompatActivity() {
                     .setSingleChoiceItems(options, 0) { _, which ->
                         selectedOption = which
                     }
-                    .setPositiveButton("立即清理") { _, _ ->
+                    .setPositiveButton("Vyčistit nyní") { _, _ ->
                         val targetChunks = when (selectedOption) {
                             0 -> uselessList.map { Pair(it.first.localX, it.first.localZ) }
                             1 -> lowTimeList.map { Pair(it.first.localX, it.first.localZ) }
@@ -915,11 +915,11 @@ class NbtEditorActivity : AppCompatActivity() {
                         }
 
                         if (targetChunks.isEmpty()) {
-                            Toast.makeText(this@NbtEditorActivity, "没有需要清理的区块", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@NbtEditorActivity, "Nejsou zde žádné chunky k vyčištění", Toast.LENGTH_SHORT).show()
                             return@setPositiveButton
                         }
 
-                        showLoadingDialog("正在清理 ${targetChunks.size} 个区块...")
+                        showLoadingDialog("Čistím ${targetChunks.size} chunků...")
                         lifecycleScope.launch(Dispatchers.IO) {
                             try {
                                 region.deleteChunks(targetChunks)
@@ -945,7 +945,7 @@ class NbtEditorActivity : AppCompatActivity() {
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
                                     hideLoadingDialog()
-                                    Toast.makeText(this@NbtEditorActivity, "清理失败: ${e.message}", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this@NbtEditorActivity, "Čištění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -1000,22 +1000,22 @@ class NbtEditorActivity : AppCompatActivity() {
                 if (chunkNbt != null) {
                     loadChunkIntoEditor(localX, localZ, chunkNbt)
                 } else {
-                    Toast.makeText(this, "未找到该区块数据", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Data tohoto chunku nebyla nalezena", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this, "解析区块错误: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Chyba při zpracování chunku: ${e.message}", Toast.LENGTH_LONG).show()
             }
         } else {
             MaterialAlertDialogBuilder(this)
-                .setTitle("未生成区块")
+                .setTitle("Chunk není vygenerován")
                 .setMessage(R.string.nbt_chunk_empty_prompt)
-                .setPositiveButton("初始化空区块") { _, _ ->
+                .setPositiveButton("Inicializovat prázdný chunk") { _, _ ->
                     val root = NbtCompound()
                     root["DataVersion"] = NbtInt(3465)
                     val newChunk = NbtFile("", root)
                     loadChunkIntoEditor(localX, localZ, newChunk)
                 }
-                .setNegativeButton("取消", null)
+                .setNegativeButton("Zrušit", null)
                 .show()
         }
     }
@@ -1109,9 +1109,9 @@ class NbtEditorActivity : AppCompatActivity() {
             if (isLoadingRecords) {
 
             } else if (count == total) {
-                tvSub?.text = "$total 条记录"
+                tvSub?.text = "$total záznamů"
             } else {
-                tvSub?.text = "找到 $count 条 (共 $total 条)"
+                tvSub?.text = "Nalezeno $count záznamů (celkem $total záznamů)"
             }
         }
 
@@ -1130,14 +1130,14 @@ class NbtEditorActivity : AppCompatActivity() {
             isLoadingRecords = true
             progressIndicator?.isVisible = true
             progressIndicator?.isIndeterminate = true
-            tvSub?.text = "正在扫描 LevelDB 索引..."
+            tvSub?.text = "Prohledávám index LevelDB..."
 
             lifecycleScope.launch(Dispatchers.IO) {
                 val records = try {
                     helper.getAllRecords(onProgress = { count ->
                         lifecycleScope.launch(Dispatchers.Main) {
                             if (isLoadingRecords) {
-                                tvSub?.text = "正在读取 LevelDB 数据 (已扫描 $count 条)..."
+                                tvSub?.text = "Načítám data LevelDB (prohledáno $count záznamů)..."
                             }
                         }
                     })
@@ -1207,7 +1207,7 @@ class NbtEditorActivity : AppCompatActivity() {
         }
 
         val tvTitle = findViewById<TextView>(R.id.tv_workspace_title)
-        tvTitle?.text = if (activeWorkspaceName.isNotEmpty()) activeWorkspaceName else "LevelDB 工作区"
+        tvTitle?.text = if (activeWorkspaceName.isNotEmpty()) activeWorkspaceName else "Pracovní prostor LevelDB"
 
         val rvFiles = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_workspace_files)
         val entryList = getSortedWorkspaceEntryNames()
@@ -1220,14 +1220,14 @@ class NbtEditorActivity : AppCompatActivity() {
             tabLayout?.getTabAt(0)?.view?.isVisible = true
             tabLayout?.selectTab(tabLayout?.getTabAt(0))
             btnWorkspacePrune?.isVisible = true
-            btnWorkspacePrune?.text = "🧹 LevelDB 区块范围裁剪与瘦身"
+            btnWorkspacePrune?.text = "🧹 Ořez rozsahu chunků a zmenšení LevelDB"
         } else {
             tabLayout?.getTabAt(0)?.view?.isVisible = false
             tabLayout?.selectTab(tabLayout?.getTabAt(1))
-            findViewById<TextView>(R.id.tv_workspace_subtitle)?.text = "${entryList.size} 个文件"
+            findViewById<TextView>(R.id.tv_workspace_subtitle)?.text = "${entryList.size} souborů"
             val hasMca = entryList.any { it.endsWith(".mca", true) || it.endsWith(".mcr", true) } || (currentFilePath != null && File(currentFilePath!!).isDirectory)
             btnWorkspacePrune?.isVisible = hasMca
-            btnWorkspacePrune?.text = "🧹 全存档无用区块智能瘦身"
+            btnWorkspacePrune?.text = "🧹 Inteligentní zmenšení světa odstraněním neaktivních chunků"
         }
     }
 
@@ -1235,7 +1235,7 @@ class NbtEditorActivity : AppCompatActivity() {
         updateWorkspaceData()
         if (viewFlipper.displayedChild == 0) {
             binding.toolbar.title = if (activeWorkspaceName.isNotEmpty()) activeWorkspaceName else getString(R.string.nbt_editor_title)
-            binding.toolbar.subtitle = if (currentLevelDbHelper != null) "LevelDB 数据库" else null
+            binding.toolbar.subtitle = if (currentLevelDbHelper != null) "Databáze LevelDB" else null
         } else {
             if (currentLevelDbRecord != null) {
                 val sizeStr = formatBytes(currentLevelDbRecord!!.valueSize.toLong())
@@ -1257,10 +1257,10 @@ class NbtEditorActivity : AppCompatActivity() {
                 val bx = gx * 16
                 val bz = gz * 16
 
-                binding.toolbar.title = "区块: [$gx, $gz] (局部: [$currentChunkX, $currentChunkZ] | 方块: [$bx..${bx + 15}, $bz..${bz + 15}])"
+                binding.toolbar.title = "Chunk: [$gx, $gz] (místní: [$currentChunkX, $currentChunkZ] | bloky: [$bx..${bx + 15}, $bz..${bz + 15}])"
             } else if (activeWorkspaceName.isNotEmpty() && !selectedZipEntryName.isNullOrEmpty()) {
                 binding.toolbar.subtitle = activeWorkspaceName
-                binding.toolbar.title = "$selectedZipEntryName (${workspaceZipEntries.size} 个文件)"
+                binding.toolbar.title = "$selectedZipEntryName (${workspaceZipEntries.size} souborů)"
             }
         }
     }
@@ -1276,13 +1276,13 @@ class NbtEditorActivity : AppCompatActivity() {
         this.currentAnvilRegionFile = null
 
         if (record.isNbt) {
-            showLoadingDialog("正在读取并解析 NBT 数据...")
+            showLoadingDialog("Načítám a zpracovávám data NBT...")
             lifecycleScope.launch(Dispatchers.IO) {
                 val rawBytes = helper.get(record.key)
                 if (rawBytes == null) {
                     withContext(Dispatchers.Main) {
                         hideLoadingDialog()
-                        Toast.makeText(this@NbtEditorActivity, "未找到该记录数据", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@NbtEditorActivity, "Data tohoto záznamu nebyla nalezena", Toast.LENGTH_SHORT).show()
                     }
                     return@launch
                 }
@@ -1304,13 +1304,13 @@ class NbtEditorActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         hideLoadingDialog()
-                        Toast.makeText(this@NbtEditorActivity, "解析 NBT 失败: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@NbtEditorActivity, "Zpracování NBT se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
         } else {
             val rawBytes = helper.get(record.key) ?: run {
-                Toast.makeText(this, "未找到该记录数据", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Data tohoto záznamu nebyla nalezena", Toast.LENGTH_SHORT).show()
                 return
             }
             val textPreview = try {
@@ -1322,7 +1322,7 @@ class NbtEditorActivity : AppCompatActivity() {
 
             val builder = MaterialAlertDialogBuilder(this)
                 .setTitle(record.displayName)
-                .setMessage("类型: 原始二进制 / 数据流\n大小: ${rawBytes.size} 字节\n\n十六进制预览:\n$hexPreview" + (if (textPreview.isNotEmpty() && textPreview.all { it.isLetterOrDigit() || it in "_-~.: /" }) "\n\n文本内容: $textPreview" else ""))
+                .setMessage("Typ: surová binární data / datový proud\nVelikost: ${rawBytes.size} bajtů\n\nNáhled v šestnáctkové soustavě:\n$hexPreview" + (if (textPreview.isNotEmpty() && textPreview.all { it.isLetterOrDigit() || it in "_-~.: /" }) "\n\nTextový obsah: $textPreview" else ""))
                 .setPositiveButton(R.string.ok, null)
 
             if (record.chunkX != null && record.chunkZ != null) {
@@ -1330,7 +1330,7 @@ class NbtEditorActivity : AppCompatActivity() {
                     confirmDeleteLevelDbChunk(record.chunkX, record.chunkZ, record.dimensionId)
                 }
             } else {
-                builder.setNegativeButton("删除此记录") { _, _ ->
+                builder.setNegativeButton("Odstranit tento záznam") { _, _ ->
                     confirmDeleteLevelDbSingleKey(record)
                 }
             }
@@ -1345,7 +1345,7 @@ class NbtEditorActivity : AppCompatActivity() {
         val helper = currentLevelDbHelper ?: return
         val dialog = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nbt_delete_tag)
-            .setMessage("确定要从 LevelDB 数据库中删除「${record.displayName}」吗？")
+            .setMessage("Opravdu chcete z databáze LevelDB odstranit „${record.displayName}“?")
             .setPositiveButton(R.string.ok) { _, _ ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
@@ -1353,11 +1353,11 @@ class NbtEditorActivity : AppCompatActivity() {
                         syncLevelDbToStorage()
                         withContext(Dispatchers.Main) {
                             reloadLevelDbCacheAsync()
-                            Toast.makeText(this@NbtEditorActivity, "已删除记录: ${record.displayName}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@NbtEditorActivity, "Záznam byl odstraněn: ${record.displayName}", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@NbtEditorActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@NbtEditorActivity, "Odstranění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -1373,8 +1373,8 @@ class NbtEditorActivity : AppCompatActivity() {
         val allRecords = cachedLevelDbRecords.filter { it.chunkX == chunkX && it.chunkZ == chunkZ && (dimensionId == null || it.dimensionId == dimensionId) }
         val count = allRecords.size
         val dimName = when (dimensionId) {
-            1 -> " [下界]"
-            2 -> " [末地]"
+            1 -> " [Nether]"
+            2 -> " [End]"
             else -> ""
         }
 
@@ -1382,7 +1382,7 @@ class NbtEditorActivity : AppCompatActivity() {
             .setTitle(R.string.nbt_leveldb_delete_chunk)
             .setMessage(getString(R.string.nbt_leveldb_delete_chunk_confirm, chunkX, chunkZ, count) + dimName)
             .setPositiveButton(R.string.ok) { _, _ ->
-                showLoadingDialog("正在删除区块数据...")
+                showLoadingDialog("Odstraňuji data chunku...")
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         val deleted = helper.deleteChunk(chunkX, chunkZ, dimensionId)
@@ -1398,7 +1398,7 @@ class NbtEditorActivity : AppCompatActivity() {
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
                             hideLoadingDialog()
-                            Toast.makeText(this@NbtEditorActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@NbtEditorActivity, "Odstranění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -1415,17 +1415,17 @@ class NbtEditorActivity : AppCompatActivity() {
         val distinctChunks = chunkRecords.map { Pair(it.chunkX!!, it.chunkZ!!) }.distinct()
 
         val options = arrayOf(
-            "🗺️ 打开 2D 可视化地图选区删除 (推荐)",
-            "清理核心区之外全部区块 (保留 ±16 区块 / 256m)",
-            "清理中等区域之外区块 (保留 ±32 区块 / 512m)",
-            "清理大型区域之外区块 (保留 ±64 区块 / 1024m)",
-            "清空当前数据库中全部区块数据 (共 ${distinctChunks.size} 个区块)"
+            "🗺️ Otevřít 2D mapu a vybrat chunky k odstranění (doporučeno)",
+            "Odstranit všechny chunky mimo centrální oblast (ponechat ±16 chunků / 256 m)",
+            "Odstranit chunky mimo střední oblast (ponechat ±32 chunků / 512 m)",
+            "Odstranit chunky mimo velkou oblast (ponechat ±64 chunků / 1 024 m)",
+            "Odstranit všechna data chunků z aktuální databáze (celkem ${distinctChunks.size} chunků)"
         )
         var selected = 0
 
         val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle("LevelDB 区块裁剪与瘦身")
-            .setMessage("数据库中已识别 ${distinctChunks.size} 个独立区块（共 ${chunkRecords.size} 条记录）。\n请选择要执行的区块清理策略：")
+            .setTitle("Ořez chunků a zmenšení LevelDB")
+            .setMessage("V databázi bylo rozpoznáno ${distinctChunks.size} samostatných chunků (celkem ${chunkRecords.size} záznamů).\nVyberte strategii čištění chunků:")
             .setSingleChoiceItems(options, 0) { _, which ->
                 selected = which
             }
@@ -1442,7 +1442,7 @@ class NbtEditorActivity : AppCompatActivity() {
                     else -> Pair(0, -1)
                 }
 
-                showLoadingDialog("正在清理 LevelDB 区块...")
+                showLoadingDialog("Čistím chunky v LevelDB...")
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         val deletedCount = if (selected == 4) {
@@ -1454,12 +1454,12 @@ class NbtEditorActivity : AppCompatActivity() {
                         withContext(Dispatchers.Main) {
                             hideLoadingDialog()
                             reloadLevelDbCacheAsync()
-                            Toast.makeText(this@NbtEditorActivity, "已成功清理 $deletedCount 条区块数据！", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@NbtEditorActivity, "Úspěšně vyčištěno $deletedCount záznamů o chunkech!", Toast.LENGTH_LONG).show()
                         }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
                             hideLoadingDialog()
-                            Toast.makeText(this@NbtEditorActivity, "清理失败: ${e.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@NbtEditorActivity, "Čištění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -1496,7 +1496,7 @@ class NbtEditorActivity : AppCompatActivity() {
         val btnConfirm = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_confirm_select_chunk)
         val btnDeleteChunk = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_delete_chunk_dialog)
 
-        tvTitle.text = "LevelDB 2D 区块地图"
+        tvTitle.text = "2D mapa chunků LevelDB"
         scrollDims.visibility = View.VISIBLE
         btnPruneUseless?.visibility = View.GONE
         btnConfirm?.visibility = View.GONE
@@ -1520,23 +1520,23 @@ class NbtEditorActivity : AppCompatActivity() {
         fun updateSelectedInfo(cx: Int, cz: Int, exists: Boolean) {
             val bx = cx * 16
             val bz = cz * 16
-            tvSelectedChunkCoord.text = "区块: [$cx, $cz]"
-            tvSelectedBlockRange.text = "方块范围: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
+            tvSelectedChunkCoord.text = "Chunk: [$cx, $cz]"
+            tvSelectedBlockRange.text = "Rozsah bloků: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
             val count = chunkGridView.selectedChunks.size
             if (count > 0) {
-                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.text = "Vybráno $count chunků"
                 tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
-                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.text = "Odstranit vybrané ($count)"
                 btnDeleteChunk.isEnabled = true
                 btnDeleteChunk.alpha = 1.0f
                 btnDeleteChunk.visibility = View.VISIBLE
             } else {
-                tvSelectedChunkStatus.text = if (exists) "状态: 已生成" else "状态: 未生成"
+                tvSelectedChunkStatus.text = if (exists) "Stav: vygenerováno" else "Stav: nevygenerováno"
                 tvSelectedChunkStatus.setTextColor(
                     if (exists) ContextCompat.getColor(this, R.color.md_theme_primary)
                     else ContextCompat.getColor(this, R.color.md_theme_outline)
                 )
-                btnDeleteChunk.text = "删除此区块"
+                btnDeleteChunk.text = "Odstranit tento chunk"
                 btnDeleteChunk.isEnabled = exists
                 btnDeleteChunk.alpha = if (exists) 1.0f else 0.4f
                 btnDeleteChunk.visibility = View.VISIBLE
@@ -1549,9 +1549,9 @@ class NbtEditorActivity : AppCompatActivity() {
 
         chunkGridView.onSelectionChangedListener = { count, _ ->
             if (count > 0) {
-                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.text = "Vybráno $count chunků"
                 tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
-                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.text = "Odstranit vybrané ($count)"
                 btnDeleteChunk.visibility = View.VISIBLE
             } else {
                 val exists = chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)
@@ -1562,13 +1562,13 @@ class NbtEditorActivity : AppCompatActivity() {
         var currentDim = 0
         fun loadDimension(dimId: Int) {
             currentDim = dimId
-            showLoadingDialog("正在加载维度区块...")
+            showLoadingDialog("Načítám chunky dimenze...")
             lifecycleScope.launch(Dispatchers.IO) {
                 val populated = helper.getPopulatedChunkCoordinates(dimId)
                 val blockEntities = helper.getBlockEntityChunkCoordinates(dimId)
                 withContext(Dispatchers.Main) {
                     hideLoadingDialog()
-                    tvSubtitle.text = "当前维度已生成 ${populated.size} 个区块"
+                    tvSubtitle.text = "V této dimenzi je vygenerováno ${populated.size} chunků"
                     chunkGridView.clearSelection()
                     chunkGridView.setWorldChunkData(
                         populated,
@@ -1599,10 +1599,10 @@ class NbtEditorActivity : AppCompatActivity() {
             if (targets.isEmpty()) return@setOnClickListener
 
             MaterialAlertDialogBuilder(this)
-                .setTitle("确认删除 LevelDB 区块")
-                .setMessage("确定要物理删除当前维度的 ${targets.size} 个区块数据吗？\n删除后不可恢复。")
-                .setPositiveButton("立即删除") { _, _ ->
-                    showLoadingDialog("正在物理删除 LevelDB 区块...")
+                .setTitle("Potvrdit odstranění chunků LevelDB")
+                .setMessage("Opravdu chcete trvale odstranit z aktuální dimenze ${targets.size} dat chunků?\nTuto akci nelze vrátit zpět.")
+                .setPositiveButton("Odstranit nyní") { _, _ ->
+                    showLoadingDialog("Trvale odstraňuji chunky LevelDB...")
                     lifecycleScope.launch(Dispatchers.IO) {
                         try {
                             val deleted = helper.deleteChunks(targets, currentDim)
@@ -1610,13 +1610,13 @@ class NbtEditorActivity : AppCompatActivity() {
                             withContext(Dispatchers.Main) {
                                 hideLoadingDialog()
                                 reloadLevelDbCacheAsync()
-                                Toast.makeText(this@NbtEditorActivity, "已成功删除 ${targets.size} 个区块 ($deleted 条记录)！", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@NbtEditorActivity, "Úspěšně odstraněno ${targets.size} chunků ($deleted záznamů)!", Toast.LENGTH_SHORT).show()
                                 loadDimension(currentDim)
                             }
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
                                 hideLoadingDialog()
-                                Toast.makeText(this@NbtEditorActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(this@NbtEditorActivity, "Odstranění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -1631,11 +1631,11 @@ class NbtEditorActivity : AppCompatActivity() {
     private fun showWorldChunkOptimizerDialog() {
         val mcaEntries = workspaceZipEntries.keys.filter { it.endsWith(".mca", true) || it.endsWith(".mcr", true) }
         if (mcaEntries.isEmpty() && currentFilePath == null) {
-            Toast.makeText(this, "当前存档中未找到任何 MCA 区域文件", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "V aktuálním světě nebyly nalezeny žádné soubory oblastí MCA", Toast.LENGTH_SHORT).show()
             return
         }
 
-        showLoadingDialog("正在扫描全存档 MCA 区域文件...")
+        showLoadingDialog("Prohledávám soubory oblastí MCA v celém světě...")
         lifecycleScope.launch(Dispatchers.IO) {
             var totalMca = 0
             var totalPopulated = 0
@@ -1689,18 +1689,18 @@ class NbtEditorActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 hideLoadingDialog()
                 val pct = if (totalPopulated > 0) (totalUseless.toFloat() / totalPopulated.toFloat()) * 100f else 0f
-                val msg = "全存档扫描结果：\n\n• MCA 区域文件：$totalMca 个\n• 总已生成区块：$totalPopulated 个\n• 发现无用区块：$totalUseless 个 (InhabitedTime = 0，占 $pct%)\n\n清理后将清除所有仅探索路过的无用区块，保留所有玩家建筑与常驻区域，可大幅减小存档体积。"
+                val msg = "Výsledky kontroly celého světa:\n\n• Soubory oblastí MCA: $totalMca\n• Celkem vygenerovaných chunků: $totalPopulated\n• Nalezené neaktivní chunky: $totalUseless (InhabitedTime = 0, podíl $pct%)\n\nPo vyčištění budou odstraněny neaktivní chunky, kterými hráč pouze prošel. Stavby a trvale obývané oblasti zůstanou zachovány a velikost světa se může výrazně zmenšit."
 
                 val dialog = MaterialAlertDialogBuilder(this@NbtEditorActivity)
                     .setTitle(R.string.world_prune_chunks_title)
                     .setMessage(msg)
-                    .setPositiveButton("一键清理全部无用区块") { _, _ ->
+                    .setPositiveButton("Odstranit všechny neaktivní chunky") { _, _ ->
                         if (totalUseless == 0) {
-                            Toast.makeText(this@NbtEditorActivity, "未发现无用区块", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@NbtEditorActivity, "Nebyly nalezeny žádné neaktivní chunky", Toast.LENGTH_SHORT).show()
                             return@setPositiveButton
                         }
 
-                        showLoadingDialog("正在清理 $totalUseless 个无用区块...")
+                        showLoadingDialog("Čistím $totalUseless neaktivních chunků...")
                         lifecycleScope.launch(Dispatchers.IO) {
                             try {
                                 if (originalZipBytes != null) {
@@ -1745,12 +1745,12 @@ class NbtEditorActivity : AppCompatActivity() {
                                 withContext(Dispatchers.Main) {
                                     hideLoadingDialog()
                                     updateWorkspaceUi()
-                                    Toast.makeText(this@NbtEditorActivity, "全存档瘦身完成！共清理了 $totalUseless 个无用区块！", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this@NbtEditorActivity, "Zmenšení celého světa dokončeno! Odstraněno $totalUseless neaktivních chunků!", Toast.LENGTH_LONG).show()
                                 }
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
                                     hideLoadingDialog()
-                                    Toast.makeText(this@NbtEditorActivity, "清理失败: ${e.message}", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this@NbtEditorActivity, "Čištění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -1821,7 +1821,7 @@ class NbtEditorActivity : AppCompatActivity() {
         binding.tvParentInfo.text = "Database: db/"
         binding.tilKey.hint = getString(R.string.nbt_leveldb_key_hint)
         binding.tilType.visibility = View.GONE
-        binding.tilInitialValue.hint = "初始数值 (文本或留空)"
+        binding.tilInitialValue.hint = "Počáteční hodnota (text nebo prázdná)"
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(binding.root)
@@ -1866,7 +1866,7 @@ class NbtEditorActivity : AppCompatActivity() {
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         binding.toolbar.title = if (activeWorkspaceName.isNotEmpty()) activeWorkspaceName else getString(R.string.nbt_editor_title)
-        binding.toolbar.subtitle = if (currentLevelDbHelper != null) "LevelDB 数据库" else null
+        binding.toolbar.subtitle = if (currentLevelDbHelper != null) "Databáze LevelDB" else null
         BackgroundUtils.applyCustomBackground(this)
     }
 
@@ -2008,12 +2008,12 @@ class NbtEditorActivity : AppCompatActivity() {
             isLittleEndian && readHeaders -> "Bedrock (Header)"
             isLittleEndian -> "Bedrock (Little-Endian)"
             isCompressed -> "Java (GZIP)"
-            else -> "Java (Uncompressed)"
+            else -> "Java (nekomprimováno)"
         }
 
         val count = countTags(nbtFile.tag)
 
-        val rootName = if (nbtFile.name.isNotEmpty()) nbtFile.name else "Root"
+        val rootName = if (nbtFile.name.isNotEmpty()) nbtFile.name else "Kořenový tag"
         treeAdapter.setRoot(nbtFile.tag, rootName)
     }
 
@@ -2129,7 +2129,7 @@ class NbtEditorActivity : AppCompatActivity() {
     private fun showAddTagDialog(parentNode: NbtTreeNode) {
         val binding = DialogAddNbtTagBinding.inflate(layoutInflater)
         val isParentCompound = parentNode.tag is NbtCompound
-        binding.tvParentInfo.text = "Parent: ${parentNode.key} (${parentNode.tagTypeName})"
+        binding.tvParentInfo.text = "Nadřazený tag: ${parentNode.key} (${parentNode.tagTypeName})"
         binding.tilKey.isVisible = isParentCompound
 
         val defaultType = when (parentNode.tag) {
@@ -2253,7 +2253,7 @@ class NbtEditorActivity : AppCompatActivity() {
         val parent = node.parentTag as? NbtCompound ?: return
         val binding = DialogAddNbtTagBinding.inflate(layoutInflater)
         binding.tvAddDialogTitle.text = getString(R.string.nbt_rename_key)
-        binding.tvParentInfo.text = "Current: ${node.key}"
+        binding.tvParentInfo.text = "Aktuální: ${node.key}"
         binding.tilKey.hint = getString(R.string.nbt_tag_key)
         binding.etKey.setText(node.key)
         binding.tilType.visibility = View.GONE

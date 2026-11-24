@@ -14,13 +14,13 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 enum class LevelDbCategory(val title: String) {
-    ALL("全部"),
-    PLAYER("玩家"),
-    ENTITY("实体"),
-    BLOCK_ENTITY("方块实体"),
-    WORLD("世界系统"),
-    CHUNK("区块"),
-    OTHER("其他")
+    ALL("Vše"),
+    PLAYER("Hráč"),
+    ENTITY("Entita"),
+    BLOCK_ENTITY("Bloková entita"),
+    WORLD("Svět"),
+    CHUNK("chunk"),
+    OTHER("Ostatní")
 }
 
 data class LevelDbRecord(
@@ -252,51 +252,51 @@ class BedrockLevelDbHelper(val dbFolder: File) : Closeable, AutoCloseable {
             )
 
             if (keyStr == "~local_player") {
-                return LevelDbRecord(key, keyStr, "本地房主玩家 (~local_player)", LevelDbCategory.PLAYER, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Místní hráč (hostitel) (~local_player)", LevelDbCategory.PLAYER, valueSize = valueSize, isNbt = true)
             }
             if (keyStr.startsWith("player_server_")) {
                 val uuid = keyStr.removePrefix("player_server_")
-                return LevelDbRecord(key, keyStr, "服务器玩家 ($uuid)", LevelDbCategory.PLAYER, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Hráč serveru ($uuid)", LevelDbCategory.PLAYER, valueSize = valueSize, isNbt = true)
             }
             if (keyStr.startsWith("player_")) {
                 val uuid = keyStr.removePrefix("player_")
-                return LevelDbRecord(key, keyStr, "玩家数据 ($uuid)", LevelDbCategory.PLAYER, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Data hráče ($uuid)", LevelDbCategory.PLAYER, valueSize = valueSize, isNbt = true)
             }
 
             if (key.size >= 11 && keyStr.startsWith("actorprefix")) {
                 val actorId = try {
                     if (key.size >= 19) ByteBuffer.wrap(key, 11, 8).order(ByteOrder.LITTLE_ENDIAN).long else null
                 } catch (e: Exception) { null }
-                val title = if (actorId != null) "实体生物 (ID: $actorId)" else "实体生物 ($keyStr)"
+                val title = if (actorId != null) "Entita (ID: $actorId)" else "Entita ($keyStr)"
                 return LevelDbRecord(key, keyStr, title, LevelDbCategory.ENTITY, valueSize = valueSize, isNbt = true)
             }
             if (keyStr.startsWith("digp")) {
-                return LevelDbRecord(key, keyStr, "Digp 实体生物 ($keyStr)", LevelDbCategory.ENTITY, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Digp – entita ($keyStr)", LevelDbCategory.ENTITY, valueSize = valueSize, isNbt = true)
             }
 
             if (keyStr == "portals") {
-                return LevelDbRecord(key, keyStr, "下界传送门索引 (portals)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Index Nether portálů (portals)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
             }
             if (keyStr == "scoreboard") {
-                return LevelDbRecord(key, keyStr, "计分板数据 (scoreboard)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Data scoreboardu (scoreboard)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
             }
             if (keyStr == "autonomousentities") {
-                return LevelDbRecord(key, keyStr, "自主活动实体 (autonomousentities)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Samostatně pohyblivé entity (autonomousentities)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
             }
             if (keyStr == "Overworld" || keyStr == "Nether" || keyStr == "TheEnd") {
-                return LevelDbRecord(key, keyStr, "维度数据 ($keyStr)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Data dimenze ($keyStr)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
             }
             if (keyStr.startsWith("map_")) {
-                return LevelDbRecord(key, keyStr, "地图数据 (${keyStr.removePrefix("map_")})", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = isNbt)
+                return LevelDbRecord(key, keyStr, "Data mapy (${keyStr.removePrefix("map_")})", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = isNbt)
             }
             if (keyStr.startsWith("village_") || keyStr.startsWith("VILLAGE_")) {
-                return LevelDbRecord(key, keyStr, "村庄数据 ($keyStr)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Data vesnice ($keyStr)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
             }
             if (keyStr.startsWith("tickingarea_")) {
-                return LevelDbRecord(key, keyStr, "常加载区域 ($keyStr)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
+                return LevelDbRecord(key, keyStr, "Trvale načítané oblasti ($keyStr)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = true)
             }
             if (keyStr == "schedulerWT") {
-                return LevelDbRecord(key, keyStr, "世界任务调度器 (schedulerWT)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = isNbt)
+                return LevelDbRecord(key, keyStr, "Plánovač úloh světa (schedulerWT)", LevelDbCategory.WORLD, valueSize = valueSize, isNbt = isNbt)
             }
 
             if (key.size in 9..14 || key.size in 4..8) {
@@ -310,25 +310,25 @@ class BedrockLevelDbHelper(val dbFolder: File) : Closeable, AutoCloseable {
                         val tagByte = if (hasDim && key.size >= 13) key[12].toInt() and 0xFF else if (key.size >= 9) key[8].toInt() and 0xFF else -1
 
                         val dimName = when (dim) {
-                            1 -> " [下界]"
-                            2 -> " [末地]"
+                            1 -> " [Nether]"
+                            2 -> " [End]"
                             else -> ""
                         }
 
                         when (tagByte) {
-                            0x31 -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 方块实体", LevelDbCategory.BLOCK_ENTITY, chunkX, chunkZ, dim, valueSize, isNbt = true, hasMultipleCompounds = true)
-                            0x32 -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 实体数据", LevelDbCategory.ENTITY, chunkX, chunkZ, dim, valueSize, isNbt = true, hasMultipleCompounds = true)
+                            0x31 -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName blokové entity", LevelDbCategory.BLOCK_ENTITY, chunkX, chunkZ, dim, valueSize, isNbt = true, hasMultipleCompounds = true)
+                            0x32 -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName data entit", LevelDbCategory.ENTITY, chunkX, chunkZ, dim, valueSize, isNbt = true, hasMultipleCompounds = true)
                             0x2F -> {
                                 val subIndex = if (hasDim && key.size >= 14) key[13].toInt() else if (key.size >= 10) key[9].toInt() else 0
-                                return LevelDbRecord(key, keyStr, "子区块 [$chunkX, $chunkZ]$dimName (Y: $subIndex)", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
+                                return LevelDbRecord(key, keyStr, "Podchunk [$chunkX, $chunkZ]$dimName (Y: $subIndex)", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
                             }
-                            0x2C -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 版本信息", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
-                            0x2D -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 2D 数据 (群系/高度)", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
-                            0x33 -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 待处理方块刻", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = true)
-                            0x34 -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 额外方块数据", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = isNbt)
-                            0x35 -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 群系状态", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
-                            0x36 -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 生成状态", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
-                            0x37 -> return LevelDbRecord(key, keyStr, "区块 [$chunkX, $chunkZ]$dimName 刷怪点数据", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = isNbt)
+                            0x2C -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName informace o verzi", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
+                            0x2D -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName 2D data (biom/výška)", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
+                            0x33 -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName čekající aktualizace bloků", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = true)
+                            0x34 -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName další data bloků", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = isNbt)
+                            0x35 -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName stav biomu", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
+                            0x36 -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName stav generování", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = false)
+                            0x37 -> return LevelDbRecord(key, keyStr, "chunk [$chunkX, $chunkZ]$dimName data bodů výskytu mobů", LevelDbCategory.CHUNK, chunkX, chunkZ, dim, valueSize, isNbt = isNbt)
                         }
                     }
                 } catch (e: Exception) {

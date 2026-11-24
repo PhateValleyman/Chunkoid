@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="10dp"
-                android:text="轨迹考古"
+                android:text="Archeologické naleziště"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="13sp"
                 android:maxLines="1"

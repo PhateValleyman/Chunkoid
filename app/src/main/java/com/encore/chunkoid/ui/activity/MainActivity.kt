@@ -408,9 +408,9 @@ class MainActivity : AppCompatActivity() {
 
         navItemDimensionPruning.setOnClickListener {
             com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                .setTitle("实验性功能")
-                .setMessage("即将打开「维度与区块裁剪工具」。\n\n此工具会直接修改底层 MCA/LevelDB 数据。如有误操作可能导致存档区块损坏或丢失，建议在使用前对存档进行备份！")
-                .setPositiveButton("我知道了") { _, _ ->
+                .setTitle("Experimentální funkce")
+                .setMessage("Chystáte se otevřít nástroj pro ořez dimenzí a chunků.\n\nTento nástroj přímo upravuje data MCA/LevelDB. Nesprávným použitím můžete poškodit nebo ztratit chunky světa. Před použitím doporučujeme svět zálohovat!")
+                .setPositiveButton("Rozumím") { _, _ ->
                     drawerLayout.closeDrawer(navDrawerView, false)
                     val intent = Intent(this, DimensionSettingsActivity::class.java)
                     startActivity(intent)
@@ -421,9 +421,9 @@ class MainActivity : AppCompatActivity() {
 
         navItemNbtEditor.setOnClickListener {
             com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                .setTitle("实验性功能")
-                .setMessage("即将打开「NBT与底层数据编辑器」。\n\n此工具具备直接读写核心数据结构的能力，强烈建议新手玩家谨慎操作，操作前请务必备份存档！")
-                .setPositiveButton("我知道了") { _, _ ->
+                .setTitle("Experimentální funkce")
+                .setMessage("Chystáte se otevřít editor NBT a nízkoúrovňových dat.\n\nTento nástroj může přímo číst a zapisovat základní datové struktury. Začátečníkům doporučujeme zvýšenou opatrnost; před použitím si svět zálohujte!")
+                .setPositiveButton("Rozumím") { _, _ ->
                     drawerLayout.closeDrawer(navDrawerView, false)
                     val intent = Intent(this, NbtEditorActivity::class.java)
                     startActivity(intent)
@@ -502,7 +502,7 @@ class MainActivity : AppCompatActivity() {
             if (inputUri == null) {
                 showImportTypeBottomSheet()
             } else if (selectedFormat.isEmpty()) {
-                showCustomToast("请选择目标格式与版本", isError = true)
+                showCustomToast("Vyberte cílový formát a verzi", isError = true)
                 showVersionPickerDialog()
             } else {
                 startConversion()
@@ -536,9 +536,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateDockBarState() {
         if (inputUri == null) {
-            binding.btnDockAction.text = "导入世界"
+            binding.btnDockAction.text = "Importovat svět"
         } else {
-            binding.btnDockAction.text = if (selectedFormatDisplayName.isNotEmpty()) "开始转换" else "选择目标版本"
+            binding.btnDockAction.text = if (selectedFormatDisplayName.isNotEmpty()) "Spustit převod" else "Vybrat cílovou verzi"
         }
     }
 
@@ -619,9 +619,9 @@ class MainActivity : AppCompatActivity() {
             if (selectedVersion.isNullOrEmpty()) {
                 btnConfirm.text = getString(R.string.ok)
             } else {
-                val platform = if (selectedVersion!!.startsWith("Java")) "Java版" else "基岩版"
+                val platform = if (selectedVersion!!.startsWith("Java")) "Java Edition" else "Bedrock Edition"
                 val versionNum = selectedVersion!!.replace("Java ", "").replace("Bedrock ", "")
-                btnConfirm.text = "确定（${platform} ${versionNum}）"
+                btnConfirm.text = "Potvrdit (${platform} ${versionNum})"
             }
         }
 
@@ -729,7 +729,7 @@ class MainActivity : AppCompatActivity() {
                         if (!validateWorld()) {
                             clearOutput()
                             switchToInitialState()
-                            showCustomToast("世界读取失败！未找到有效的世界数据", isError = true)
+                            showCustomToast("Načtení světa se nezdařilo! Nebyla nalezena platná data.", isError = true)
                             return@runOnUiThread
                         }
 
@@ -768,7 +768,7 @@ class MainActivity : AppCompatActivity() {
             if (!validateWorld()) {
                 clearOutput()
                 switchToInitialState()
-                showCustomToast("世界读取失败！", isError = true)
+                showCustomToast("Načtení světa se nezdařilo!", isError = true)
                 return
             }
 
@@ -827,7 +827,7 @@ class MainActivity : AppCompatActivity() {
         binding.cardInitialState.visibility = View.VISIBLE
         binding.layoutExtractProgress.visibility = View.GONE
         binding.cardWorldInfo.visibility = View.GONE
-        binding.tvTargetVersion.text = "点击选择目标平台与版本"
+        binding.tvTargetVersion.text = "Klepnutím vyberte cílovou platformu a verzi"
         updateDockBarState()
     }
 
@@ -1045,7 +1045,7 @@ class MainActivity : AppCompatActivity() {
         selectedFormat = mapVersionToChunkerFormat(versionDisplayName)
         val platform = if (versionDisplayName.startsWith("Java")) getString(R.string.java_edition) else getString(R.string.bedrock_edition)
         val versionNum = versionDisplayName.replace("Java ", "").replace("Bedrock ", "")
-        binding.tvTargetVersion.text = "转换为 ${platform} ${versionNum}"
+        binding.tvTargetVersion.text = "Převést na ${platform} ${versionNum}"
         updateDockBarState()
     }
 
@@ -1054,7 +1054,7 @@ class MainActivity : AppCompatActivity() {
         binding.layoutExtractProgress.visibility = View.GONE
         binding.cardWorldInfo.visibility = View.VISIBLE
         isWorldInfoVisible = true
-        showCustomToast("世界已成功读取！")
+        showCustomToast("Svět byl úspěšně načten!")
     }
 
     private fun startConversion() {
@@ -1065,15 +1065,15 @@ class MainActivity : AppCompatActivity() {
             val view = layoutInflater.inflate(R.layout.dialog_entity_warning, null)
             val checkBox = view.findViewById<android.widget.CheckBox>(R.id.cb_dont_show_again)
             com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                .setTitle("⚠️ 实体与结构丢失预警")
+                .setTitle("⚠️ Upozornění: může dojít ke ztrátě entit a struktur")
                 .setView(view)
-                .setPositiveButton("继续转换") { _, _ ->
+                .setPositiveButton("Pokračovat v převodu") { _, _ ->
                     if (checkBox.isChecked) {
                         prefs.edit().putBoolean("hide_entity_warning", true).apply()
                     }
                     proceedWithConversion()
                 }
-                .setNegativeButton("取消", null)
+                .setNegativeButton("Zrušit", null)
                 .show()
         } else {
             proceedWithConversion()
@@ -1124,7 +1124,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (inputWorldName.isEmpty()) {
-            showCustomToast("无法获取世界名称", isError = true)
+            showCustomToast("Název světa se nepodařilo zjistit", isError = true)
             valid = false
         }
 

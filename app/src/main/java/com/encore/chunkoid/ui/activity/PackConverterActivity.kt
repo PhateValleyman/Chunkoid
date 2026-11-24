@@ -212,7 +212,7 @@ class PackConverterActivity : AppCompatActivity() {
                                 getString(R.string.export_as_zip)
                             }
 
-                            addLog("转换完成，输出目录: $outputPath", LogEntry.Level.INFO)
+                            addLog("Převod dokončen, výstupní složka: $outputPath", LogEntry.Level.INFO)
                             ToastUtils.show(this@PackConverterActivity, getString(R.string.convert_complete))
                         }
                     }
@@ -222,7 +222,7 @@ class PackConverterActivity : AppCompatActivity() {
                             binding.tvStatus.text = getString(R.string.convert_failed)
                             binding.layoutLogContent.visibility = android.view.View.VISIBLE
                             binding.ivToggleLogs.rotation = 180f
-                            addLog("转换失败: $error", LogEntry.Level.ERROR)
+                            addLog("Převod se nezdařil: $error", LogEntry.Level.ERROR)
                             ToastUtils.show(this@PackConverterActivity, "${getString(R.string.convert_failed)}: $error", isError = true)
                             cleanTempFolders()
                         }
@@ -236,7 +236,7 @@ class PackConverterActivity : AppCompatActivity() {
         try {
             val sourceDir = File(sourcePath)
             if (!sourceDir.exists() || !sourceDir.isDirectory) {
-                ToastUtils.show(this, "源文件夹不存在", isError = true)
+                ToastUtils.show(this, "Zdrojová složka neexistuje", isError = true)
                 return
             }
 

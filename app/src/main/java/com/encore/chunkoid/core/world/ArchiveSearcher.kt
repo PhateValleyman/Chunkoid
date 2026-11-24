@@ -24,7 +24,7 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
                 }
                 inputDir.mkdirs()
 
-                callback.onProgress(0, "正在解压归档...")
+                callback.onProgress(0, "Rozbaluji archiv...")
 
                 contentResolver.openInputStream(uri)?.use { inputStream ->
                     val zipInputStream = ZipInputStream(inputStream)
@@ -58,33 +58,33 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
                         extractedCount++
                         if (extractedCount % 10 == 0) {
                             val progress = (extractedCount / 5).coerceIn(5, 50)
-                            callback.onProgress(progress, "正在解压归档 ($extractedCount 个文件)...")
+                            callback.onProgress(progress, "Rozbaluji archiv ($extractedCount souborů)...")
                         }
                     }
                     zipInputStream.close()
                 }
 
-                callback.onProgress(50, "正在搜索世界存档...")
+                callback.onProgress(50, "Hledám svět v archivu...")
 
                 val levelDatFile = findLevelDat(inputDir)
                 if (levelDatFile == null) {
                     inputDir.deleteRecursively()
-                    callback.onError("未找到有效的世界存档")
+                    callback.onError("V archivu nebyl nalezen platný svět")
                     return@Thread
                 }
 
                 val actualWorldDir = levelDatFile.parentFile
                 if (actualWorldDir == null || actualWorldDir.absolutePath == inputDir.absolutePath) {
-                    callback.onProgress(100, "世界存档已就绪")
+                    callback.onProgress(100, "Svět je připraven")
                     callback.onSuccess(inputDir)
                     return@Thread
                 }
 
-                callback.onProgress(75, "正在整理世界存档...")
+                callback.onProgress(75, "Uspořádávám soubory světa...")
 
                 moveWorldToRoot(inputDir, actualWorldDir)
 
-                callback.onProgress(100, "世界存档已就绪")
+                callback.onProgress(100, "Svět je připraven")
                 callback.onSuccess(inputDir)
 
             } catch (e: Exception) {
@@ -93,7 +93,7 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
                 if (inputDir.exists()) {
                     inputDir.deleteRecursively()
                 }
-                callback.onError("归档处理失败: ${e.message}")
+                callback.onError("Zpracování archivu se nezdařilo: ${e.message}")
             }
         }.start()
     }
@@ -219,14 +219,14 @@ class ArchiveSearcher(private val contentResolver: ContentResolver, private val 
                     extractedCount++
                     if (extractedCount % 10 == 0) {
                         val progress = (extractedCount / 5).coerceIn(5, 95)
-                        progressCallback?.invoke(progress, "正在解压归档 ($extractedCount 个文件)...")
+                        progressCallback?.invoke(progress, "Rozbaluji archiv ($extractedCount souborů)...")
                     }
                 }
 
                 zipInputStream.close()
             }
 
-            progressCallback?.invoke(100, "解压完成")
+            progressCallback?.invoke(100, "Rozbalování dokončeno")
             return true
         } catch (e: Exception) {
             e.printStackTrace()

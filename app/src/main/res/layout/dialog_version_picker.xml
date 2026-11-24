@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="选择目标版本"
+        android:text="Vyberte cílovou verzi"
         android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="16dp"
-        android:text="支持跨版本升降级与跨平台转换"
+        android:text="Podporuje převod mezi platformami a zvýšení či snížení verze"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="12sp"
         android:layout_gravity="center_horizontal" />
@@ -88,7 +88,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="基岩版 (Bedrock)"
+                            android:text="Bedrock Edition"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp"
                             android:textStyle="bold"/>
@@ -97,7 +97,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="支持 1.12 ~ 1.26+ 升降级"
+                            android:text="Podporuje zvýšení i snížení verze 1.12–1.26+"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="12sp"/>
 
@@ -167,7 +167,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Java 版 (Java Edition)"
+                            android:text="Java Edition"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp"
                             android:textStyle="bold"/>
@@ -176,7 +176,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="支持 1.8.8 ~ 1.21+ 升降级"
+                            android:text="Podporuje zvýšení i snížení verze 1.8.8–1.21+"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="12sp"/>
 

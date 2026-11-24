@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="管理已转换的世界存档，支持导出多种格式或启动游戏"
+                android:text="Spravujte převedené světy, exportujte je v různých formátech nebo spusťte hru"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 
@@ -101,7 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="暂无已转换的世界"
+                        android:text="Zatím tu nejsou žádné převedené světy"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -111,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:text="在转换器页面选择并完成一次转换后，转换好的世界将显示在此处。"
+                        android:text="Po dokončení převodu na stránce převodníku se zde zobrazí převedený svět."
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="12sp" />
 
@@ -120,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
                         android:layout_marginTop="20dp"
-                        android:text="去转换世界"
+                        android:text="Přejít na převod světa"
                         app:icon="@drawable/ic_bolt"
                         app:iconGravity="textStart"
                         android:textColor="?attr/colorOnPrimary"

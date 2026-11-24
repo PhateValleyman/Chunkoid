@@ -123,7 +123,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchDynamicColor.isChecked = isDynamicColorSupported && prefs.getBoolean("dynamic_color", false)
         binding.switchDynamicColor.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("dynamic_color", isChecked).apply()
-            ToastUtils.show(this, "动态取色设置已更新，重启应用生效")
+            ToastUtils.show(this, "Nastavení dynamických barev bylo aktualizováno. Projeví se po restartu aplikace.")
         }
 
         binding.itemOutputHeader.setOnClickListener {
@@ -216,7 +216,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun processSelectedWallpaper(uri: Uri) {
         lifecycleScope.launch {
-            ToastUtils.show(this@SettingsActivity, "正在处理壁纸与提取主题色彩...")
+            ToastUtils.show(this@SettingsActivity, "Zpracovávám tapetu a extrahuji barvy motivu...")
             val success = BackgroundUtils.saveCustomWallpaper(this@SettingsActivity, uri)
             if (success) {
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@SettingsActivity)
@@ -226,7 +226,7 @@ class SettingsActivity : AppCompatActivity() {
                 ToastUtils.show(this@SettingsActivity, getString(R.string.wallpaper_set_success))
                 recreate()
             } else {
-                ToastUtils.show(this@SettingsActivity, "壁纸处理失败，请重试")
+                ToastUtils.show(this@SettingsActivity, "Zpracování tapety se nezdařilo. Zkuste to znovu.")
             }
         }
     }
@@ -243,7 +243,7 @@ class SettingsActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (bitmap != null && !isFinishing && !isDestroyed) {
                         binding.ivWallpaperPreview.setImageBitmap(bitmap)
-                        binding.tvWallpaperFilename.text = "已应用自定义壁纸 (${bitmap.width}x${bitmap.height})"
+                        binding.tvWallpaperFilename.text = "Použita vlastní tapeta (${bitmap.width}x${bitmap.height})"
                         binding.btnClearWallpaper.visibility = View.VISIBLE
                     } else if (bitmap == null) {
                         binding.ivWallpaperPreview.setImageResource(R.drawable.ic_texture)

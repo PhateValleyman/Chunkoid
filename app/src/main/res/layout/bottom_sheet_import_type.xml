@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="选择世界导入方式"
+        android:text="Vyberte způsob importu světa"
         android:textColor="?attr/colorOnSurface"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="18dp"
-        android:text="请根据待转换世界的存放形式选择"
+        android:text="Vyberte podle toho, jak je svět určený k převodu uložen"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="13sp" />
 
@@ -79,7 +79,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="从压缩包导入 (.zip / .mcworld)"
+                    android:text="Importovat z archivu (.zip / .mcworld)"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="支持 ZIP、MCWORLD 格式的地图压缩包"
+                    android:text="Podporuje archivy světů ve formátu ZIP a MCWORLD"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="11sp" />
 
@@ -148,7 +148,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="从文件夹目录导入"
+                    android:text="Importovat ze složky"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -157,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="选择包含 level.dat 的世界存档文件夹"
+                    android:text="Vyberte složku světa obsahující level.dat"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="11sp" />
 

@@ -8,12 +8,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import com.encore.chunkoid.R
 import com.encore.chunkoid.utils.BackgroundUtils
-import com.encore.chunkoid.utils.ToastUtils
+import com.encore.chunkoid.utils.ForkReleaseUpdater
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,10 +27,7 @@ class AboutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val btnCheckUpdate = findViewById<Button>(R.id.btn_check_update)
-        btnCheckUpdate.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://dl.chunkoid.top"))
-            startActivity(intent)
-        }
+        btnCheckUpdate.setOnClickListener { checkForUpdates(btnCheckUpdate) }
 
         val btnDonate = findViewById<Button>(R.id.btn_donate)
         btnDonate.setOnClickListener {
@@ -75,7 +73,7 @@ class AboutActivity : AppCompatActivity() {
 
         val ivGithub = findViewById<ImageView>(R.id.iv_github)
         ivGithub.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Dicecan/Chunkoid"))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PhateValleyman/Chunkoid"))
             startActivity(intent)
         }
 
@@ -84,6 +82,63 @@ class AboutActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://chunkoid.top/docs/index.html"))
             startActivity(intent)
         }
+    }
+
+    private fun checkForUpdates(button: Button) {
+        button.isEnabled = false
+        button.text = getString(R.string.update_checking)
+        Thread {
+            val result = runCatching { ForkReleaseUpdater.findLatestStableApk() }
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                button.isEnabled = true
+                button.text = getString(R.string.check_update)
+                result.fold(
+                    onSuccess = { release ->
+                        if (release == null) showNoReleaseDialog() else showUpdateConfirmation(release)
+                    },
+                    onFailure = { error -> showUpdateError(error) }
+                )
+            }
+        }.start()
+    }
+
+    private fun showNoReleaseDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_no_release_title)
+            .setMessage(R.string.update_no_release_message)
+            .setPositiveButton(R.string.ok, null)
+            .show()
+    }
+
+    private fun showUpdateConfirmation(release: ForkReleaseUpdater.ReleaseInfo) {
+        @Suppress("DEPRECATION")
+        val currentVersion = packageManager.getPackageInfo(packageName, 0).versionName ?: "?"
+        val availableVersion = release.tagName.ifBlank { release.title }
+        val baseMessage = getString(R.string.update_available_message, availableVersion, currentVersion)
+        val notes = release.notes.trim().take(MAX_RELEASE_NOTES_LENGTH)
+        val message = if (notes.isBlank()) baseMessage else "$baseMessage\n\n${getString(R.string.update_notes_label)}\n$notes"
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_available_title)
+            .setMessage(message)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.update_download_button) { _, _ -> enqueueDownload(release.asset) }
+            .show()
+    }
+
+    private fun enqueueDownload(asset: ForkReleaseUpdater.ReleaseAsset) {
+        runCatching { ForkReleaseUpdater.enqueueApkDownload(this, asset) }
+            .onSuccess { Toast.makeText(this, R.string.update_download_started, Toast.LENGTH_LONG).show() }
+            .onFailure { showUpdateError(it) }
+    }
+
+    private fun showUpdateError(error: Throwable) {
+        val detail = error.localizedMessage ?: getString(R.string.update_error_unknown)
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_error_title)
+            .setMessage(getString(R.string.update_error_message, detail))
+            .setPositiveButton(R.string.ok, null)
+            .show()
     }
 
     private fun applyNoElevationToCards() {
@@ -115,5 +170,9 @@ class AboutActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private companion object {
+        const val MAX_RELEASE_NOTES_LENGTH = 1800
     }
 }

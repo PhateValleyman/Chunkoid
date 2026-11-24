@@ -22,7 +22,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:contentDescription="App Logo"
+                android:contentDescription="Logo aplikace"
                 android:src="@drawable/ic_app_logo" />
         </FrameLayout>
 

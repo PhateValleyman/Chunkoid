@@ -32,7 +32,7 @@
                 android:id="@+id/tv_region_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="区块地图选择器"
+                android:text="Výběr chunků na mapě"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="已生成 0 个区块"
+                android:text="Vygenerováno chunků: 0"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="11sp" />
 
@@ -60,7 +60,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"
-                android:text="👆 点选"
+                android:text="👆 Vybrat klepnutím"
                 android:textSize="11sp"
                 android:paddingHorizontal="8dp"
                 android:checked="true" />
@@ -70,7 +70,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"
-                android:text="📐 框选"
+                android:text="📐 Vybrat oblast"
                 android:textSize="11sp"
                 android:paddingHorizontal="8dp" />
 
@@ -111,7 +111,7 @@
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="主世界 (Overworld)"
+                        android:text="Hlavní svět (Overworld)"
                         android:textSize="12sp"
                         android:checked="true" />
 
@@ -120,7 +120,7 @@
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="下界 (Nether)"
+                        android:text="Nether"
                         android:textSize="12sp" />
 
                     <com.google.android.material.chip.Chip
@@ -128,7 +128,7 @@
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="末地 (The End)"
+                        android:text="The End"
                         android:textSize="12sp" />
 
                 </com.google.android.material.chip.ChipGroup>
@@ -159,7 +159,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="36dp"
-                        android:text="全选"
+                        android:text="Vybrat vše"
                         android:textSize="11sp"
                         android:textColor="?attr/colorOnSurface"
                         android:paddingHorizontal="0dp"
@@ -178,7 +178,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="36dp"
-                        android:text="反选"
+                        android:text="Invertovat výběr"
                         android:textSize="11sp"
                         android:textColor="?attr/colorOnSurface"
                         android:paddingHorizontal="0dp"
@@ -197,7 +197,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="36dp"
-                        android:text="清空"
+                        android:text="Vymazat"
                         android:textSize="11sp"
                         android:textColor="?attr/colorOnSurface"
                         android:paddingHorizontal="0dp"
@@ -216,7 +216,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="36dp"
-                        android:text="无用"
+                        android:text="Nepotřebné"
                         android:textSize="11sp"
                         android:textColor="?attr/colorError"
                         android:paddingHorizontal="0dp"
@@ -274,7 +274,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="区块: [0, 0]"
+                                android:text="Chunk: [0, 0]"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -283,7 +283,7 @@
                                 android:id="@+id/tv_selected_chunk_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="状态: 已生成"
+                                android:text="Stav: vygenerováno"
                                 android:textColor="?attr/colorPrimary"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -295,7 +295,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="方块范围: [X: 0..15, Z: 0..15]"
+                            android:text="Rozsah bloků: [X: 0..15, Z: 0..15]"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="10sp" />
 
@@ -304,7 +304,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="停留时间: 0 刻 (仅探索路过)"
+                            android:text="Doba setrvání: 0 ticků (pouze při průzkumu)"
                             android:textColor="?attr/colorOutline"
                             android:textSize="10sp"
                             android:visibility="gone" />
@@ -328,7 +328,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="搜索区块坐标或方块坐标 (如 0,0)"
+                    android:hint="Hledat souřadnice chunku nebo bloku (např. 0,0)"
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -384,7 +384,7 @@
             style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
-            android:text="删除此区块"
+            android:text="Smazat tento chunk"
             android:textSize="12sp"
             android:textColor="@color/white"
             app:backgroundTint="@color/md_theme_error"
@@ -399,7 +399,7 @@
             android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:layout_marginStart="8dp"
-            android:text="编辑此区块"
+            android:text="Upravit tento chunk"
             android:textSize="12sp"
             android:textColor="?attr/colorOnPrimary"
             app:backgroundTint="?attr/colorPrimary"

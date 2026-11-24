@@ -54,7 +54,7 @@
 
         <activity
             android:name=".ui.activity.DimensionSettingsActivity"
-            android:label="维度裁剪与映射"
+            android:label="@string/dimension_settings_title"
             android:parentActivityName=".ui.activity.SettingsActivity" />
 
         <activity

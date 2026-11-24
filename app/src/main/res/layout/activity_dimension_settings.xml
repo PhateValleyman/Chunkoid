@@ -147,7 +147,7 @@
                                     android:id="@+id/tv_scan_world_name"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="世界名称: My World"
+                                    android:text="Název světa: My World"
                                     android:textColor="?attr/colorOnSecondaryContainer"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
@@ -157,7 +157,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
-                                    android:text="世界出生点: [X: 0, Y: 64, Z: 0]"
+                                    android:text="Bod zrození: [X: 0, Y: 64, Z: 0]"
                                     android:textColor="?attr/colorPrimary"
                                     android:textSize="13sp"
                                     android:textStyle="bold" />
@@ -167,7 +167,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
-                                    android:text="已生成区块: 1250 个 | 0停留时间无用区块: 850 个 (68.0%)"
+                                    android:text="Vygenerované chunky: 1250 | Nepotřebné chunky s dobou setrvání 0: 850 (68.0%)"
                                     android:textColor="?attr/colorOnSecondaryContainer"
                                     android:alpha="0.85"
                                     android:textSize="12sp" />
@@ -178,7 +178,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="48dp"
                                     android:layout_marginTop="12dp"
-                                    android:text="🗺️ 地图可视化选区删除"
+                                    android:text="🗺️ Vizuální výběr a mazání na mapě"
                                     app:cornerRadius="16dp"
                                     app:icon="@drawable/ic_world" />
 
@@ -304,7 +304,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="主世界 (Overworld) 范围裁剪"
+                                    android:text="Ořezání oblasti v hlavním světě (Overworld)"
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
@@ -313,7 +313,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="以世界出生点或原点为中心保留指定活动范围，自动剔除远距离跑图生成的无用区块。"
+                                    android:text="Zachová zvolenou oblast kolem bodu zrození nebo počátku světa a automaticky odstraní nepotřebné chunky vygenerované při průzkumu vzdálených oblastí."
                                     android:textColor="?attr/colorOnSurface"
                                     android:alpha="0.8"
                                     android:textSize="12sp" />
@@ -377,7 +377,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="保留范围半径"
+                                android:text="Poloměr zachovávané oblasti"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textStyle="bold"
                                 android:textSize="13sp" />
@@ -395,7 +395,7 @@
                                     style="@style/Widget.Material3.Chip.Filter"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="±16 区块 (256m)" />
+                                    android:text="±16 chunků (256m)" />
 
                                 <com.google.android.material.chip.Chip
                                     android:id="@+id/chip_preset_32"
@@ -403,21 +403,21 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:checked="true"
-                                    android:text="±32 区块 (512m)" />
+                                    android:text="±32 chunků (512m)" />
 
                                 <com.google.android.material.chip.Chip
                                     android:id="@+id/chip_preset_64"
                                     style="@style/Widget.Material3.Chip.Filter"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="±64 区块 (1024m)" />
+                                    android:text="±64 chunků (1024m)" />
 
                                 <com.google.android.material.chip.Chip
                                     android:id="@+id/chip_preset_custom"
                                     style="@style/Widget.Material3.Chip.Filter"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="自定义坐标" />
+                                    android:text="Vlastní souřadnice" />
 
                             </com.google.android.material.chip.ChipGroup>
 
@@ -440,7 +440,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:layout_marginEnd="6dp"
-                                        android:hint="最小区块 X">
+                                        android:hint="Minimální chunk X">
 
                                         <com.google.android.material.textfield.TextInputEditText
                                             android:id="@+id/et_min_chunk_x"
@@ -457,7 +457,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:layout_marginStart="6dp"
-                                        android:hint="最大区块 X">
+                                        android:hint="Maximální chunk X">
 
                                         <com.google.android.material.textfield.TextInputEditText
                                             android:id="@+id/et_max_chunk_x"
@@ -482,7 +482,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:layout_marginEnd="6dp"
-                                        android:hint="最小区块 Z">
+                                        android:hint="Minimální chunk Z">
 
                                         <com.google.android.material.textfield.TextInputEditText
                                             android:id="@+id/et_min_chunk_z"
@@ -499,7 +499,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:layout_marginStart="6dp"
-                                        android:hint="最大区块 Z">
+                                        android:hint="Maximální chunk Z">
 
                                         <com.google.android.material.textfield.TextInputEditText
                                             android:id="@+id/et_max_chunk_z"
@@ -547,7 +547,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="设置下界维度的转换与保留策略，可保留核心枢纽或完全丢弃。"
+                            android:text="Nastavte pravidla převodu a zachování dimenze Nether. Můžete zachovat hlavní centrum, nebo dimenzi úplně zahodit."
                             android:textColor="?attr/colorOnSurface"
                             android:alpha="0.8"
                             android:textSize="12sp" />
@@ -613,7 +613,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="探索鞘翅与末地城常产生数万个跑图废外岛，推荐仅保留中心主岛以极大瘦身。"
+                            android:text="Při hledání Elytry a měst v dimenzi The End často vznikají desítky tisíc zbytečných vzdálených ostrovů. Pro výrazné zmenšení světa doporučujeme zachovat pouze centrální hlavní ostrov."
                             android:textColor="?attr/colorOnSurface"
                             android:alpha="0.8"
                             android:textSize="12sp" />
@@ -670,7 +670,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="单区块与底层数据管理工具"
+                            android:text="Nástroje pro správu jednotlivých chunků a nízkoúrovňových dat"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -679,7 +679,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="提供对 MCA 区域文件 (32x32网格) 与 LevelDB 数据库的单个区块查看与精准删除。"
+                            android:text="Umožňuje zobrazit a přesně mazat jednotlivé chunky v souborech oblastí MCA (mřížka 32x32) a databázi LevelDB."
                             android:textColor="?attr/colorOnSurface"
                             android:alpha="0.8"
                             android:textSize="12sp" />
@@ -690,7 +690,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
-                            android:text="🗺️ 打开 NBT/区块可视化编辑器"
+                            android:text="🗺️ Otevřít vizuální editor NBT/chunků"
                             app:icon="@drawable/ic_folder" />
 
                     </LinearLayout>

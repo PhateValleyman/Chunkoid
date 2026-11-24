@@ -331,7 +331,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
     }
 
     private fun analyzeWorldSave(uri: Uri) {
-        showLoading("正在深度体检与分析世界存档...")
+        showLoading("Podrobně kontroluji a analyzuji svět...")
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 scannedWorldUri = uri
@@ -345,14 +345,14 @@ class DimensionSettingsActivity : AppCompatActivity() {
                 if (rawBytes == null || rawBytes.isEmpty()) {
                     withContext(Dispatchers.Main) {
                         hideLoading()
-                        Toast.makeText(this@DimensionSettingsActivity, "无法读取该文件，可能没有权限", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@DimensionSettingsActivity, "Soubor nelze přečíst; možná k němu nemáte oprávnění", Toast.LENGTH_SHORT).show()
                     }
                     return@launch
                 }
                 scannedZipBytes = rawBytes
 
                 var worldName = "Minecraft World"
-                var versionStr = "未知"
+                var versionStr = "Neznámá"
                 var spawnX = 0
                 var spawnY = 64
                 var spawnZ = 0
@@ -440,12 +440,12 @@ class DimensionSettingsActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     hideLoading()
-                    binding.tvScanWorldName.text = "世界名称: $worldName (版本: $versionStr)"
-                    binding.tvScanSpawnCoords.text = "世界真实出生点: [X: $spawnX, Y: $spawnY, Z: $spawnZ] (区块: [${spawnX shr 4}, ${spawnZ shr 4}])"
+                    binding.tvScanWorldName.text = "Název světa: $worldName (verze: $versionStr)"
+                    binding.tvScanSpawnCoords.text = "Skutečný bod zrodu světa: [X: $spawnX, Y: $spawnY, Z: $spawnZ] (Chunk: [${spawnX shr 4}, ${spawnZ shr 4}])"
 
                     val rawArchiveSize = scannedZipBytes?.size?.toLong() ?: 0L
                     if (isBedrockWorld && scannedMcaEntries.isEmpty()) {
-                        binding.tvScanChunksStats.text = "已识别基岩版 LevelDB 数据库存档 | 数据文件: $bedrockChunkKeysCount 个 | 存档大小: ${formatBytes(rawArchiveSize)}\n点击下方【地图可视化选区删除】可圈选任意区块物理擦除。"
+                        binding.tvScanChunksStats.text = "Rozpoznán svět Bedrock Edition v databázi LevelDB | datových souborů: $bedrockChunkKeysCount | velikost světa: ${formatBytes(rawArchiveSize)}\nNíže klepněte na [Odstranění oblasti na mapě] a vyberte chunky k trvalému odstranění."
                     } else {
                         val pct = if (scannedTotalPopulated > 0) (scannedTotalUseless.toFloat() / scannedTotalPopulated.toFloat()) * 100f else 0f
                         val estimatedSavings = if (scannedTotalPopulated > 0) {
@@ -454,17 +454,17 @@ class DimensionSettingsActivity : AppCompatActivity() {
                             0L
                         }
                         val estimatedNewSize = (rawArchiveSize - estimatedSavings).coerceAtLeast(0L)
-                        binding.tvScanChunksStats.text = "已生成区块: $scannedTotalPopulated 个 | 0停留时间无用区块: $scannedTotalUseless 个 (${"%.1f".format(pct)}%)\n存档大小: ${formatBytes(rawArchiveSize)} | 预计瘦身至 ~${formatBytes(estimatedNewSize)} (节省 ~${formatBytes(estimatedSavings)})"
+                        binding.tvScanChunksStats.text = "Vygenerovaných chunků: $scannedTotalPopulated | neaktivních chunků s dobou pobytu 0: $scannedTotalUseless (${"%.1f".format(pct)}%)\nVelikost světa: ${formatBytes(rawArchiveSize)} | očekávaná velikost po zmenšení ~${formatBytes(estimatedNewSize)} (úspora ~${formatBytes(estimatedSavings)})"
                     }
                     binding.layoutScanReport.visibility = View.VISIBLE
 
-                    Toast.makeText(this@DimensionSettingsActivity, "体检完成！已成功识别出生点与区块数据", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DimensionSettingsActivity, "Kontrola dokončena! Bod zrodu a data chunků byly rozpoznány.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 android.util.Log.e("ChunkoidSlim", "analyzeWorldSave error", e)
                 withContext(Dispatchers.Main) {
                     hideLoading()
-                    Toast.makeText(this@DimensionSettingsActivity, "分析失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@DimensionSettingsActivity, "Analýza se nezdařila: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -474,7 +474,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
         val uri = scannedWorldUri
         val zipBytes = scannedZipBytes
         if (uri == null || zipBytes == null || (scannedMcaEntries.isEmpty() && scannedBedrockDbFiles.isEmpty())) {
-            Toast.makeText(this, "请先选择并体检一个世界存档", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Nejprve vyberte svět a spusťte jeho kontrolu", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -521,23 +521,23 @@ class DimensionSettingsActivity : AppCompatActivity() {
         fun updateSelectedInfo(cx: Int, cz: Int, exists: Boolean) {
             val bx = cx * 16
             val bz = cz * 16
-            tvSelectedChunkCoord.text = "区块: [$cx, $cz]"
-            tvSelectedBlockRange.text = "方块范围: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
+            tvSelectedChunkCoord.text = "Chunk: [$cx, $cz]"
+            tvSelectedBlockRange.text = "Rozsah bloků: [X: $bx..${bx + 15}, Z: $bz..${bz + 15}]"
             val count = chunkGridView.selectedChunks.size
             if (count > 0) {
-                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.text = "Vybráno $count chunků"
                 tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
-                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.text = "Odstranit vybrané ($count)"
                 btnDeleteChunk.isEnabled = true
                 btnDeleteChunk.alpha = 1.0f
                 btnDeleteChunk.visibility = View.VISIBLE
             } else {
-                tvSelectedChunkStatus.text = if (exists) "状态: 已生成" else "状态: 未生成"
+                tvSelectedChunkStatus.text = if (exists) "Stav: vygenerováno" else "Stav: nevygenerováno"
                 tvSelectedChunkStatus.setTextColor(
                     if (exists) ContextCompat.getColor(this, R.color.md_theme_primary)
                     else ContextCompat.getColor(this, R.color.md_theme_outline)
                 )
-                btnDeleteChunk.text = "删除此区块"
+                btnDeleteChunk.text = "Odstranit tento chunk"
                 btnDeleteChunk.isEnabled = exists
                 btnDeleteChunk.alpha = if (exists) 1.0f else 0.4f
                 btnDeleteChunk.visibility = View.VISIBLE
@@ -550,9 +550,9 @@ class DimensionSettingsActivity : AppCompatActivity() {
 
         chunkGridView.onSelectionChangedListener = { count, _ ->
             if (count > 0) {
-                tvSelectedChunkStatus.text = "已选中 $count 个区块"
+                tvSelectedChunkStatus.text = "Vybráno $count chunků"
                 tvSelectedChunkStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
-                btnDeleteChunk.text = "删除所选 ($count)"
+                btnDeleteChunk.text = "Odstranit vybrané ($count)"
                 btnDeleteChunk.visibility = View.VISIBLE
             } else {
                 val exists = chunkGridView.isChunkPopulated(chunkGridView.selectedX, chunkGridView.selectedZ)
@@ -561,10 +561,10 @@ class DimensionSettingsActivity : AppCompatActivity() {
         }
 
         if (!scannedIsBedrockWorld && scannedMcaEntries.isNotEmpty()) {
-            tvTitle.text = "世界 2D 区块地图 (Java 版)"
+            tvTitle.text = "2D mapa chunků světa (Java Edition)"
             scrollDims.visibility = View.GONE
 
-            showLoading("正在解析全部区域地图...")
+            showLoading("Načítám mapu všech oblastí...")
             lifecycleScope.launch(Dispatchers.IO) {
                 val allGlobalChunks = mutableSetOf<Pair<Int, Int>>()
                 val uselessChunks = mutableSetOf<Pair<Int, Int>>()
@@ -599,7 +599,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     hideLoading()
-                    tvSubtitle.text = "已生成 ${allGlobalChunks.size} 个区块 (含 ${uselessChunks.size} 个0停留时间区块)"
+                    tvSubtitle.text = "Vygenerováno ${allGlobalChunks.size} chunků (z toho ${uselessChunks.size} chunků s dobou pobytu 0)"
                     chunkGridView.setWorldChunkData(
                         allGlobalChunks,
                         spawnX = scannedSpawnX shr 4,
@@ -622,9 +622,9 @@ class DimensionSettingsActivity : AppCompatActivity() {
                         if (targets.isEmpty()) return@setOnClickListener
 
                         MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
-                            .setTitle("确认物理删除区块")
-                            .setMessage("确定要物理删除选中的 ${targets.size} 个区块吗？\n将自动创建原存档备份。")
-                            .setPositiveButton("立即删除") { _, _ ->
+                            .setTitle("Potvrdit trvalé odstranění chunků")
+                            .setMessage("Opravdu chcete trvale odstranit vybraných ${targets.size} chunků?\nAutomaticky se vytvoří záloha původního světa.")
+                            .setPositiveButton("Odstranit nyní") { _, _ ->
                                 dialog.dismiss()
                                 executeCustomJavaChunksPrune(uri, zipBytes, targets)
                             }
@@ -636,10 +636,10 @@ class DimensionSettingsActivity : AppCompatActivity() {
                 }
             }
         } else if (scannedIsBedrockWorld) {
-            tvTitle.text = "世界 2D 区块地图 (基岩版)"
+            tvTitle.text = "2D mapa chunků světa (Bedrock Edition)"
             scrollDims.visibility = View.VISIBLE
 
-            showLoading("正在解析 LevelDB 数据库区块...")
+            showLoading("Načítám chunky z databáze LevelDB...")
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val tempDbDir = File(cacheDir, "bedrock_map_db").apply {
@@ -665,7 +665,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
                                 val populated = helper.getPopulatedChunkCoordinates(dimId)
                                 val blockEntities = helper.getBlockEntityChunkCoordinates(dimId)
                                 withContext(Dispatchers.Main) {
-                                    tvSubtitle.text = "当前维度已生成 ${populated.size} 个区块"
+                                    tvSubtitle.text = "V této dimenzi je vygenerováno ${populated.size} chunků"
                                     chunkGridView.clearSelection()
                                     chunkGridView.setWorldChunkData(
                                         populated,
@@ -676,7 +676,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
                                 }
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
-                                    Toast.makeText(this@DimensionSettingsActivity, "加载维度区块失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@DimensionSettingsActivity, "Načtení chunků dimenze se nezdařilo: ${e.message}", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -707,9 +707,9 @@ class DimensionSettingsActivity : AppCompatActivity() {
                             if (targets.isEmpty()) return@setOnClickListener
 
                             MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
-                                .setTitle("确认物理删除区块")
-                                .setMessage("确定要物理删除当前维度的 ${targets.size} 个区块吗？\n将自动创建原存档备份。")
-                                .setPositiveButton("立即删除") { _, _ ->
+                                .setTitle("Potvrdit trvalé odstranění chunků")
+                                .setMessage("Opravdu chcete trvale odstranit z aktuální dimenze ${targets.size} chunků?\nAutomaticky se vytvoří záloha původního světa.")
+                                .setPositiveButton("Odstranit nyní") { _, _ ->
                                     dialog.dismiss()
                                     executeCustomBedrockChunksPrune(uri, zipBytes, tempDbDir, helper, targets, currentDim)
                                 }
@@ -729,7 +729,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         hideLoading()
-                        Toast.makeText(this@DimensionSettingsActivity, "打开 LevelDB 数据库失败: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@DimensionSettingsActivity, "Otevření databáze LevelDB se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -737,7 +737,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
     }
 
     private fun executeCustomJavaChunksPrune(uri: Uri, zipBytes: ByteArray, targets: Set<Pair<Int, Int>>) {
-        showLoading("正在执行指定区块物理删除...")
+        showLoading("Trvale odstraňuji vybrané chunky...")
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 try {
@@ -796,7 +796,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     hideLoading()
-                    Toast.makeText(this@DimensionSettingsActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@DimensionSettingsActivity, "Odstranění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -810,7 +810,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
         targets: Set<Pair<Int, Int>>,
         dimId: Int
     ) {
-        showLoading("正在执行基岩版 LevelDB 区块删除...")
+        showLoading("Odstraňuji chunky z databáze LevelDB Bedrock Edition...")
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 try {
@@ -871,7 +871,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     hideLoading()
-                    Toast.makeText(this@DimensionSettingsActivity, "删除失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@DimensionSettingsActivity, "Odstranění se nezdařilo: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -922,15 +922,15 @@ class DimensionSettingsActivity : AppCompatActivity() {
         withContext(Dispatchers.Main) {
             hideLoading()
             val resultMessage = if (writeDirectSuccess) {
-                "🎉 删除成功！原存档已更新。\n\n• 成功删除区块: $prunedCount 个\n• 存档体积: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (节省 ${formatBytes(savedDiff)})"
+                "🎉 Odstranění proběhlo úspěšně! Původní svět byl aktualizován.\n\n• Úspěšně odstraněné chunky: $prunedCount\n• Velikost světa: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (úspora ${formatBytes(savedDiff)})"
             } else {
-                "🎉 删除成功！\n注: 原存档为只读，新存档已另存至：\n📂 ${savedOutFile?.absolutePath}\n\n• 成功删除区块: $prunedCount 个\n• 存档体积: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (节省 ${formatBytes(savedDiff)})"
+                "🎉 Odstranění proběhlo úspěšně!\nPoznámka: Původní svět je jen pro čtení; nový svět byl uložen do:\n📂 ${savedOutFile?.absolutePath}\n\n• Úspěšně odstraněné chunky: $prunedCount\n• Velikost světa: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (úspora ${formatBytes(savedDiff)})"
             }
 
             val resDialog = MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
-                .setTitle("区块删除完成")
+                .setTitle("Odstranění chunků dokončeno")
                 .setMessage(resultMessage)
-                .setPositiveButton("确定") { _, _ ->
+                .setPositiveButton("OK") { _, _ ->
                     if (writeDirectSuccess) {
                         analyzeWorldSave(uri)
                     }
@@ -945,24 +945,24 @@ class DimensionSettingsActivity : AppCompatActivity() {
         val uri = scannedWorldUri
         val zipBytes = scannedZipBytes
         if (uri == null || zipBytes == null || scannedMcaEntries.isEmpty()) {
-            Toast.makeText(this, "当前存档不包含 MCA 区域文件或请先选择存档体检", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Aktuální svět neobsahuje soubory oblastí MCA. Nejprve vyberte svět a spusťte jeho kontrolu.", Toast.LENGTH_SHORT).show()
             return
         }
 
         val options = arrayOf(
-            "⚡ 一键清理 0 停留时间无用区块 (共 $scannedTotalUseless 个，推荐)",
-            "⏱️ 清理低停留时间区块 (< 20 刻 / 1秒)",
-            "🗑️ 清空重置全部已生成区块"
+            "⚡ Odstranit všechny neaktivní chunky s dobou pobytu 0 (celkem $scannedTotalUseless, doporučeno)",
+            "⏱️ Odstranit chunky s krátkou dobou pobytu (< 20 ticků / 1 s)",
+            "🗑️ Odstranit a resetovat všechny vygenerované chunky"
         )
         var selected = 0
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.nbt_prune_dialog_title)
-            .setMessage("确定要对该存档执行物理瘦身吗？\nChunkoid 将自动在 backups 目录创建原文件备份。")
+            .setMessage("Opravdu chcete tento svět trvale zmenšit?\nChunkoid automaticky vytvoří zálohu původních souborů ve složce backups.")
             .setSingleChoiceItems(options, 0) { _, which ->
                 selected = which
             }
-            .setPositiveButton("立即执行瘦身") { _, _ ->
+            .setPositiveButton("Zmenšit nyní") { _, _ ->
                 executeWorldPruning(uri, zipBytes, selected)
             }
             .setNegativeButton(R.string.cancel, null)
@@ -973,7 +973,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
     }
 
     private fun executeWorldPruning(uri: Uri, zipBytes: ByteArray, pruneMode: Int) {
-        showLoading("正在执行物理瘦身并重构存档...")
+        showLoading("Zmenšuji svět a obnovuji jeho strukturu...")
         lifecycleScope.launch(Dispatchers.IO) {
             try {
 
@@ -1079,7 +1079,7 @@ class DimensionSettingsActivity : AppCompatActivity() {
                             fallbackSuccess = true
                         } catch (e: Exception) {
                             android.util.Log.e("ChunkoidSlim", "Fallback 2 (filesDir) failed: ${e.message}")
-                            throw Exception("彻底写入失败 (原因为: $directWriteError)，且后备保存也失败: ${e.message}")
+                            throw Exception("Zápis se nezdařil (důvod: $directWriteError) a selhalo i záložní uložení: ${e.message}")
                         }
                     }
                 }
@@ -1091,15 +1091,15 @@ class DimensionSettingsActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     hideLoading()
                     val resultMessage = if (writeDirectSuccess) {
-                        "🎉 瘦身成功！原存档已更新。\n\n• 清理无用区块: $prunedCount 个\n• 存档体积: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (节省 ${formatBytes(savedDiff)})"
+                        "🎉 Zmenšení proběhlo úspěšně! Původní svět byl aktualizován.\n\n• Odstraněné neaktivní chunky: $prunedCount\n• Velikost světa: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (úspora ${formatBytes(savedDiff)})"
                     } else {
-                        "🎉 瘦身成功！\n注: 原存档为只读，新存档已另存至：\n📂 ${savedOutFile?.absolutePath}\n\n• 清理无用区块: $prunedCount 个\n• 存档体积: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (节省 ${formatBytes(savedDiff)})"
+                        "🎉 Zmenšení proběhlo úspěšně!\nPoznámka: Původní svět je jen pro čtení; nový svět byl uložen do:\n📂 ${savedOutFile?.absolutePath}\n\n• Odstraněné neaktivní chunky: $prunedCount\n• Velikost světa: ${formatBytes(origSize)} ➔ ${formatBytes(newSize)} (úspora ${formatBytes(savedDiff)})"
                     }
 
                     val resDialog = MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
-                        .setTitle("瘦身完成")
+                        .setTitle("Zmenšení dokončeno")
                         .setMessage(resultMessage)
-                        .setPositiveButton("确定") { _, _ ->
+                        .setPositiveButton("OK") { _, _ ->
                             if (writeDirectSuccess) {
                                 analyzeWorldSave(uri)
                             }
@@ -1114,9 +1114,9 @@ class DimensionSettingsActivity : AppCompatActivity() {
                     hideLoading()
                     val trace = e.stackTraceToString()
                     MaterialAlertDialogBuilder(this@DimensionSettingsActivity)
-                        .setTitle("瘦身遇到异常")
-                        .setMessage("详细错误日志:\n$trace")
-                        .setPositiveButton("关闭", null)
+                        .setTitle("Při zmenšování došlo k chybě")
+                        .setMessage("Podrobný protokol chyb:\n$trace")
+                        .setPositiveButton("Zavřít", null)
                         .show()
                 }
             }

@@ -57,10 +57,10 @@ class ConversionService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "世界转换服务",
+                "Převod světa",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "显示 Minecraft 世界存档转换进度与后台保活状态"
+                description = "Zobrazuje průběh převodu světa Minecraft a informaci o běhu na pozadí"
                 setShowBadge(false)
             }
             val manager = getSystemService(NotificationManager::class.java)
@@ -80,7 +80,7 @@ class ConversionService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Minecraft 世界转换")
+            .setContentTitle("Převod světa Minecraft")
             .setContentText(statusText)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
@@ -113,7 +113,7 @@ class ConversionService : Service() {
         isRunning.value = false
         releaseWakeLock()
         conversionSuccess.value = false
-        status.value = "转换已停止"
+        status.value = "Převod byl zastaven"
         progress.value = 0
         stopForegroundService()
         cleanInputFolder()
@@ -148,7 +148,7 @@ class ConversionService : Service() {
         rawLogBuilder.clear()
 
         createNotificationChannel()
-        val initialNotification = buildNotification("正在初始化环境...", 0, true)
+        val initialNotification = buildNotification("Inicializuji prostředí...", 0, true)
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 startForeground(NOTIFICATION_ID, initialNotification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
@@ -161,31 +161,31 @@ class ConversionService : Service() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                status.postValue("正在初始化环境...")
-                updateNotification("正在初始化环境...", 5, true)
+                status.postValue("Inicializuji prostředí...")
+                updateNotification("Inicializuji prostředí...", 5, true)
                 initializeEnvironment()
 
-                status.postValue("准备输入文件...")
+                status.postValue("Připravuji vstupní soubory...")
                 progress.postValue(10)
-                updateNotification("准备输入文件...", 10, false)
+                updateNotification("Připravuji vstupní soubory...", 10, false)
                 val inputDir = copyUriToInternal(inputUri, "input")
 
                 progress.postValue(15)
-                updateNotification("准备输出目录...", 15, false)
+                updateNotification("Připravuji výstupní složku...", 15, false)
                 val outputDir = File(filesDir, "output")
                 if (outputDir.exists()) {
                     deleteDir(outputDir)
                 }
                 outputDir.mkdirs()
 
-                status.postValue("正在转换...")
+                status.postValue("Probíhá převod...")
                 progress.postValue(20)
-                updateNotification("正在转换世界...", 20, false)
+                updateNotification("Převádím svět...", 20, false)
                 runChunkerConversion(inputDir, outputDir, settings)
 
-                status.postValue("正在整理输出文件...")
+                status.postValue("Uspořádávám výstupní soubory...")
                 progress.postValue(90)
-                updateNotification("正在整理输出文件...", 90, false)
+                updateNotification("Uspořádávám výstupní soubory...", 90, false)
                 moveOutputToDocuments(outputDir, settings.inputWorldName)
 
                 withContext(Dispatchers.Main) {
@@ -312,7 +312,7 @@ class ConversionService : Service() {
                 args.add("-k")
             }
 
-            status.postValue("正在执行转换...")
+            status.postValue("Provádím převod...")
             progress.postValue(25)
 
             val process = termuxExecutor.executeJava(*args.toTypedArray())
@@ -339,7 +339,7 @@ class ConversionService : Service() {
                     val calculatedProgress = (25 + chunkProgress * 0.65).toInt()
                     if (calculatedProgress > lastProgress) {
                         progress.postValue(calculatedProgress)
-                        updateNotification("正在转换世界... ($calculatedProgress%)", calculatedProgress, false)
+                        updateNotification("Převádím svět... ($calculatedProgress%)", calculatedProgress, false)
                         lastProgress = calculatedProgress
                     }
                 } else {
@@ -458,7 +458,7 @@ class ConversionService : Service() {
         isRunning.value = false
         releaseWakeLock()
         conversionSuccess.value = true
-        status.value = "转换成功!"
+        status.value = "Převod byl úspěšný!"
         progress.value = 100
         rawLogOutput.value = rawLogBuilder.toString()
         stopForegroundService()
@@ -469,7 +469,7 @@ class ConversionService : Service() {
         isRunning.value = false
         releaseWakeLock()
         conversionSuccess.value = false
-        status.value = "转换失败: ${error.message}"
+        status.value = "Převod se nezdařil: ${error.message}"
         progress.value = 0
         rawLogOutput.value = rawLogBuilder.toString()
         stopForegroundService()

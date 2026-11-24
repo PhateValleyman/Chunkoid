@@ -29,7 +29,7 @@
                 android:id="@+id/tv_chunk_coord"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="区块 [0, 0]"
+                android:text="Chunk [0, 0]"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="方块: [0..15, 0..15]"
+                android:text="Bloky: [0..15, 0..15]"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="修改时间: 2024-08-25 11:30"
+                android:text="Upraveno: 2024-08-25 11:30"
                 android:textColor="?attr/colorOutline"
                 android:textSize="11sp" />
 
@@ -58,7 +58,7 @@
             android:id="@+id/chip_chunk_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="已生成"
+            android:text="Vygenerováno"
             android:textSize="11sp"
             app:chipCornerRadius="12dp"
             app:chipMinHeight="28dp" />
@@ -71,7 +71,7 @@
             android:layout_marginStart="4dp"
             android:src="@drawable/ic_close"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="删除区块"
+            android:contentDescription="Smazat chunk"
             app:tint="?attr/colorError" />
 
     </LinearLayout>

@@ -101,8 +101,8 @@ object NbtVersionReader {
     fun getVersionDisplay(info: VersionInfo): String {
         return when {
             info.versionName != null -> info.versionName
-            info.versionId != null -> "版本 ${info.versionId}"
-            else -> "未知版本"
+            info.versionId != null -> "Verze ${info.versionId}"
+            else -> "Neznámá verze"
         }
     }
 

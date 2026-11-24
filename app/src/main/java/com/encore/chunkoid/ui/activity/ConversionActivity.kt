@@ -572,9 +572,9 @@ class ConversionActivity : AppCompatActivity() {
         try {
             val logFile = File(outputDir, "converse_log.txt")
             val logContent = buildString {
-                appendLine("世界名称: ${settings.inputWorldName}")
-                appendLine("时间戳: ${java.time.LocalDateTime.now()}")
-                appendLine("=== 以下为Chunker-Cli的输出记录 ===")
+                appendLine("Název světa: ${settings.inputWorldName}")
+                appendLine("Časové razítko: ${java.time.LocalDateTime.now()}")
+                appendLine("=== Následuje výstup Chunker-Cli ===")
                 append(rawLogContent)
             }
             logFile.writeText(logContent)

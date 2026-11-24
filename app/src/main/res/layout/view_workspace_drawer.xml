@@ -22,7 +22,7 @@
             android:id="@+id/tv_drawer_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="工作区 Workspace"
+            android:text="Pracovní prostor"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textStyle="bold"/>
@@ -30,7 +30,7 @@
             android:id="@+id/tv_drawer_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No file loaded"
+            android:text="Není načten žádný soubor"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginTop="4dp"
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_marginTop="8dp"
-            android:text="🧹 存档区块瘦身 / 清理无用区块"
+            android:text="🧹 Zmenšit svět / vyčistit nepotřebné chunky"
             android:textSize="12sp"
             android:textColor="?attr/colorPrimary"
             app:icon="@drawable/ic_delete"
@@ -67,7 +67,7 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📁 文件" />
+            android:text="📁 Soubory" />
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -101,49 +101,49 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="全部" />
+                        android:text="Vše" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_cat_player"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="👤 玩家" />
+                        android:text="👤 Hráči" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_cat_entity"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="👾 实体" />
+                        android:text="👾 Entity" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_cat_block_entity"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📦 方块实体" />
+                        android:text="📦 Blokové entity" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_cat_world"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🗺️ 世界系统" />
+                        android:text="🗺️ Systém světa" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_cat_chunk"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🧱 区块" />
+                        android:text="🧱 Chunky" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_cat_other"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📄 其他" />
+                        android:text="📄 Ostatní" />
 
                 </com.google.android.material.chip.ChipGroup>
 
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:hint="搜索 Key、玩家 UUID 或区块坐标 (如 0,0)"
+                android:hint="Hledat klíč, UUID hráče nebo souřadnice chunku (např. 0,0)"
                 app:boxCornerRadiusBottomEnd="14dp"
                 app:boxCornerRadiusBottomStart="14dp"
                 app:boxCornerRadiusTopEnd="14dp"

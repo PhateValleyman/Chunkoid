@@ -15,7 +15,7 @@ class WorldDecryptor(private val context: Context) {
         listener: DecryptListener
     ): String? = withContext(Dispatchers.IO) {
         try {
-            listener.onLog("开始扫描存档目录结构...")
+            listener.onLog("Prohledávám strukturu složky světa...")
 
             var dbDoc: DocumentFile? = null
             sourceDoc.listFiles().forEach { child ->
@@ -25,7 +25,7 @@ class WorldDecryptor(private val context: Context) {
             }
 
             if (dbDoc == null) {
-                listener.onError("未找到有效的 db 数据库文件夹，请确保选择正确的网易存档根目录")
+                listener.onError("Ve složce nebyla nalezena platná databázová složka db. Zkontrolujte, zda jste vybrali kořenovou složku světa NetEase.")
                 return@withContext null
             }
 
@@ -43,17 +43,17 @@ class WorldDecryptor(private val context: Context) {
             }
 
             if (currentDoc == null || manifestDoc == null) {
-                listener.onError("存档 db 目录下缺失 CURRENT 或 MANIFEST 核心数据库指针文件")
+                listener.onError("Ve složce db chybí soubor CURRENT nebo MANIFEST, který je nezbytný pro databázi.")
                 return@withContext null
             }
 
-            listener.onLog("开始读取 CURRENT 指针文件，计算解密密钥...")
+            listener.onLog("Čtu ukazatel CURRENT a počítám dešifrovací klíč...")
             val decryptKey = try {
                 context.contentResolver.openInputStream(currentDoc.uri)?.use { inputStream ->
                     NetEaseDecryptor.deriveKey(inputStream, manifestDoc.name.orEmpty())
                 }
             } catch (e: Exception) {
-                listener.onLog("密钥提取失败或未加密：${e.message}。如果未加密，将视为原样复制。")
+                listener.onLog("Nepodařilo se získat klíč nebo jsou data nezašifrovaná: ${e.message}. Pokud nejsou zašifrovaná, zkopírují se beze změny.")
                 null
             }
 
@@ -67,7 +67,7 @@ class WorldDecryptor(private val context: Context) {
                 targetDbDir.mkdirs()
             }
 
-            listener.onLog("正在复制外部基本元数据文件...")
+            listener.onLog("Kopíruji základní metadata světa...")
             sourceDoc.listFiles().forEach { child ->
                 if (child.isFile) {
                     val outFile = File(targetDir, child.name ?: "")
@@ -79,7 +79,7 @@ class WorldDecryptor(private val context: Context) {
                 }
             }
 
-            listener.onLog("开始逐个解密并导出核心 LevelDB 数据库...")
+            listener.onLog("Postupně dešifruji a exportuji hlavní databázi LevelDB...")
             val totalFiles = dbFiles.size
             var processed = 0
 
@@ -111,7 +111,7 @@ class WorldDecryptor(private val context: Context) {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            listener.onError("解密发生未知异常: ${e.message}")
+            listener.onError("Při dešifrování došlo k neznámé chybě: ${e.message}")
             null
         }
     }

@@ -70,7 +70,7 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
                         android:focusable="true"
-                        android:contentDescription="Menu"
+                        android:contentDescription="Nabídka"
                         app:tint="?attr/colorOnSurface" />
 
                 </LinearLayout>
@@ -121,7 +121,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="16dp"
-                                android:text="导入 Minecraft 世界文件"
+                                android:text="Importovat soubor světa Minecraftu"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -131,7 +131,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:gravity="center"
-                                android:text="支持 .zip / .mcworld / 文件夹 (Bedrock &amp; Java)"
+                                android:text="Podporuje .zip / .mcworld / složky (Bedrock a Java)"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="12sp" />
 
@@ -160,7 +160,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="12dp"
-                                android:text="正在读取并解析世界文件..."
+                                android:text="Načítání a zpracování souboru světa…"
                                 android:textColor="?attr/colorPrimary"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -197,7 +197,7 @@
                                     android:id="@+id/tv_world_name"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="我的世界"
+                                    android:text="Moje světy"
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="17sp"
                                     android:textStyle="bold"
@@ -216,7 +216,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:background="@drawable/bg_badge_tag"
-                                        android:text="基岩版 (Bedrock)"
+                                        android:text="Bedrock Edition"
                                         android:textColor="?attr/colorPrimary"
                                         android:textSize="11sp"
                                         android:textStyle="bold"
@@ -306,7 +306,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="目标版本与格式"
+                                android:text="Cílová verze a formát"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -316,7 +316,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="点击选择目标平台与版本"
+                                android:text="Klepnutím vyberte cílovou platformu a verzi"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="12sp" />
 
@@ -338,7 +338,7 @@
                     android:layout_height="54dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="24dp"
-                    android:text="开始转换"
+                    android:text="Spustit převod"
                     app:icon="@drawable/ic_bolt"
                     app:iconGravity="textStart"
                     app:iconPadding="8dp"

@@ -75,7 +75,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="打开地图或 NBT 文件"
+                            android:text="Otevřít svět nebo soubor NBT"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -85,7 +85,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="16dp"
-                            android:text="选择想要查看或编辑的存档格式"
+                            android:text="Vyberte formát světa, který chcete zobrazit nebo upravit"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="13sp" />
 
@@ -134,7 +134,7 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="打开单个文件 (.dat / .nbt / .mca)"
+                                        android:text="Otevřít samostatný soubor (.dat / .nbt / .mca)"
                                         android:textColor="?attr/colorOnSurface"
                                         android:textSize="15sp"
                                         android:textStyle="bold" />
@@ -143,7 +143,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
-                                        android:text="支持 level.dat、玩家数据、Java MCA 区块文件等"
+                                        android:text="Podporuje level.dat, data hráčů, soubory chunků MCA pro Java Edition a další"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="11sp" />
 
@@ -204,7 +204,7 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="打开地图压缩包 (.mcworld / .zip)"
+                                        android:text="Otevřít archiv světa (.mcworld / .zip)"
                                         android:textColor="?attr/colorOnSurface"
                                         android:textSize="15sp"
                                         android:textStyle="bold" />
@@ -213,7 +213,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
-                                        android:text="自动解压并直接浏览压缩包内 LevelDB 及 NBT 文件"
+                                        android:text="Automaticky rozbalí archiv a umožní procházet soubory LevelDB a NBT"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="11sp" />
 
@@ -270,7 +270,7 @@
                                     android:id="@+id/tv_workspace_title"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="工作区 Workspace"
+                                    android:text="Pracovní prostor"
                                     android:textColor="?attr/colorOnSurface"
                                     android:textSize="15sp"
                                     android:textStyle="bold"
@@ -282,7 +282,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="0 条记录"
+                                    android:text="0 záznamů"
                                     android:textColor="?attr/colorOnSurfaceVariant"
                                     android:textSize="12sp"
                                     android:maxLines="1"
@@ -307,7 +307,7 @@
                                 style="@style/Widget.Material3.Button.TextButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="36dp"
-                                android:text="关闭"
+                                android:text="Zavřít"
                                 android:textSize="12sp"
                                 android:textColor="?attr/colorError" />
 
@@ -335,7 +335,7 @@
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="📁 压缩包文件" />
+                            android:text="📁 Soubory archivu" />
 
                     </com.google.android.material.tabs.TabLayout>
 
@@ -370,49 +370,49 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:checked="true"
-                                        android:text="全部" />
+                                        android:text="Vše" />
 
                                     <com.google.android.material.chip.Chip
                                         android:id="@+id/chip_cat_player"
                                         style="@style/Widget.Material3.Chip.Filter"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="👤 玩家" />
+                                        android:text="👤 Hráči" />
 
                                     <com.google.android.material.chip.Chip
                                         android:id="@+id/chip_cat_entity"
                                         style="@style/Widget.Material3.Chip.Filter"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="👾 实体" />
+                                        android:text="👾 Entity" />
 
                                     <com.google.android.material.chip.Chip
                                         android:id="@+id/chip_cat_block_entity"
                                         style="@style/Widget.Material3.Chip.Filter"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="📦 方块实体" />
+                                        android:text="📦 Blokové entity" />
 
                                     <com.google.android.material.chip.Chip
                                         android:id="@+id/chip_cat_world"
                                         style="@style/Widget.Material3.Chip.Filter"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="🗺️ 世界系统" />
+                                        android:text="🗺️ Systém světa" />
 
                                     <com.google.android.material.chip.Chip
                                         android:id="@+id/chip_cat_chunk"
                                         style="@style/Widget.Material3.Chip.Filter"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="🧱 区块" />
+                                        android:text="🧱 Chunky" />
 
                                     <com.google.android.material.chip.Chip
                                         android:id="@+id/chip_cat_other"
                                         style="@style/Widget.Material3.Chip.Filter"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="📄 其他" />
+                                        android:text="📄 Ostatní" />
 
                                 </com.google.android.material.chip.ChipGroup>
 
@@ -444,7 +444,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:background="@null"
-                                        android:hint="搜索 Key、玩家 UUID 或区块坐标 (如 0,0)"
+                                        android:hint="Hledat klíč, UUID hráče nebo souřadnice chunku (např. 0,0)"
                                         android:textColor="?attr/colorOnSurface"
                                         android:textColorHint="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
@@ -527,7 +527,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="未打开任何文件"
+                        android:text="Není otevřen žádný soubor"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -542,7 +542,7 @@
                     android:src="@drawable/ic_add"
                     app:backgroundTint="?attr/colorPrimary"
                     app:tint="?attr/colorOnPrimary"
-                    android:contentDescription="Add NBT Tag" />
+                    android:contentDescription="Přidat tag NBT" />
 
             </FrameLayout>
 

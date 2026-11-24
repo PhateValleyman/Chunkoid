@@ -154,7 +154,7 @@ class TerminalActivity : AppCompatActivity() {
             if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 initializeTerminal()
             } else {
-                ToastUtils.show(this, "需要存储权限才能使用终端", isError = true)
+                ToastUtils.show(this, "K použití terminálu je potřeba oprávnění k úložišti", isError = true)
                 // 延迟 finish，让用户看到 Toast 消息后再关闭 Activity
                 android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                     finish()
@@ -171,12 +171,12 @@ class TerminalActivity : AppCompatActivity() {
                     isInitialized = true
                     binding.imgTerminalStatus.setBackgroundResource(R.drawable.circle_green)
                     val grayColor = ContextCompat.getColor(this, R.color.minecraft_gray)
-                    appendColoredOutput("- 欢迎使用Chunkoid控制台 v2.0\n", grayColor)
+                    appendColoredOutput("- Vítejte v konzoli Chunkoid v2.0\n", grayColor)
                     appendPrompt()
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    appendOutput("\u274C 初始化失败: ${e.message}\n")
+                    appendOutput("\u274C Inicializace se nezdařila: ${e.message}\n")
                     appendPrompt()
                 }
             }
@@ -189,7 +189,7 @@ class TerminalActivity : AppCompatActivity() {
         appendOutput("\n")
 
         if (!isInitialized) {
-            appendOutput("\u274C 终端未初始化，请等待...\n")
+            appendOutput("\u274C Terminál ještě není inicializován, čekejte prosím...\n")
             appendPrompt()
             return
         }
@@ -207,7 +207,7 @@ class TerminalActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    appendOutput("\u274C 错误: ${e.message}\n")
+                    appendOutput("\u274C Chyba: ${e.message}\n")
                     appendPrompt()
                 }
             }
@@ -227,7 +227,7 @@ class TerminalActivity : AppCompatActivity() {
         appendOutput("\n")
 
         if (!isInitialized) {
-            appendOutput("\u274C 终端未初始化，请等待...\n")
+            appendOutput("\u274C Terminál ještě není inicializován, čekejte prosím...\n")
             appendPrompt()
             return
         }
@@ -247,7 +247,7 @@ class TerminalActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    appendOutput("\u274C 错误: ${e.message}\n")
+                    appendOutput("\u274C Chyba: ${e.message}\n")
                     appendPrompt()
                 }
             }
@@ -259,7 +259,7 @@ class TerminalActivity : AppCompatActivity() {
         return if (files != null) {
             files.joinToString("\n") { it.name } + "\n"
         } else {
-            "无法列出目录\n"
+            "Obsah složky nelze vypsat\n"
         }
     }
 

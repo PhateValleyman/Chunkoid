@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Parent: Root"
+        android:text="Nadřazený uzel: kořen"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="13sp" />
 

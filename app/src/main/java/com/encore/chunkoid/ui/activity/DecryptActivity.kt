@@ -148,7 +148,7 @@ class DecryptActivity : AppCompatActivity() {
                             decryptedWorldPath = exportPath
                             binding.tvStatus.text = getString(R.string.decrypt_complete)
                             binding.btnExport.visibility = android.view.View.VISIBLE
-                            addLog("解密完成", LogEntry.Level.INFO)
+                            addLog("Dešifrování dokončeno", LogEntry.Level.INFO)
                             ToastUtils.show(this@DecryptActivity, getString(R.string.decrypt_complete))
                         }
                     }
@@ -158,7 +158,7 @@ class DecryptActivity : AppCompatActivity() {
                             binding.tvStatus.text = getString(R.string.decrypt_failed)
                             binding.layoutLogContent.visibility = android.view.View.VISIBLE
                             binding.ivToggleLogs.rotation = 180f
-                            addLog("解密失败: $error", LogEntry.Level.ERROR)
+                            addLog("Dešifrování se nezdařilo: $error", LogEntry.Level.ERROR)
                             ToastUtils.show(this@DecryptActivity, "${getString(R.string.decrypt_failed)}: $error", isError = true)
                             cleanTempFolders()
                         }
@@ -172,20 +172,20 @@ class DecryptActivity : AppCompatActivity() {
         try {
             val sourceDir = File(sourcePath)
             if (!sourceDir.exists() || !sourceDir.isDirectory) {
-                ToastUtils.show(this, "源文件夹不存在", isError = true)
+                ToastUtils.show(this, "Zdrojová složka neexistuje", isError = true)
                 return
             }
 
             val targetRoot = DocumentFile.fromTreeUri(this, treeUri)
                 ?: run {
-                    ToastUtils.show(this, "无法访问目标目录", isError = true)
+                    ToastUtils.show(this, "K cílové složce nelze získat přístup", isError = true)
                     return
                 }
 
             val worldName = getWorldName(sourceDir)
             val targetWorldDir = targetRoot.createDirectory(worldName)
                 ?: run {
-                    ToastUtils.show(this, "无法创建目标文件夹", isError = true)
+                    ToastUtils.show(this, "Cílovou složku nelze vytvořit", isError = true)
                     return
                 }
 

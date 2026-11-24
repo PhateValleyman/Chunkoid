@@ -28,7 +28,7 @@
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_app_logo"
-                android:contentDescription="App Logo"
+                android:contentDescription="Logo aplikace"
                 app:tint="?attr/colorPrimary" />
 
         </FrameLayout>
@@ -189,7 +189,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="实验性功能"
+                android:text="Experimentální funkce"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -218,7 +218,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="维度与区块裁剪"
+                    android:text="Ořez dimenzí a chunků"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -247,7 +247,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NBT与底层编辑"
+                    android:text="Úpravy NBT a nízkoúrovňových dat"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -332,7 +332,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Maintained by DICECAN · Originally by Dozener"
+            android:text="Spravuje DICECAN · Původně vytvořil Dozener"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp" />
 

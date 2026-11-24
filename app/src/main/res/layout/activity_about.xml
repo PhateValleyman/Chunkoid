@@ -77,7 +77,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_app_logo"
-                            android:contentDescription="App Logo"
+                            android:contentDescription="@string/about_logo_desc"
                             app:tint="?attr/colorPrimary" />
 
                     </FrameLayout>
@@ -134,7 +134,7 @@
                                 android:id="@+id/tv_author_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Developer &amp; Maintainer: DICECAN"
+                                android:text="@string/about_developer_maintainer"
                                 android:textColor="?attr/colorPrimary"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -142,7 +142,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Original Author: Dozener"
+                                android:text="@string/about_original_author"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="12sp"
                                 android:layout_marginTop="2dp" />
@@ -168,7 +168,7 @@
                                     android:layout_width="22dp"
                                     android:layout_height="22dp"
                                     android:layout_gravity="center"
-                                    android:contentDescription="Author"
+                                    android:contentDescription="@string/about_author_desc"
                                     android:src="@drawable/author"
                                     app:tint="?attr/colorPrimary" />
 
@@ -207,7 +207,7 @@
                                     android:layout_width="22dp"
                                     android:layout_height="22dp"
                                     android:layout_gravity="center"
-                                    android:contentDescription="Github"
+                                    android:contentDescription="GitHub"
                                     android:src="@drawable/github"
                                     app:tint="?attr/colorPrimary" />
 
